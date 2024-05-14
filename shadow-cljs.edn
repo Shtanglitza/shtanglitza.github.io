@@ -1,0 +1,27 @@
+;; shadow-cljs configuration
+{:source-paths
+ ["src/dev"
+  "src/main"
+  "src/test"]
+
+ :dev-http {8088 {:root "public"}}
+
+ :dependencies
+ [[org.clojure/clojurescript  "1.11.60"]
+  [org.clojure/clojure        "1.11.1"]
+  [reagent/reagent            "1.1.1"]
+  [applied-science/js-interop "0.3.3"]]
+
+ :builds
+ {:dev {:target :browser
+        :output-dir "public/js"
+        :asset-path "public/assets"
+        :modules {:main {:entries [core]
+                         :init-fn core/init}}
+        :closure-defines {core/assets-url "assets/"}}
+  :prod {:target :browser
+         :output-dir "public/release/js"
+         :asset-path "public/assets"
+         :modules {:main {:entries [core]
+                          :init-fn core/init}}
+         :closure-defines {core/assets-url "public/assets/"}}}}

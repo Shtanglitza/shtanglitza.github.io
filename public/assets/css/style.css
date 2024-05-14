@@ -1,0 +1,42 @@
+@font-face {
+  font-family: "LeagueGothic";
+  src: url(../fonts/LeagueGothicRegular.ttf) format('truetype');
+}
+
+html, body, div, span, a {
+  color: #ddc38d;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: LeagueGothic;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+.menu-item:hover {
+  text-decoration: underline #8f7e60;
+}
+
+/*#sidebar:hover {
+  width: 350px !important;
+}*/
+
+/*.expand-c:hover {
+  flex: 0.3 0.8 auto !important;
+  font-size: 1.5rem;
+}
+
+.expand-c:hover p {
+  height: auto !important;
+}
+
+.expand-r:hover {
+  flex: 1 1 auto !important;
+}*/
