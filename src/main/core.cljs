@@ -11,6 +11,7 @@
                      :height "100%"
                      :display "flex"}}
        [:div {:id "sidebar"
+              :media "(min-width: 1000px)"
               :style {:width "300px"
                       :min-width "300px"
                       :height "100%"
@@ -43,6 +44,20 @@
                               :scrollIntoView
                               #js{:behavior "smooth"}))}
             [:h2 {:id "menu-welcome"} "WELCOME"]]]
+          [:div {:class "menu-item"}
+           [:a {:on-click (fn []
+                            (j/call
+                              (j/call js/document :getElementById "about")
+                              :scrollIntoView
+                              #js{:behavior "smooth"}))}
+            [:h2 {:id "menu-about"} "ABOUT"]]]
+          [:div {:class "menu-item"}
+           [:a {:on-click (fn []
+                            (j/call
+                              (j/call js/document :getElementById "capabilities")
+                              :scrollIntoView
+                              #js{:behavior "smooth"}))}
+            [:h2 {:id "menu-capabilities"} "CAPABILITIES"]]]
           [:div {:class "menu-item"}
            [:a {:on-click (fn []
                             (j/call
@@ -108,17 +123,14 @@
                         :height "60vh"
                         :background-color "#1c1d18"
                         :border-left "2px solid #d1b781"}}
-          [:p {:style {:color "#d1b781"
-                       :width "100%"
-                       :font-size 96
-                       :text-align "center"
-                       :padding 32
-                       :padding-top 160}}
-           "Welcome to "
-           [:span [:img {:src (str assets-url "images/logo.png")
-                         :style {:height 96
-                                 :margin-bottom -10}}]]
-           "htanglitza"]]
+          [:h1 {:style {:color "#d1b781"
+                        :width "100%"
+                        :font-size 96
+                        :text-align "center"
+                        :padding 32
+                        :margin "auto"
+                        :max-width 650}}
+           "Unlock the potential of biomedical data"]]
          [:div {:style {:display "flex"
                         :background-color "#d1b781"
                         :padding 80
@@ -130,7 +142,8 @@
                        :font-size 32
                        :max-width 650}}
            "Unlock the potential of biomedical data with Shtanglitza – revolutionizing ontologies, data integration, and knowledge graphs to fuel innovation and drive informed decision-making."]]
-         [:div {:style {:display "flex"
+         [:div {:id "about"
+                :style {:display "flex"
                         :background-color "#1c1d18"
                         :padding 80
                         :height "60vh"
@@ -148,7 +161,8 @@
                        :font-size 32
                        :max-width 650}}
            "We are a dedicated team of experts focused on empowering the biomedical domain through ontologies, data integration, harmonization, analysis, and knowledge graphs. With our small but highly skilled engineering team, we offer tailored solutions to enhance data organization, uncover hidden insights, and drive informed decision-making."]]
-         [:div {:style {:display "flex"
+         [:div {:id "capabilities"
+                :style {:display "flex"
                         :background-color "#d1b781"
                         :padding 80
                         :height "60vh"
