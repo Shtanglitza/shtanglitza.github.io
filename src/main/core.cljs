@@ -40,10 +40,10 @@
           [:div {:class "menu-item"}
            [:a {:on-click (fn []
                             (j/call
-                              (j/call js/document :getElementById "welcome")
+                              (j/call js/document :getElementById "home")
                               :scrollIntoView
                               #js{:behavior "smooth"}))}
-            [:h2 {:id "menu-welcome"} "WELCOME"]]]
+            [:h2 {:id "menu-home"} "HOME"]]]
           [:div {:class "menu-item"}
            [:a {:on-click (fn []
                             (j/call
@@ -87,7 +87,7 @@
                           :flex-direction "row"
                           :align-items "center"}}
             [:a {:class "linked-in"
-                 :href "https://www.linkedin.com/in/vladimir-mladenovi%C4%87-b8b8aa2b/"
+                 :href "https://www.linkedin.com/company/shtanglitza/"
                  :target "_blank"
                  :style {:margin-left "5px"
                          :margin-right "5px"}}
@@ -117,7 +117,7 @@
         [:div {:style {:width "100%"
                        :height "100vh"
                        :background-color "#1c1d18"}}
-         [:div {:id "welcome"
+         [:div {:id "home"
                 :style {:display "flex"
                         :width "100%"
                         :height "60vh"
@@ -141,7 +141,7 @@
                        :margin "auto"
                        :font-size 32
                        :max-width 650}}
-           "Unlock the potential of biomedical data with Shtanglitza – revolutionizing ontologies, data integration, and knowledge graphs to fuel innovation and drive informed decision-making."]]
+           "Revolutionizing ontologies, data integration, and knowledge graphs to fuel innovation and drive informed decision-making."]]
          [:div {:id "about"
                 :style {:display "flex"
                         :background-color "#1c1d18"
