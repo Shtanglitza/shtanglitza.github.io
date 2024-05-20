@@ -1,6 +1,6 @@
 @font-face {
-  font-family: "LeagueGothic";
-  src: url(../fonts/LeagueGothicRegular.ttf) format('truetype');
+  font-family: "Oswald";
+  src: url(../fonts/Oswald.ttf) format('truetype');
 }
 
 html, body, div, span, a {
@@ -8,7 +8,7 @@ html, body, div, span, a {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: LeagueGothic;
+  font-family: Oswald;
 }
 
 body, html {
@@ -24,19 +24,55 @@ body, html {
   text-decoration: underline #8f7e60;
 }
 
-/*#sidebar:hover {
-  width: 350px !important;
-}*/
-
-/*.expand-c:hover {
-  flex: 0.3 0.8 auto !important;
-  font-size: 1.5rem;
+.small-menu-visible {
+  width: 100% !important;
 }
 
-.expand-c:hover p {
-  height: auto !important;
-}
+@media screen and (max-width: 1000px) {
+  #screen {
+    flex-direction: column !important;
+  }
 
-.expand-r:hover {
-  flex: 1 1 auto !important;
-}*/
+  #sidebar {
+    width: auto !important;
+    height: auto !important;
+    flex-direction: row !important;
+    flex: 0 0 auto !important;
+    border-bottom: 1px solid #d1b781 !important;
+    max-width: 100% !important;
+  }
+
+  #sidebar-logo {
+    height: 100px !important;
+  }
+
+  #sidebar-menu {
+    display: none !important;
+  }
+
+  #sidebar-hamburger {
+    display: flex !important;
+  }
+
+  #sidebar-contact {
+    display: none !important;
+  }
+
+  #home div {
+    border-left: 0 !important;
+  }
+
+  #about {
+    border-left: 0 !important;
+  }
+
+  #expertise div {
+    border-left: 0 !important;
+  }
+
+  #contact div {
+    border-left: 0 !important;
+  }
+
+
+}
