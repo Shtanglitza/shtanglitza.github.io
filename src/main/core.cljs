@@ -218,7 +218,6 @@
        "Who are we?"]
       [:img {:src (str assets-url "images/who-are-we.png")
              :style {:height 80
-                     :width "fit-content"
                      :margin-left "auto"
                      :margin-right "auto"
                      :margin-top 20
@@ -248,7 +247,6 @@
        "Capabilities"]
       [:img {:src (str assets-url "images/capabilities.png")
              :style {:height 80
-                     :width "fit-content"
                      :margin-left "auto"
                      :margin-right "auto"
                      :margin-top 20
@@ -294,7 +292,6 @@
         "1. Ontology Development and Management"]
        [:img {:src (str assets-url "images/ontology-development-and-management.png")
               :style {:height 80
-                      :width "fit-content"
                       :margin-left "auto"
                       :margin-right "auto"
                       :margin-top 20
@@ -324,7 +321,6 @@
         "2. Data Integration and Harmonization"]
        [:img {:src (str assets-url "images/data-integration-and-harmonization.png")
               :style {:height 80
-                      :width "fit-content"
                       :margin-left "auto"
                       :margin-right "auto"
                       :margin-top 20
@@ -353,7 +349,6 @@
         "3. Knowledge Graph Construction and Visualization"]
        [:img {:src (str assets-url "images/knowledge-graph-construction-and-visualization.png")
               :style {:height 80
-                      :width "fit-content"
                       :margin-left "auto"
                       :margin-right "auto"
                       :margin-top 20
@@ -383,7 +378,6 @@
         "4. Data Analysis and Insights"]
        [:img {:src (str assets-url "images/data-analysis-and-insights.png")
               :style {:height 80
-                      :width "fit-content"
                       :margin-left "auto"
                       :margin-right "auto"
                       :margin-top 20
@@ -412,7 +406,6 @@
         "5. Semantic Data Querying and Retrieval"]
        [:img {:src (str assets-url "images/semantic-data-querying-and-retrieval.png")
               :style {:height 80
-                      :width "fit-content"
                       :margin-left "auto"
                       :margin-right "auto"
                       :margin-top 20
@@ -442,7 +435,6 @@
         "6. Data Security and Compliance"]
        [:img {:src (str assets-url "images/data-security-and-compliance.png")
               :style {:height 80
-                      :width "fit-content"
                       :margin-left "auto"
                       :margin-right "auto"
                       :margin-top 20
@@ -471,7 +463,6 @@
         "7. Custom Biomedical Application Development"]
        [:img {:src (str assets-url "images/custom-biomedical-application-development.png")
               :style {:height 80
-                      :width "fit-content"
                       :margin-left "auto"
                       :margin-right "auto"
                       :margin-top 20
@@ -501,7 +492,6 @@
         "8. Personalized Training and Support"]
        [:img {:src (str assets-url "images/personalized-training-and-support.png")
               :style {:height 80
-                      :width "fit-content"
                       :margin-left "auto"
                       :margin-right "auto"
                       :margin-top 20
