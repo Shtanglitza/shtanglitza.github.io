@@ -19,3 +19,10 @@ pom.xml.asc
 
 .hgignore
 .hg/
+
+#Milos:Updating for Calva and VS studio code
+.calva
+.clj-kondo
+.lsp
+.cpcache
+.shadow-cljs
