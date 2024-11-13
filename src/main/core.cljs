@@ -50,9 +50,9 @@
                     :align-items "center"}}
       [:a {:on-click (fn []
                        (j/call
-                         (j/call js/document :getElementById "home")
-                         :scrollIntoView
-                         #js{:behavior "smooth"}))}
+                        (j/call js/document :getElementById "home")
+                        :scrollIntoView
+                        #js{:behavior "smooth"}))}
        [:h2 {:id "menu-home"
              :style {:transition "all .5s"
                      :letter-spacing -1
@@ -64,9 +64,9 @@
                     :align-items "center"}}
       [:a {:on-click (fn []
                        (j/call
-                         (j/call js/document :getElementById "about")
-                         :scrollIntoView
-                         #js{:behavior "smooth"}))}
+                        (j/call js/document :getElementById "about")
+                        :scrollIntoView
+                        #js{:behavior "smooth"}))}
        [:h2 {:id "menu-about"
              :style {:transition "all .5s"
                      :letter-spacing -1
@@ -78,9 +78,9 @@
                     :align-items "center"}}
       [:a {:on-click (fn []
                        (j/call
-                         (j/call js/document :getElementById "capabilities")
-                         :scrollIntoView
-                         #js{:behavior "smooth"}))}
+                        (j/call js/document :getElementById "capabilities")
+                        :scrollIntoView
+                        #js{:behavior "smooth"}))}
        [:h2 {:id "menu-capabilities"
              :style {:transition "all .5s"
                      :letter-spacing -1
@@ -92,9 +92,9 @@
                     :align-items "center"}}
       [:a {:on-click (fn []
                        (j/call
-                         (j/call js/document :getElementById "expertise")
-                         :scrollIntoView
-                         #js{:behavior "smooth"}))}
+                        (j/call js/document :getElementById "expertise")
+                        :scrollIntoView
+                        #js{:behavior "smooth"}))}
        [:h2 {:id "menu-expertise"
              :style {:transition "all .5s"
                      :letter-spacing -1
@@ -106,9 +106,9 @@
                     :align-items "center"}}
       [:a {:on-click (fn []
                        (j/call
-                         (j/call js/document :getElementById "contact")
-                         :scrollIntoView
-                         #js{:behavior "smooth"}))}
+                        (j/call js/document :getElementById "contact")
+                        :scrollIntoView
+                        #js{:behavior "smooth"}))}
        [:h2 {:id "menu-contact"
              :style {:transition "all .5s"
                      :letter-spacing -1
@@ -135,7 +135,7 @@
             :style {:margin-left "5px"
                     :margin-right "5px"}}
         [:img {:src (str assets-url "images/linkedin.svg")}]]]]
-     [:a {:href "mailto:shtanglitza@gmail.com"
+     [:a {:href "mailto:office@shtanglitza.ai"
           :target "_blank"
           :style {:margin-left "5px"
                   :margin-right "5px"
@@ -145,7 +145,7 @@
                   :align-items "center"
                   :margin "3px"}}
       [:img {:src (str assets-url "images/email.svg")}]
-      [:span "shtanglitza@gmail.com"]]]
+      [:span "office@shtanglitza.ai"]]]
     [:div {:id "sidebar-hamburger"
            :style {:display "none"
                    :height 32
@@ -155,11 +155,11 @@
                    (str assets-url "images/menu.svg"))
             :on-click (fn []
                         (j/call
-                          (j/get
-                            (j/call js/document :getElementById "small-menu")
-                            :classList)
-                          :toggle
-                          "small-menu-visible")
+                         (j/get
+                          (j/call js/document :getElementById "small-menu")
+                          :classList)
+                         :toggle
+                         "small-menu-visible")
                         (swap! small-menu-visible not))}]]]
    [:div {:id "content"
           :style {:display "flex"
@@ -544,7 +544,7 @@
               :style {:margin-left "5px"
                       :margin-right "5px"}}
           [:img {:src (str assets-url "images/linkedin.svg")}]]]]
-       [:a {:href "mailto:shtanglitza@gmail.com"
+       [:a {:href "mailto:office@shtanglitza.ai"
             :target "_blank"
             :style {:margin "5px"
                     :padding "10px"
@@ -553,7 +553,7 @@
                     :justify-content "center"
                     :align-items "center"}}
         [:img {:src (str assets-url "images/email.svg")}]
-        [:span {:style {:color "#d1b781"}} "shtanglitza@gmail.com"]]]]]]
+        [:span {:style {:color "#d1b781"}} "office@shtanglitza.ai"]]]]]]
    [:div {:id "small-menu"
           :style {:display "flex"
                   :position "absolute"
@@ -577,15 +577,15 @@
                       (when @small-menu-visible
                         (reset! small-menu-visible false)
                         (j/call
-                          (j/get
-                            (j/call js/document :getElementById "small-menu")
-                            :classList)
-                          :remove
-                          "small-menu-visible"))
+                         (j/get
+                          (j/call js/document :getElementById "small-menu")
+                          :classList)
+                         :remove
+                         "small-menu-visible"))
                       (j/call
-                        (j/call js/document :getElementById "home")
-                        :scrollIntoView
-                        #js{:behavior "smooth"}))}
+                       (j/call js/document :getElementById "home")
+                       :scrollIntoView
+                       #js{:behavior "smooth"}))}
       [:h2 {:id "menu-home"
             :style {:transition "all .5s"
                     :letter-spacing -1
@@ -602,15 +602,15 @@
                       (when @small-menu-visible
                         (reset! small-menu-visible false)
                         (j/call
-                          (j/get
-                            (j/call js/document :getElementById "small-menu")
-                            :classList)
-                          :remove
-                          "small-menu-visible"))
+                         (j/get
+                          (j/call js/document :getElementById "small-menu")
+                          :classList)
+                         :remove
+                         "small-menu-visible"))
                       (j/call
-                        (j/call js/document :getElementById "about")
-                        :scrollIntoView
-                        #js{:behavior "smooth"}))}
+                       (j/call js/document :getElementById "about")
+                       :scrollIntoView
+                       #js{:behavior "smooth"}))}
       [:h2 {:id "menu-about"
             :style {:transition "all .5s"
                     :letter-spacing -1
@@ -627,15 +627,15 @@
                       (when @small-menu-visible
                         (reset! small-menu-visible false)
                         (j/call
-                          (j/get
-                            (j/call js/document :getElementById "small-menu")
-                            :classList)
-                          :remove
-                          "small-menu-visible"))
+                         (j/get
+                          (j/call js/document :getElementById "small-menu")
+                          :classList)
+                         :remove
+                         "small-menu-visible"))
                       (j/call
-                        (j/call js/document :getElementById "capabilities")
-                        :scrollIntoView
-                        #js{:behavior "smooth"}))}
+                       (j/call js/document :getElementById "capabilities")
+                       :scrollIntoView
+                       #js{:behavior "smooth"}))}
       [:h2 {:id "menu-capabilities"
             :style {:transition "all .5s"
                     :letter-spacing -1
@@ -652,15 +652,15 @@
                       (when @small-menu-visible
                         (reset! small-menu-visible false)
                         (j/call
-                          (j/get
-                            (j/call js/document :getElementById "small-menu")
-                            :classList)
-                          :remove
-                          "small-menu-visible"))
+                         (j/get
+                          (j/call js/document :getElementById "small-menu")
+                          :classList)
+                         :remove
+                         "small-menu-visible"))
                       (j/call
-                        (j/call js/document :getElementById "expertise")
-                        :scrollIntoView
-                        #js{:behavior "smooth"}))}
+                       (j/call js/document :getElementById "expertise")
+                       :scrollIntoView
+                       #js{:behavior "smooth"}))}
       [:h2 {:id "menu-expertise"
             :style {:transition "all .5s"
                     :letter-spacing -1
@@ -677,15 +677,15 @@
                       (when @small-menu-visible
                         (reset! small-menu-visible false)
                         (j/call
-                          (j/get
-                            (j/call js/document :getElementById "small-menu")
-                            :classList)
-                          :remove
-                          "small-menu-visible"))
+                         (j/get
+                          (j/call js/document :getElementById "small-menu")
+                          :classList)
+                         :remove
+                         "small-menu-visible"))
                       (j/call
-                        (j/call js/document :getElementById "contact")
-                        :scrollIntoView
-                        #js{:behavior "smooth"}))}
+                       (j/call js/document :getElementById "contact")
+                       :scrollIntoView
+                       #js{:behavior "smooth"}))}
       [:h2 {:id "menu-contact"
             :style {:transition "all .5s"
                     :letter-spacing -1
@@ -714,7 +714,7 @@
             :style {:margin-left "5px"
                     :margin-right "5px"}}
         [:img {:src (str assets-url "images/linkedin.svg")}]]]]
-     [:a {:href "mailto:shtanglitza@gmail.com"
+     [:a {:href "mailto:office@shtanglitza.ai"
           :target "_blank"
           :style {:margin-left "5px"
                   :margin-right "5px"
@@ -724,7 +724,7 @@
                   :align-items "center"
                   :margin "3px"}}
       [:img {:src (str assets-url "images/email.svg")}]
-      [:span "shtanglitza@gmail.com"]]]]])
+      [:span "office@shtanglitza.ai"]]]]])
 
 (defn ^:export render
   []
