@@ -258,7 +258,7 @@
                    :font-size 26
                    :letter-spacing -1
                    :max-width 650}}
-       "Our capabilities include custom ontology development, seamless data integration, intuitive knowledge graph construction, advanced data analysis, efficient semantic querying, and bespoke application development. We are committed to ensuring data security and compliance with relevant regulations, such as HIPAA and GDPR."]]
+       "Our capabilities include custom ontology development, seamless data integration, intuitive knowledge graph construction, advanced data analysis, efficient semantic querying, and bespoke application development."]]
      [:div {:id "expertise"
             :style {:display "flex"
                     :width "100%"

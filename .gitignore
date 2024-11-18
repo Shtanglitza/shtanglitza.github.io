@@ -26,3 +26,4 @@ pom.xml.asc
 .lsp
 .cpcache
 .shadow-cljs
+public/release/js/cljs-runtime/
