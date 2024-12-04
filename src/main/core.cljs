@@ -27,14 +27,14 @@
 (def listDots 
   [:span 
    {:class "font-bold
-            text-purple-500
+            text-indigo-500
             mr-2
             text-xl"}
    ":"])
 (def fSlash 
   [:span 
    {:class "font-black
-            text-purple-500
+            text-indigo-500
             mr-2 
             text-md 
             italic 
@@ -56,8 +56,8 @@
 
 (def header1 [:div
               {:id "home"
-               :class "flex 
-                       flex-wrap 
+               :class "flex
+                       flex-wrap
                        justify-center 
                        h-screen 
                        w-full 
@@ -72,7 +72,7 @@
 
               [:div
                {:class "w-full
-                        h-full 
+                        h-full                         
                         bg-gradient-to-tr 
                         from-white/90
                         from-15%  
@@ -90,12 +90,11 @@
                {:class "flex 
                         flex-wrap 
                         items-center 
-                        justify-between 
-                        mx-auto 
+                        justify-between                          
                         w-full 
                         z-30
                         max-w-screen-md p-8 
-                        md:max-w-screen-lg md:p-16
+                        md:max-w-screen-lg md:p-16 
                         lg:max-w-screen-2xl lg:p-20"}
                [:h1
                 {:class "text-start
@@ -126,7 +125,7 @@
                          font-normal
                          hyphens-auto
                          w-fit
-                           md:text-4xl"}
+                           md:text-3xl"}
                 "Revolutionizing ontologies, data integration,
                  and knowledge graphs to fuel innovation and drive informed decision-making."]]])
 
@@ -146,7 +145,7 @@
                           w-full 
                           h-fit 
                           gap-4            
-                          max-w-screen-md px-8 
+                          max-w-screen-md px-4 
                           md:max-w-screen-lg md:px-16
                           lg:max-w-screen-2xl lg:px-20 lg:flex-row"}
 
@@ -170,15 +169,15 @@
                     {:class "mx-6
                             w-12 
                             h-auto"
-                     :src (str assets-url "img/about-icon.svg")}]
+                     :src (str assets-url "img/about_icon.svg")}]
                 
                    [:h1 
                     {:class "text-center 
-                                 my-6 
-                                 text-gray-950 
-                                 text-5xl 
-                                 font-black
-                                   md:text-6xl md:text-start"}
+                             my-6 
+                             text-gray-950 
+                             text-5xl 
+                             font-black
+                                md:text-6xl md:text-start"}
                     "Who are we?"]]
 
                   [:p
@@ -247,7 +246,7 @@
                                  w-full 
                                  h-fit 
                                  items-center
-                                   max-w-screen-md p-8 
+                                   max-w-screen-md p-4 
                                    md:max-w-screen-lg md:p-16
                                    lg:max-w-screen-2xl lg:p-6 z-30"}
 
@@ -270,7 +269,7 @@
                            {:class "mx-6 
                                     w-16
                                     h-auto"
-                                    :src (str assets-url "img/capabilities-icon.svg")}]
+                                    :src (str assets-url "img/capabilities_icon.svg")}]
                           [:h1
                            {:class "text-center 
                                     my-6 
@@ -331,7 +330,7 @@
                                          group-hover:scale-125
                                          group-hover:-translate-x-6
                                          group-hover:-rotate-45"
-                                 :src (str assets-url "img/fragmentsWhite.svg")}]
+                                 :src (str assets-url "img/fragments_white.svg")}]
                           [:section
                            {:class "flex-1
                                     flex-auto 
@@ -380,7 +379,7 @@
                                            group-hover:scale-125
                                            group-hover:-translate-x-6
                                            group-hover:-rotate-45"
-                                 :src (str assets-url "img/fragmentsWhite.svg")}]
+                                 :src (str assets-url "img/fragments_white.svg")}]
                           [:section
                            {:class "flex-1 
                                     flex-auto
@@ -427,7 +426,7 @@
                                          group-hover:scale-125
                                          group-hover:-translate-x-6
                                          group-hover:-rotate-45"
-                                 :src (str assets-url "img/fragmentsWhite.svg")}]
+                                 :src (str assets-url "img/fragments_white.svg")}]
                           [:section
                            {:class "flex-1
                                     flex-auto 
@@ -476,7 +475,7 @@
                                            group-hover:scale-125
                                            group-hover:-translate-x-6
                                            group-hover:-rotate-45"
-                                 :src (str assets-url "img/fragmentsWhite.svg")}]
+                                 :src (str assets-url "img/fragments_white.svg")}]
                           [:section
                            {:class "flex-1 
                                     flex-auto 
@@ -524,7 +523,7 @@
                                            group-hover:scale-125
                                            group-hover:-translate-x-6
                                            group-hover:-rotate-45"
-                                 :src (str assets-url "img/fragmentsWhite.svg")}]
+                                 :src (str assets-url "img/fragments_white.svg")}]
                           [:section
                            {:class "flex-1 
                                     flex-auto
@@ -573,7 +572,7 @@
                                            group-hover:scale-125
                                            group-hover:-translate-x-6
                                            group-hover:-rotate-45"
-                                 :src (str assets-url "img/fragmentsWhite.svg")}]
+                                 :src (str assets-url "img/fragments_white.svg")}]
                           [:section
                            {:class "flex-1 
                                     flex-auto 
@@ -595,7 +594,7 @@
 (def expertise-sec-names
   {:OntologyDaM {:sec-name "Ontology Development and Management"                      
                  :icons
-                 {:src (str assets-url "img/Ontology_Icn.svg")}
+                 {:src (str assets-url "img/ontology_devm.svg")}
                  :content "Our expert small engineering team creates, maintains, and updates custom ontologies
                            tailored to the biomedical domain, ensuring accurate representation of domain knowledge
                            for efficient data organization, integration, and retrieval."
@@ -606,12 +605,12 @@
                              to-90% bl"
                  :bg-photo
                  {:style
-                  {:background-image (str "url(" assets-url "img/o_dev_wall.jpg" ")")}}
-                }
+                  {:background-image (str "url(" assets-url "img/ontology_devm_p.jpg" ")")}}}
+                
 
    :DataIaH {:sec-name "Data Integration and Harmonization"
              :icons
-             {:src (str assets-url"img/Data_integration.svg")}
+             {:src (str assets-url"img/data_int.svg")}
              :content "We offer bespoke data integration and harmonization solutions, 
                        combining and refining disparate biomedical data sources into a unified, 
                        consistent, and easily-accessible format. Our skilled team ensures improved 
@@ -623,12 +622,12 @@
                          to-90%"
              :bg-photo
              {:style
-              {:background-image (str "url("  assets-url "img/Data_integration_p.jpg" ")")}}
-             }
+              {:background-image (str "url("  assets-url "img/data_int_p.jpg" ")")}}}
+             
 
    :KnowledgeGCaV {:sec-name "Knowledge Graph Construction and Visualization"
                    :icons
-                   {:src (str assets-url "img/Knowledge_graph.svg")}
+                   {:src (str assets-url "img/knowledge_graph.svg")}
                    :content "Our team builds tailored knowledge graphs representing complex biomedical
                             data as interconnected nodes and edges, enabling intuitive data exploration and 
                             the discovery of hidden relationships and insights for informed decision-making."
@@ -639,12 +638,12 @@
                                to-90%"
                    :bg-photo
                    {:style
-                    {:background-image (str "url("  assets-url "img/knowledge_graphs_p.jpg" ")")}}
-                  }
+                    {:background-image (str "url("  assets-url "img/knowledge_graph_p.jpg" ")")}}}
+                  
 
    :DataAaI {:sec-name "Data Analysis and Insights"
              :icons
-             {:src (str assets-url "img/Data_insght.svg")}
+             {:src (str assets-url "img/data_ins.svg")}
              :content "Our engineers employ advanced statistical and machine learning
                        methods to uncover hidden patterns, trends, and correlations in biomedical data, 
                        providing valuable insights that drive research, innovation, 
@@ -656,12 +655,12 @@
                          to-90%"
              :bg-photo
              {:style
-              {:background-image (str "url("  assets-url "img/Data_insights_p.jpg" ")")}}
-            }
+              {:background-image (str "url("  assets-url "img/data_ins_p.jpg" ")")}}}
+            
 
    :SemanticDQaR {:sec-name "Semantic Data Querying and Retrieval"
                   :icons
-                  {:src (str assets-url "img/Semantic_dat.svg")}
+                  {:src (str assets-url "img/semantic_dat.svg")}
                   :content "We develop custom solutions for efficient and precise querying of biomedical data,
                             allowing users to easily search, retrieve, and filter information using natural language queries 
                             and ensuring quick access to relevant data and insights."
@@ -672,13 +671,13 @@
                               to-90%"
                   :bg-photo
                   {:style
-                   {:background-image (str "url(" assets-url "img/semantic_dataq.jpg" ")")}}
-                  }
+                   {:background-image (str "url(" assets-url "img/semantic_dat_p.jpg" ")")}}}
+                  
 
 
    :DataSaC {:sec-name "Data Security and Compliance"
              :icons
-             {:src (str assets-url "img/Data_sec.svg")}
+             {:src (str assets-url "img/data_sec.svg")}
              :content "Our team prioritizes data security and adheres to industry best practices
                        and regulatory standards, ensuring the protection of sensitive biomedical data while
                        maintaining compliance with relevant data privacy regulations, such as HIPAA and GDPR."
@@ -689,13 +688,13 @@
                          to-90%"
              :bg-photo
              {:style
-              {:background-image  (str  "url(" assets-url "img/data-sec.jpg" ")")}}
-             }
+              {:background-image  (str  "url(" assets-url "img/data_sec_p.jpg" ")")}}}
+             
 
 
    :CustomBAD {:sec-name "Custom Biomedical Application Development"
                :icons
-               {:src (str assets-url "img/Custom_app.svg")}
+               {:src (str assets-url "img/custom_app.svg")}
                :content "We offer tailored application development services, collaborating closely with you to design, develop,
                          and deploy applications that streamline biomedical workflows, improve collaboration,
                          and boost productivity within the domain."
@@ -706,13 +705,13 @@
                            to-90%"
                :bg-photo
                {:style               
-                {:background-image (str "url(" assets-url "img/custom_app_p.jpg" ")")}}
-               }
+                {:background-image (str "url(" assets-url "img/custom_app_p.jpg" ")")}}}
+               
 
 
    :PersonalizedTaS {:sec-name "Personalized Training and Support"
                      :icons
-                     {:src (str assets-url "img/Personalized_tra.svg")}
+                     {:src (str assets-url "img/personalized_tra.svg")}
                      :content "Our engineering team provides comprehensive training and ongoing support to help you 
                                make the most of our solutions. We offer personalized guidance, hands-on workshops,
                                and technical assistance, ensuring your team can confidently navigate and utilize our data integration,
@@ -724,8 +723,8 @@
                                  to-90%"
                      :bg-photo
                      {:style
-                      {:background-image  (str "url(" assets-url "img/training_p.jpg" ")")}}   
-                 }})
+                      {:background-image  (str "url(" assets-url "img/personalized_tra_p.jpg" ")")}}}})   
+                 
 
 (def expertise-sec
   [:div
@@ -734,21 +733,21 @@
             h-auto
             items-center
             justify-center
-            px-1 
-            lg:p-8
+           py-36
             bg-gradient-to-b 
             from-white from-50%
             to-slate-100"}
+  
    [:div
     {:class "flex
              flex-col 
              w-full
              h-fit
              items-center
-             py-36
-             max-w-screen-md px-1 
+             gap-4
+             max-w-screen-md px-4 
                md:max-w-screen-lg md:px-16
-               lg:max-w-screen-2xl lg:px-6"}
+               lg:max-w-screen-2xl lg:px-20"}
     [:div
      {:class "flex 
               flex-col
@@ -769,7 +768,7 @@
        {:class "mx-6
                 w-16
                 h-auto"
-                :src (str assets-url "img/expertise-icon.svg")}]
+                :src (str assets-url "img/expertise_icon.svg")}]
       [:h1 {:class "text-center
                     my-6 text-gray-950 
                     text-3xl
@@ -873,7 +872,7 @@
   (let [video-loaded? (r/atom false)]
     (fn []
       [:div
-       [:img {:src (str assets-url "img/bck-cover-image.png")
+       [:img {:src (str assets-url "img/bck_cover_image.png")
               :alt "Backup Image"
               :class (str "absolute 
                            top-0 
@@ -919,10 +918,7 @@
     capabilities-sec
     expertise-sec]])
 
-
-
-
-
+                  
 (defn footer []
   [:footer
    {:class "w-full 
@@ -938,19 +934,19 @@
              flex-wrap 
              flex-col
              mx-auto
-             justify-center
+             justify-start
              text-white
-             gap-4 
-             max-w-screen-md p-8 
-               md:max-w-screen-lg  md:p-16  md:flex-row
-               lg:max-w-screen-2xl lg:p-20"}
+             gap-8 
+             max-w-screen-md p-4 
+               md:max-w-screen-lg  md:p-16 md:flex-row md:justify-center
+               lg:max-w-screen-2xl lg:p-20 xl:gap-36 xl:justify-center"}
     [:div
-     {:class "mx-12
+     {:class "mx-6
               my-6"}
      [:a
       {:href "#"}
       [:img
-       {:src (str assets-url "img/ShtanglitzaLogoTp0.svg")
+       {:src (str assets-url "img/shtanglitza_logo_w.svg")
         :class "w-auto 
                 h-12
                 mb-6"}]]
@@ -966,16 +962,15 @@
                 group"}
        [:span
         {:class "mr-2
-                   group-hover:ms-1 
-                 viewBox 0 0 24 24
+                 group-hover:ms-1              
                  ease-in-out 
                  duration-700"}
         (icons/emailIcn)]
        [:span
-        {:class "group-hover:text-purple-400 
+        {:class "group-hover:text-indigo-400 
                  ease-in-out
                  duration-700"}
-        "Email"]]
+        "office@shtanglitza.ai"]]
       [:a
        {:href linkedin-address
         :target "_blank"
@@ -986,33 +981,32 @@
                 group"}
        [:span
         {:class "mr-2
-                   group-hover:ms-1 
-                 viewBox 0 0 24 24 
+                 group-hover:ms-1                   
                  ease-in-out 
                  duration-700"}
         (icons/linkedIcn)]
        [:span
         {:href "https://google.com"
-         :class "group-hover:text-purple-400 
+         :class "group-hover:text-indigo-400 
                  ease-in-out
                  duration-700"}
-        "Visit our LinkedIn"]]]]
+        "Connect with Us"]]]]
     [:div
      {:class "flex 
               flex-col 
-                md:flex-row"}
+                lg:flex-row"}
      [:div
-      {:class "mx-12 
+      {:class "mx-6 
                my-6"}
       [:ul
        {:class "list-image-[url()]"}
        [:p
         {:class "font-bold 
-                 text-purple-400 
+                 text-indigo-400 
                  tracking-widest mb-2"}
         "Shortcuts"]
 
-       (for [link ["Home" "About" "Capabilities" "Expertise" "Contact"]]
+       (for [link ["Home" "About" "Capabilities" "Expertise"]]
          (let [href (str "#" (lower-case link))]
            [:li {:key link}
             [:a
@@ -1020,16 +1014,16 @@
               :class "font-light
                       text-sm 
                       ease-in-out duration-700
-                        hover:text-purple-400"}
+                        hover:text-indigo-200"}
              listDots link]]))]]
      [:div
-      {:class "mx-12
+      {:class "mx-6
                my-6"}
       [:ul
        {:class "list-image-[url()]"}
        [:p
         {:class "font-bold
-                 text-purple-400
+                 text-indigo-400
                  tracking-widest mb-2"}
         "Expertise"]
 
@@ -1049,7 +1043,7 @@
                     text-sm
                     ease-in-out
                     duration-700
-                      hover:text-purple-400"}
+                      hover:text-indigo-200"}
            fSlash link]])]]]]
 
    [:div
@@ -1058,7 +1052,7 @@
              flex
              flex-row
              m-0 
-             mt-16 
+              
              py-14 
              justify-center 
              align-middle"}

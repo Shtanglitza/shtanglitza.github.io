@@ -9,7 +9,7 @@ module.exports = {
     extend: {
 
       fontFamily: {
-        sans: ['"Nunito Sans"', 'serif'], // Replace 'YourFontName' with your font's name
+        sans: ['"Source Sans 3"', 'serif'], // Replace 'YourFontName' with your font's name
       },
 
       colors: {

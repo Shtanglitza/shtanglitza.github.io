@@ -92,7 +92,7 @@
               rtl:space-x-reverse"}
      [:img
       {:id "S_logo"
-       :src (str assets-url "img/ShtanglitzaLogoTp0_nav.svg")
+       :src (str assets-url "img/shtanglitza_logo_d.svg")
        :class "h-8
                my-1
                self-center
@@ -105,7 +105,7 @@
               sm:hidden 
               md:grid grid-flow-col auto-cols-max gap-5 text-custom-darkest-violet items-center text-lg"}
      
-     (for [link ["Home" "About" "Capabilities" "Expertise" "Contact"]]
+     (for [link ["Home" "About" "Capabilities" "Expertise"]]
        
        (let [href (str "#" (clojure.string/lower-case link))]
          
@@ -129,7 +129,7 @@
                space-x-2 
                py-1 
                px-2
-               bg-violet-500
+               bg-indigo-500
                rounded-md"}
       [:li
        [:a
@@ -207,16 +207,15 @@
                  justify-start"
          :href "https://www.shtanglitza.ai"}
         [:img
-         {:src (str assets-url "img/fav.svg")
+         {:src (str assets-url "img/f_icn.svg")
           :class "h-16 
                   my-1 
                   w-auto"}]]]
       
-      (for [link-s ["Home" 
-                    "About" 
-                    "Capabilities" 
-                    "Expertise" 
-                    "Contact"]]
+      (for [link-s ["Home"
+                    "About"
+                    "Capabilities"
+                    "Expertise"]]
 
         (let [href (str "#" (clojure.string/lower-case link-s))]
 
@@ -236,10 +235,11 @@
                 flex-row 
                 inline 
                 w-fit 
-                space-x-2 
+                space-x-2
+                translate-y-4
                 py-1 
                 px-2 
-                bg-violet-500
+                bg-indigo-500
                 rounded-md"}
        [:li
         [:a
