@@ -1,753 +1,1085 @@
-(ns core
-  (:require [applied-science.js-interop :as j]
-            [reagent.core :as r]
-            [reagent.dom :as rdom]))
+(ns main.core
+
+  (:require
+  ;;  [applied-science.js-interop :as j]
+   [clojure.string :as str :refer [lower-case]]
+   [reagent.core :as r]
+   [reagent.dom :as rdom]
+   [main.icons :as icons]
+   [main.navbarx :as navbar-menu]
+            ;; ["locomotive-scroll" :as LocomotiveScroll]
+   [main.constants :refer [email-address linkedin-address assets-url]]))
 
 
-(goog-define assets-url "")
 
-(def small-menu-visible (r/atom false))
-(def menu-el-visible (r/atom {"home" true}))
+;; (def scroll 
+;;   (LocomotiveScroll. (clj->js {:el (js/document.querySelector "[data-scroll-container]")
+;;                                :smooth true
+;;                                :lerp 0.05}
+;;                               ;;  :reload-on-context-change true
+;;                               :smartphone {:smooth false}
+;;                               :tablet {:smooth false}
+;;                               :gestureDirection "vertical"
+;;                               ;;  :smooth-mobile 0
+;;                               )))
 
 
-(defn website
-  []
-  [:div {:id "screen"
-         :style {:width "100%"
-                 :height "100%"
-                 :display "flex"}}
-   [:div {:id "sidebar"
-          :style {:width "300px"
-                  :min-width "300px"
-                  :height "100%"
-                  :display "flex"
-                  :background-color "#1c1d18"
-                  :flex "1 1 auto"
-                  :flex-direction "column"
-                  :overflow "hidden"
-                  :max-width 400}}
-    [:div {:id "sidebar-logo"
-           :style {:display "flex"
-                   :width "100%"
-                   :height "150px"}}
-     [:h2 {:style {:margin "auto"
-                   :font-size 40
-                   :letter-spacing -1}}
-      [:span
-       [:img {:src (str assets-url "images/logo.png")
-              :style {:height 48
-                      :margin-bottom -6}}]]
-      "htanglitza"]]
-    [:div {:id "sidebar-menu"
-           :style {:display "flex"
-                   :flex "1 1 auto"
-                   :flex-direction "column"
-                   :justify-content "center"
-                   :align-items "center"}}
-     [:div {:class "menu-item"
-            :style {:height "60px"
-                    :display "flex"
-                    :align-items "center"}}
-      [:a {:on-click (fn []
-                       (j/call
-                        (j/call js/document :getElementById "home")
-                        :scrollIntoView
-                        #js{:behavior "smooth"}))}
-       [:h2 {:id "menu-home"
-             :style {:transition "all .5s"
-                     :letter-spacing -1
-                     :margin 0
-                     :font-size (if (@menu-el-visible "home") 36 24)}} "HOME"]]]
-     [:div {:class "menu-item"
-            :style {:height "60px"
-                    :display "flex"
-                    :align-items "center"}}
-      [:a {:on-click (fn []
-                       (j/call
-                        (j/call js/document :getElementById "about")
-                        :scrollIntoView
-                        #js{:behavior "smooth"}))}
-       [:h2 {:id "menu-about"
-             :style {:transition "all .5s"
-                     :letter-spacing -1
-                     :margin 0
-                     :font-size (if (@menu-el-visible "about") 36 24)}} "ABOUT"]]]
-     [:div {:class "menu-item"
-            :style {:height "60px"
-                    :display "flex"
-                    :align-items "center"}}
-      [:a {:on-click (fn []
-                       (j/call
-                        (j/call js/document :getElementById "capabilities")
-                        :scrollIntoView
-                        #js{:behavior "smooth"}))}
-       [:h2 {:id "menu-capabilities"
-             :style {:transition "all .5s"
-                     :letter-spacing -1
-                     :margin 0
-                     :font-size (if (@menu-el-visible "capabilities") 36 24)}} "CAPABILITIES"]]]
-     [:div {:class "menu-item"
-            :style {:height "60px"
-                    :display "flex"
-                    :align-items "center"}}
-      [:a {:on-click (fn []
-                       (j/call
-                        (j/call js/document :getElementById "expertise")
-                        :scrollIntoView
-                        #js{:behavior "smooth"}))}
-       [:h2 {:id "menu-expertise"
-             :style {:transition "all .5s"
-                     :letter-spacing -1
-                     :margin 0
-                     :font-size (if (@menu-el-visible "expertise") 36 24)}} "EXPERTISE"]]]
-     [:div {:class "menu-item"
-            :style {:height "60px"
-                    :display "flex"
-                    :align-items "center"}}
-      [:a {:on-click (fn []
-                       (j/call
-                        (j/call js/document :getElementById "contact")
-                        :scrollIntoView
-                        #js{:behavior "smooth"}))}
-       [:h2 {:id "menu-contact"
-             :style {:transition "all .5s"
-                     :letter-spacing -1
-                     :margin 0
-                     :font-size (if (@menu-el-visible "contact") 36 24)}} "CONTACT"]]]]
-    [:div {:id "sidebar-contact"
-           :style {:display "flex"
-                   :width "100%"
-                   :height "200px"
-                   :flex-direction "column"
-                   :justify-content "center"
-                   :align-items "center"}}
-     [:div {:style {:display "flex"
-                    :flex-direction "row"
-                    :justify-content "center"
-                    :align-items "center"
-                    :margin "3px"}}
-      [:div {:style {:display "flex"
-                     :flex-direction "row"
-                     :align-items "center"}}
-       [:a {:class "linked-in"
-            :href "https://www.linkedin.com/company/shtanglitza/"
-            :target "_blank"
-            :style {:margin-left "5px"
-                    :margin-right "5px"}}
-        [:img {:src (str assets-url "images/linkedin.svg")}]]]]
-     [:a {:href "mailto:office@shtanglitza.ai"
-          :target "_blank"
-          :style {:margin-left "5px"
-                  :margin-right "5px"
-                  :display "flex"
-                  :flex-direction "row"
-                  :justify-content "center"
-                  :align-items "center"
-                  :margin "3px"}}
-      [:img {:src (str assets-url "images/email.svg")}]
-      [:span "office@shtanglitza.ai"]]]
-    [:div {:id "sidebar-hamburger"
-           :style {:display "none"
-                   :height 32
-                   :margin "34px 16px 0px 0px"}}
-     [:img {:src (if @small-menu-visible
-                   (str assets-url "images/close.svg")
-                   (str assets-url "images/menu.svg"))
-            :on-click (fn []
-                        (j/call
-                         (j/get
-                          (j/call js/document :getElementById "small-menu")
-                          :classList)
-                         :toggle
-                         "small-menu-visible")
-                        (swap! small-menu-visible not))}]]]
-   [:div {:id "content"
-          :style {:display "flex"
-                  :flex "1 1 auto"
-                  :background-color "#d1b781"
-                  :height "100vh"
-                  :overflow-y "auto"}}
-    [:div {:style {:width "100%"
-                   :height "100vh"
-                   :background-color "#1c1d18"}}
-     [:div {:id "home"
-            :style {:display "flex"
-                    :width "100%"
-                    :flex-direction "column"}}
-      [:div {:style {:display "flex"
-                     :width "100%"
-                     :min-height "60vh"
-                     :background-color "#1c1d18"
-                     :border-left "2px solid #d1b781"}}
-       [:h1 {:style {:color "#d1b781"
-                     :width "100%"
-                     :font-size 80
-                     :letter-spacing -5
-                     :text-align "center"
-                     :padding 32
-                     :margin "auto"
-                     :max-width 650}}
-        "Unlock the potential of biomedical data"]]
-      [:div {:style {:display "flex"
-                     :background-color "#d1b781"
-                     :padding 40
-                     :min-height "60vh"}}
-       [:p {:style {:color "#1c1d18"
-                    :text-align "center"
-                    :padding "0 32"
-                    :margin "auto"
-                    :font-size 36
-                    :letter-spacing -1
-                    :max-width 650}}
-        "Revolutionizing ontologies, data integration, and knowledge graphs to fuel innovation and drive informed decision-making."]]]
-     [:div {:id "about"
-            :style {:display "flex"
-                    :background-color "#1c1d18"
-                    :padding 40
-                    :min-height "60vh"
-                    :border-left "2px solid #d1b781"
-                    :flex-direction "column"
-                    :justify-content "center"}}
-      [:h1 {:style {:color "#d1b781"
-                    :text-align "center"
-                    :font-size 48
-                    :letter-spacing -1
-                    :font-weight 500
-                    :margin-top 0
-                    :margin-bottom 0}}
-       "Who are we?"]
-      [:img {:src (str assets-url "images/who-are-we.png")
-             :style {:height 80
-                     :margin-left "auto"
-                     :margin-right "auto"
-                     :margin-top 20
-                     :margin-bottom 20}}]
-      [:p {:style {:color "#d1b781"
-                   :text-align "center"
-                   :padding "0 32"
-                   :margin "0 auto"
-                   :font-size 26
-                   :letter-spacing -1
-                   :max-width 650}}
-       "We are a dedicated team of experts focused on empowering the biomedical domain through ontologies, data integration, harmonization, analysis, and knowledge graphs. With our small but highly skilled engineering team, we offer tailored solutions to enhance data organization, uncover hidden insights, and drive informed decision-making."]]
-     [:div {:id "capabilities"
-            :style {:display "flex"
-                    :background-color "#d1b781"
-                    :padding 40
-                    :min-height "60vh"
-                    :flex-direction "column"
-                    :justify-content "center"}}
-      [:h1 {:style {:color "#1c1d18"
-                    :text-align "center"
-                    :font-size 48
-                    :letter-spacing -1
-                    :font-weight 500
-                    :margin-top 0
-                    :margin-bottom 0}}
-       "Capabilities"]
-      [:img {:src (str assets-url "images/capabilities.png")
-             :style {:height 80
-                     :margin-left "auto"
-                     :margin-right "auto"
-                     :margin-top 20
-                     :margin-bottom 20}}]
-      [:p {:style {:color "#1c1d18"
-                   :text-align "center"
-                   :padding "0 32"
-                   :margin "0 auto"
-                   :font-size 26
-                   :letter-spacing -1
-                   :max-width 650}}
-       "Our capabilities include custom ontology development, seamless data integration, intuitive knowledge graph construction, advanced data analysis, efficient semantic querying, and bespoke application development."]]
-     [:div {:id "expertise"
-            :style {:display "flex"
-                    :width "100%"
-                    :flex-direction "column"}}
-      [:div {:style {:display "flex"
-                     :background-color "#1c1d18"
-                     :padding 40
-                     :min-height "30vh"
-                     :justify-content "center"
-                     :align-items "center"
-                     :border-left "2px solid #d1b781"}}
-       [:h1 {:style {:color "#d1b781"
-                     :text-align "center"
-                     :font-size 56
-                     :letter-spacing -1
-                     :font-weight 500}}
-        "EXPERTISE"]]
-      [:div {:style {:display "flex"
-                     :background-color "#d1b781"
-                     :padding 40
-                     :min-height "60vh"
-                     :flex-direction "column"
-                     :justify-content "center"}}
-       [:h1 {:style {:color "#1c1d18"
-                     :text-align "center"
-                     :font-size 40
-                     :letter-spacing -1
-                     :font-weight 500
-                     :margin-top 0
-                     :margin-bottom 0}}
-        "1. Ontology Development and Management"]
-       [:img {:src (str assets-url "images/ontology-development-and-management.png")
-              :style {:height 80
-                      :margin-left "auto"
-                      :margin-right "auto"
-                      :margin-top 20
-                      :margin-bottom 20}}]
-       [:p {:style {:color "#1c1d18"
-                    :text-align "center"
-                    :padding "0 32"
-                    :margin "0 auto"
-                    :font-size 26
-                    :letter-spacing -1
-                    :max-width 650}}
-        "Our expert small engineering team creates, maintains, and updates custom ontologies tailored to the biomedical domain, ensuring accurate representation of domain knowledge for efficient data organization, integration, and retrieval."]]
-      [:div {:style {:display "flex"
-                     :background-color "#1c1d18"
-                     :padding 40
-                     :min-height "60vh"
-                     :flex-direction "column"
-                     :border-left "2px solid #d1b781"
-                     :justify-content "center"}}
-       [:h1 {:style {:color "#d1b781"
-                     :text-align "center"
-                     :font-size 40
-                     :letter-spacing -1
-                     :font-weight 500
-                     :margin-top 0
-                     :margin-bottom 0}}
-        "2. Data Integration and Harmonization"]
-       [:img {:src (str assets-url "images/data-integration-and-harmonization.png")
-              :style {:height 80
-                      :margin-left "auto"
-                      :margin-right "auto"
-                      :margin-top 20
-                      :margin-bottom 20}}]
-       [:p {:style {:color "#d1b781"
-                    :text-align "center"
-                    :padding "0 32"
-                    :margin "0 auto"
-                    :font-size 26
-                    :letter-spacing -1
-                    :max-width 650}}
-        "We offer bespoke data integration and harmonization solutions, combining and refining disparate biomedical data sources into a unified, consistent, and easily-accessible format. Our skilled team ensures improved data quality and seamless information exchange."]]
-      [:div {:style {:display "flex"
-                     :background-color "#d1b781"
-                     :padding 40
-                     :min-height "60vh"
-                     :flex-direction "column"
-                     :justify-content "center"}}
-       [:h1 {:style {:color "#1c1d18"
-                     :text-align "center"
-                     :font-size 40
-                     :letter-spacing -1
-                     :font-weight 500
-                     :margin-top 0
-                     :margin-bottom 0}}
-        "3. Knowledge Graph Construction and Visualization"]
-       [:img {:src (str assets-url "images/knowledge-graph-construction-and-visualization.png")
-              :style {:height 80
-                      :margin-left "auto"
-                      :margin-right "auto"
-                      :margin-top 20
-                      :margin-bottom 20}}]
-       [:p {:style {:color "#1c1d18"
-                    :text-align "center"
-                    :padding "0 32"
-                    :margin "0 auto"
-                    :font-size 26
-                    :letter-spacing -1
-                    :max-width 650}}
-        "Our team builds tailored knowledge graphs representing complex biomedical data as interconnected nodes and edges, enabling intuitive data exploration and the discovery of hidden relationships and insights for informed decision-making."]]
-      [:div {:style {:display "flex"
-                     :background-color "#1c1d18"
-                     :padding 40
-                     :min-height "60vh"
-                     :flex-direction "column"
-                     :border-left "2px solid #d1b781"
-                     :justify-content "center"}}
-       [:h1 {:style {:color "#d1b781"
-                     :text-align "center"
-                     :font-size 40
-                     :letter-spacing -1
-                     :font-weight 500
-                     :margin-top 0
-                     :margin-bottom 0}}
-        "4. Data Analysis and Insights"]
-       [:img {:src (str assets-url "images/data-analysis-and-insights.png")
-              :style {:height 80
-                      :margin-left "auto"
-                      :margin-right "auto"
-                      :margin-top 20
-                      :margin-bottom 20}}]
-       [:p {:style {:color "#d1b781"
-                    :text-align "center"
-                    :padding "0 32"
-                    :margin "0 auto"
-                    :font-size 26
-                    :letter-spacing -1
-                    :max-width 650}}
-        "Our engineers employ advanced statistical and machine learning methods to uncover hidden patterns, trends, and correlations in biomedical data, providing valuable insights that drive research, innovation, and informed decision-making in the biomedical domain."]]
-      [:div {:style {:display "flex"
-                     :background-color "#d1b781"
-                     :padding 40
-                     :min-height "60vh"
-                     :flex-direction "column"
-                     :justify-content "center"}}
-       [:h1 {:style {:color "#1c1d18"
-                     :text-align "center"
-                     :font-size 40
-                     :letter-spacing -1
-                     :font-weight 500
-                     :margin-top 0
-                     :margin-bottom 0}}
-        "5. Semantic Data Querying and Retrieval"]
-       [:img {:src (str assets-url "images/semantic-data-querying-and-retrieval.png")
-              :style {:height 80
-                      :margin-left "auto"
-                      :margin-right "auto"
-                      :margin-top 20
-                      :margin-bottom 20}}]
-       [:p {:style {:color "#1c1d18"
-                    :text-align "center"
-                    :padding "0 32"
-                    :margin "0 auto"
-                    :font-size 26
-                    :letter-spacing -1
-                    :max-width 650}}
-        "We develop custom solutions for efficient and precise querying of biomedical data, allowing users to easily search, retrieve, and filter information using natural language queries and ensuring quick access to relevant data and insights."]]
-      [:div {:style {:display "flex"
-                     :background-color "#1c1d18"
-                     :padding 40
-                     :min-height "60vh"
-                     :flex-direction "column"
-                     :border-left "2px solid #d1b781"
-                     :justify-content "center"}}
-       [:h1 {:style {:color "#d1b781"
-                     :text-align "center"
-                     :font-size 40
-                     :letter-spacing -1
-                     :font-weight 500
-                     :margin-top 0
-                     :margin-bottom 0}}
-        "6. Data Security and Compliance"]
-       [:img {:src (str assets-url "images/data-security-and-compliance.png")
-              :style {:height 80
-                      :margin-left "auto"
-                      :margin-right "auto"
-                      :margin-top 20
-                      :margin-bottom 20}}]
-       [:p {:style {:color "#d1b781"
-                    :text-align "center"
-                    :padding "0 32"
-                    :margin "0 auto"
-                    :font-size 26
-                    :letter-spacing -1
-                    :max-width 650}}
-        "Our team prioritizes data security and adheres to industry best practices and regulatory standards, ensuring the protection of sensitive biomedical data while maintaining compliance with relevant data privacy regulations, such as HIPAA and GDPR."]]
-      [:div {:style {:display "flex"
-                     :background-color "#d1b781"
-                     :padding 40
-                     :min-height "60vh"
-                     :flex-direction "column"
-                     :justify-content "center"}}
-       [:h1 {:style {:color "#1c1d18"
-                     :text-align "center"
-                     :font-size 40
-                     :letter-spacing -1
-                     :font-weight 500
-                     :margin-top 0
-                     :margin-bottom 0}}
-        "7. Custom Biomedical Application Development"]
-       [:img {:src (str assets-url "images/custom-biomedical-application-development.png")
-              :style {:height 80
-                      :margin-left "auto"
-                      :margin-right "auto"
-                      :margin-top 20
-                      :margin-bottom 20}}]
-       [:p {:style {:color "#1c1d18"
-                    :text-align "center"
-                    :padding "0 32"
-                    :margin "0 auto"
-                    :font-size 26
-                    :letter-spacing -1
-                    :max-width 650}}
-        "We offer tailored application development services, collaborating closely with you to design, develop, and deploy applications that streamline biomedical workflows, improve collaboration, and boost productivity within the domain."]]
-      [:div {:style {:display "flex"
-                     :background-color "#1c1d18"
-                     :padding 40
-                     :min-height "60vh"
-                     :flex-direction "column"
-                     :border-left "2px solid #d1b781"
-                     :justify-content "center"}}
-       [:h1 {:style {:color "#d1b781"
-                     :text-align "center"
-                     :font-size 40
-                     :letter-spacing -1
-                     :font-weight 500
-                     :margin-top 0
-                     :margin-bottom 0}}
-        "8. Personalized Training and Support"]
-       [:img {:src (str assets-url "images/personalized-training-and-support.png")
-              :style {:height 80
-                      :margin-left "auto"
-                      :margin-right "auto"
-                      :margin-top 20
-                      :margin-bottom 20}}]
-       [:p {:style {:color "#d1b781"
-                    :text-align "center"
-                    :padding "0 32"
-                    :margin "0 auto"
-                    :font-size 26
-                    :letter-spacing -1
-                    :max-width 650}}
-        "Our engineering team provides comprehensive training and ongoing support to help you make the most of our solutions. We offer personalized guidance, hands-on workshops, and technical assistance, ensuring your team can confidently navigate and utilize our data integration, analysis, and visualization tools."]]]
-     [:div {:id "contact"
-            :style {:display "flex"
-                    :width "100%"
-                    :flex-direction "column"}}
-      [:div {:style {:display "flex"
-                     :background-color "#d1b781"
-                     :padding 40
-                     :min-height "30vh"
-                     :justify-content "center"
-                     :align-items "center"}}
-       [:h1 {:style {:display "flex"
-                     :color "#1c1d18"
-                     :text-align "center"
-                     :font-size 56
-                     :letter-spacing -1
-                     :font-weight 500}}
-        "CONTACT"]]
-      [:div {:style {:display "flex"
-                     :width "100%"
-                     :min-height "40vh"
-                     :flex-direction "column"
-                     :justify-content "center"
-                     :align-items "center"
-                     :background-color "#1c1d18"
-                     :border-left "2px solid #d1b781"}}
-       [:div {:style {:display "flex"
-                      :flex-direction "row"
-                      :justify-content "center"
-                      :align-items "center"
-                      :margin "3px"}}
-        [:div {:style {:display "flex"
-                       :flex-direction "row"
-                       :align-items "center"
-                       :padding "10px"}}
-         [:a {:class "linked-in"
-              :href "https://www.linkedin.com/company/shtanglitza/"
-              :target "_blank"
-              :style {:margin-left "5px"
-                      :margin-right "5px"}}
-          [:img {:src (str assets-url "images/linkedin.svg")}]]]]
-       [:a {:href "mailto:office@shtanglitza.ai"
-            :target "_blank"
-            :style {:margin "5px"
-                    :padding "10px"
-                    :display "flex"
-                    :flex-direction "row"
-                    :justify-content "center"
-                    :align-items "center"}}
-        [:img {:src (str assets-url "images/email.svg")}]
-        [:span {:style {:color "#d1b781"}} "office@shtanglitza.ai"]]]]]]
-   [:div {:id "small-menu"
-          :style {:display "flex"
-                  :position "absolute"
-                  :top 100
-                  :left 0
-                  :height "calc(100% - 100px)"
-                  :width "0%"
-                  :background-color "#d1b781"
-                  :transition "all 0.5s"
-                  :flex-direction "column"
-                  :justify-content "center"
-                  :align-items "center"
-                  :overflow "hidden"}}
-    [:div {:class "menu-item"
-           :style {:height "60px"
-                   :display "flex"
-                   :align-items "center"
-                   :overflow "hidden"}}
-     [:a {:style {:display "flex"}
-          :on-click (fn []
-                      (when @small-menu-visible
-                        (reset! small-menu-visible false)
-                        (j/call
-                         (j/get
-                          (j/call js/document :getElementById "small-menu")
-                          :classList)
-                         :remove
-                         "small-menu-visible"))
-                      (j/call
-                       (j/call js/document :getElementById "home")
-                       :scrollIntoView
-                       #js{:behavior "smooth"}))}
-      [:h2 {:id "menu-home"
-            :style {:transition "all .5s"
-                    :letter-spacing -1
-                    :margin 0
-                    :color "#1c1d18"
-                    :font-size (if (@menu-el-visible "home") 36 24)}} "HOME"]]]
-    [:div {:class "menu-item"
-           :style {:height "60px"
-                   :display "flex"
-                   :align-items "center"
-                   :overflow "hidden"}}
-     [:a {:style {:display "flex"}
-          :on-click (fn []
-                      (when @small-menu-visible
-                        (reset! small-menu-visible false)
-                        (j/call
-                         (j/get
-                          (j/call js/document :getElementById "small-menu")
-                          :classList)
-                         :remove
-                         "small-menu-visible"))
-                      (j/call
-                       (j/call js/document :getElementById "about")
-                       :scrollIntoView
-                       #js{:behavior "smooth"}))}
-      [:h2 {:id "menu-about"
-            :style {:transition "all .5s"
-                    :letter-spacing -1
-                    :margin 0
-                    :color "#1c1d18"
-                    :font-size (if (@menu-el-visible "about") 36 24)}} "ABOUT"]]]
-    [:div {:class "menu-item"
-           :style {:height "60px"
-                   :display "flex"
-                   :align-items "center"
-                   :overflow "hidden"}}
-     [:a {:style {:display "flex"}
-          :on-click (fn []
-                      (when @small-menu-visible
-                        (reset! small-menu-visible false)
-                        (j/call
-                         (j/get
-                          (j/call js/document :getElementById "small-menu")
-                          :classList)
-                         :remove
-                         "small-menu-visible"))
-                      (j/call
-                       (j/call js/document :getElementById "capabilities")
-                       :scrollIntoView
-                       #js{:behavior "smooth"}))}
-      [:h2 {:id "menu-capabilities"
-            :style {:transition "all .5s"
-                    :letter-spacing -1
-                    :margin 0
-                    :color "#1c1d18"
-                    :font-size (if (@menu-el-visible "capabilities") 36 24)}} "CAPABILITIES"]]]
-    [:div {:class "menu-item"
-           :style {:height "60px"
-                   :display "flex"
-                   :align-items "center"
-                   :overflow "hidden"}}
-     [:a {:style {:display "flex"}
-          :on-click (fn []
-                      (when @small-menu-visible
-                        (reset! small-menu-visible false)
-                        (j/call
-                         (j/get
-                          (j/call js/document :getElementById "small-menu")
-                          :classList)
-                         :remove
-                         "small-menu-visible"))
-                      (j/call
-                       (j/call js/document :getElementById "expertise")
-                       :scrollIntoView
-                       #js{:behavior "smooth"}))}
-      [:h2 {:id "menu-expertise"
-            :style {:transition "all .5s"
-                    :letter-spacing -1
-                    :margin 0
-                    :color "#1c1d18"
-                    :font-size (if (@menu-el-visible "expertise") 36 24)}} "EXPERTISE"]]]
-    [:div {:class "menu-item"
-           :style {:height "60px"
-                   :display "flex"
-                   :align-items "center"
-                   :overflow "hidden"}}
-     [:a {:style {:display "flex"}
-          :on-click (fn []
-                      (when @small-menu-visible
-                        (reset! small-menu-visible false)
-                        (j/call
-                         (j/get
-                          (j/call js/document :getElementById "small-menu")
-                          :classList)
-                         :remove
-                         "small-menu-visible"))
-                      (j/call
-                       (j/call js/document :getElementById "contact")
-                       :scrollIntoView
-                       #js{:behavior "smooth"}))}
-      [:h2 {:id "menu-contact"
-            :style {:transition "all .5s"
-                    :letter-spacing -1
-                    :margin 0
-                    :color "#1c1d18"
-                    :font-size (if (@menu-el-visible "contact") 36 24)}} "CONTACT"]]]
-    [:div {:id "small-menu-contact"
-           :style {:display "flex"
-                   :width "100%"
-                   :height "200px"
-                   :flex-direction "column"
-                   :justify-content "center"
-                   :align-items "center"
-                   :background-color "#1c1d18"}}
-     [:div {:style {:display "flex"
-                    :flex-direction "row"
-                    :justify-content "center"
-                    :align-items "center"
-                    :margin "3px"}}
-      [:div {:style {:display "flex"
-                     :flex-direction "row"
-                     :align-items "center"}}
-       [:a {:class "linked-in"
-            :href "https://www.linkedin.com/company/shtanglitza/"
-            :target "_blank"
-            :style {:margin-left "5px"
-                    :margin-right "5px"}}
-        [:img {:src (str assets-url "images/linkedin.svg")}]]]]
-     [:a {:href "mailto:office@shtanglitza.ai"
-          :target "_blank"
-          :style {:margin-left "5px"
-                  :margin-right "5px"
-                  :display "flex"
-                  :flex-direction "row"
-                  :justify-content "center"
-                  :align-items "center"
-                  :margin "3px"}}
-      [:img {:src (str assets-url "images/email.svg")}]
-      [:span "office@shtanglitza.ai"]]]]])
+(def listDots 
+  [:span 
+   {:class "font-bold
+            text-indigo-500
+            mr-2
+            text-xl"}
+   ":"])
+(def fSlash 
+  [:span 
+   {:class "font-black
+            text-indigo-500
+            mr-2 
+            text-md 
+            italic 
+            opacity-75"}
+   "/"])
 
-(defn ^:export render
-  []
-  (rdom/render [website]
-               (js/document.getElementById "app")))
+(defn transform-string [s]
+  (let [words (clojure.string/split s #" ")
+        first-word (first words)
+        other-words (rest words)
+        initials (map #(subs % 0 1) other-words)]
+    (str/join "" (cons first-word initials))))
+
+
+(defn href-maker [s]
+  (str "#" (transform-string s)))
+
+;; Defining header section 
+
+(def header1 [:div
+              {:id "home"
+               :class "flex
+                       flex-wrap
+                       justify-center 
+                       h-screen 
+                       w-full 
+                       items-center 
+                       bg-gradient-to-r 
+                       from-white/90
+                       from-15% 
+                       via-bg-white/30 
+                       via-40% 
+                       to-white/0 
+                       to-90% relative"}
+
+              [:div
+               {:class "w-full
+                        h-full                         
+                        bg-gradient-to-tr 
+                        from-white/90
+                        from-15%  
+                        via-violet-300/30 
+                        via-42% 
+                        to-cyan-300/80 
+                        to-33% 
+                        absolute 
+                        bottom-0 
+                        left-0 
+                        z-20 
+                        mix-blend-multiply"}] 
+
+              [:div
+               {:class "flex 
+                        flex-wrap 
+                        items-center 
+                        justify-between                          
+                        w-full 
+                        z-30
+                        max-w-screen-md p-8 
+                        md:max-w-screen-lg md:p-16 
+                        lg:max-w-screen-2xl lg:p-20"}
+               [:h1
+                {:class "text-start
+                         mt-6 
+                         mb-2 
+                         text-gray-950 
+                         text-5xl
+                         font-black
+                         w-fit
+                           md:text-7xl 
+                           xl:text-7xl"}
+
+                "Unlock The Potential of" [:br]
+                [:span
+                 {:class "text-violet-500 
+                          font-black"}
+                 " Biomedical "]
+                [:span
+                 {:class "text-cyan-500/80
+                          font-black"}
+                 " Data "]]
+
+               [:h5
+                {:class "text-start 
+                         mt-2 mb-6 
+                         text-black/65 
+                         text-xl
+                         font-normal
+                         hyphens-auto
+                         w-fit
+                           md:text-3xl"}
+                "Revolutionizing ontologies, data integration,
+                 and knowledge graphs to fuel innovation and drive informed decision-making."]]])
+
+
+(def about-sec [:div
+                {:id "about"
+                 :class "bg-white 
+                         flex 
+                         items-center 
+                         justify-center 
+                         h-auto 
+                         py-36 
+                         box-border"}
+                [:div
+                 {:class "flex 
+                          flex-col 
+                          w-full 
+                          h-fit 
+                          gap-4            
+                          max-w-screen-md px-4 
+                          md:max-w-screen-lg md:px-16
+                          lg:max-w-screen-2xl lg:px-20 lg:flex-row"}
+
+                 [:div
+                  {:class "flex 
+                           flex-col 
+                           w-full
+                           justify-center
+                           items-center
+                           text-custom-darkest-violet
+                           lg:w-50"}
+
+                  [:div
+                   {:class "flex 
+                            flex-col 
+                            w-full 
+                            items-center 
+                            justify-center 
+                            lg:flex-row"}
+                   [:img
+                    {:class "mx-6
+                            w-12 
+                            h-auto"
+                     :src (str assets-url "img/about_icon.svg")}]
+                
+                   [:h1 
+                    {:class "text-center 
+                             my-6 
+                             text-gray-950 
+                             text-5xl 
+                             font-black
+                                md:text-6xl md:text-start"}
+                    "Who are we?"]]
+
+                  [:p
+                   {:class "text-xl 
+                            mt-2 
+                            text-start
+                            hyphens-auto
+                            text-black/60
+                            md:text-2xl
+                            md:text-center"}
+                   \u2003"We are a dedicated team of experts focused on empowering the biomedical domain through ontologies,
+                   data integration, harmonization, analysis, and knowledge graphs. With our small but highly skilled
+                   engineering team, we offer tailored solutions to enhance data organization, uncover hidden insights, 
+                   and drive informed decision-making."]]
+
+                 [:div
+                  {:class "flex 
+                           w-full 
+                           lg:w-50 
+                           py-24"}
+                  [:img {:src (str assets-url "img/try.png")
+                         :class "w-auto 
+                                 h-auto 
+                                 rounded-3xl"}]]]])
+
+
+(def capabilities-sec [:div
+                       {:id "capabilities"
+                        :class "relative 
+                                h-auto 
+                                py-36 
+                                flex 
+                                items-center 
+                                justify-center 
+                                bg-indigo-50"}
+                       [:div
+                        {:class "w-full 
+                                 h-full 
+                                 bg-gradient-to-br 
+                                 from-white/0 
+                                 from-25% 
+                                 via-violet-300/50 
+                                 via-42% 
+                                 to-cyan-300/80 
+                                 to-33% absolute
+                                 bottom-0 
+                                 right-0
+                                 z-20
+                                 justify-start
+                                 items-center 
+                                 overflow-hidden"}
+                        [:img
+                         {:class "absolute 
+                                  left-0 
+                                  -ms-16 
+                                  h-full 
+                                  scale-125
+                                  -rotate-6 
+                                  hidden
+                                  lg:flex"
+                          :src (str assets-url "img/s_letter_l.svg")}]]
+
+                       [:div
+                        {:class "flex 
+                                 flex-col 
+                                 w-full 
+                                 h-fit 
+                                 items-center
+                                   max-w-screen-md p-4 
+                                   md:max-w-screen-lg md:p-16
+                                   lg:max-w-screen-2xl lg:p-6 z-30"}
+
+                        [:div
+                         {:class "flex 
+                                  flex-col 
+                                  w-full 
+                                  justify-center
+                                  items-center
+                                  text-custom-darkest-violet                            
+                                  lg:w-2/3"}
+
+                         [:div
+                          {:class "flex 
+                                   flex-col 
+                                   items-center
+                                   justify-start
+                                   lg:flex-row"}
+                          [:img
+                           {:class "mx-6 
+                                    w-16
+                                    h-auto"
+                                    :src (str assets-url "img/capabilities_icon.svg")}]
+                          [:h1
+                           {:class "text-center 
+                                    my-6 
+                                    text-gray-950
+                                    text-3xl
+                                    font-black
+                                      md:text-6xl"}
+                           "Capabilities"]]
+                         [:p
+                          {:class "text-xl 
+                                   text-black/60 
+                                   mt-4
+                                   mb-6
+                                  hyphens-auto
+                                    md:text-2xl
+                                    md:text-center"}
+                          "\u2003 Through our extensive capabilities, we collaborate closely with
+                          our clients to achieve their goals and deliver exceptional results.
+                          Our capabilities include:"]]
+
+                        [:div
+                         {:class "grid
+                                  grid-cols
+                                  gap-4 
+                                  py-12
+                                    sm:grid-cols-2 
+                                    lg:grid-cols-3"}
+
+                    ;; fuchsia card
+
+                         [:div
+                          {:class "relative
+                                   flex 
+                                   w-full
+                                   justify-center
+                                   items-center
+                                   bg-fuchsia-400/70
+                                   rounded-2xl
+                                   px-12 
+                                   py-6 
+                                   shadow-lg 
+                                   shadow-fuchsia-400/40 
+                                   transition-all 
+                                   duration-700 
+                                   ease-in-out 
+                                   overflow-hidden
+                                   group 
+                                   cursor-pointer
+                                     hover:scale-105
+                                     hover:bg-fuchsia-300/80"}
+                          [:img 
+                           {:class "absolute
+                                         z-10
+                                         transition-all
+                                         opacity-90 
+                                         duration-700 
+                                         ease-in-out
+                                         group-hover:scale-125
+                                         group-hover:-translate-x-6
+                                         group-hover:-rotate-45"
+                                 :src (str assets-url "img/fragments_white.svg")}]
+                          [:section
+                           {:class "flex-1
+                                    flex-auto 
+                                    items-center
+                                    justify-center 
+                                    z-20"}
+
+                           [:h1
+                            {:class "text-center 
+                                     text-xl
+                                     font-black 
+                                     text-white-700
+                                       hover: text-fuchsia-700"}
+                            "Custom ontology"
+                            [:br]
+                            "development"]]]
+
+                         ;; purple card
+
+                         [:div
+                          {:class "relative 
+                                   flex
+                                   w-full
+                                   justify-center 
+                                   items-center 
+                                   bg-purple-400/70 
+                                   rounded-2xl 
+                                   px-12 py-6 
+                                   shadow-lg 
+                                   shadow-purple-400/40 
+                                   transition-all 
+                                   duration-700
+                                   ease-in-out 
+                                   overflow-hidden
+                                   group
+                                   cursor-pointer
+                                     hover:scale-105
+                                     hover:bg-purple-300/80"}
+                          [:img
+                           {:class "absolute
+                                         z-10 
+                                         transition-all 
+                                         opacity-90 
+                                         duration-700
+                                         ease-in-out
+                                           group-hover:scale-125
+                                           group-hover:-translate-x-6
+                                           group-hover:-rotate-45"
+                                 :src (str assets-url "img/fragments_white.svg")}]
+                          [:section
+                           {:class "flex-1 
+                                    flex-auto
+                                    items-center
+                                    justify-center
+                                    z-20"}
+                           [:h1
+                            {:class "text-center
+                                     text-xl 
+                                     font-black 
+                                     text-white-700
+                                       hover: text-purple-700"}
+                            "Seamless data"
+                            [:br]
+                            "integration"]]]
+
+                        ;; violet card card
+
+                         [:div
+                          {:class "relative 
+                                   flex w-full 
+                                   justify-center 
+                                   items-center
+                                   bg-violet-400/70
+                                   rounded-2xl
+                                   px-12
+                                   py-6 
+                                   shadow-lg 
+                                   shadow-violet-400/40 
+                                   transition-all
+                                   duration-700
+                                   ease-in-out 
+                                   overflow-hidden
+                                   group cursor-pointer
+                                   hover:scale-105
+                                   hover:bg-violet-300"}
+                          [:img 
+                           {:class "absolute 
+                                         z-10 
+                                         transition-all 
+                                         opacity-90 
+                                         duration-700 
+                                         ease-in-out
+                                         group-hover:scale-125
+                                         group-hover:-translate-x-6
+                                         group-hover:-rotate-45"
+                                 :src (str assets-url "img/fragments_white.svg")}]
+                          [:section
+                           {:class "flex-1
+                                    flex-auto 
+                                    items-center 
+                                    justify-center
+                                    z-20"}
+
+                           [:h1
+                            {:class "text-center 
+                                     text-xl 
+                                     font-black 
+                                     text-white-700
+                                     hover: text-violet-700"}
+                            "Intuitive knowledge"
+                            [:br]
+                            "graph construction"]]]
+
+                         ;;  indigo card
+
+                         [:div
+                          {:class "relative 
+                                   flex 
+                                   w-full 
+                                   justify-center
+                                   items-center
+                                   bg-indigo-400/70
+                                   rounded-2xl
+                                   px-12
+                                   py-6
+                                   shadow-lg
+                                   shadow-indigo-400/40
+                                   transition-all
+                                   duration-700
+                                   ease-in-out
+                                   overflow-hidden
+                                   group cursor-pointer
+                                     hover:scale-105
+                                     hover:bg-indigo-300/80"}
+                          [:img 
+                           {:class "absolute 
+                                         z-10 
+                                         transition-all 
+                                         opacity-90 
+                                         duration-700 
+                                         ease-in-out
+                                           group-hover:scale-125
+                                           group-hover:-translate-x-6
+                                           group-hover:-rotate-45"
+                                 :src (str assets-url "img/fragments_white.svg")}]
+                          [:section
+                           {:class "flex-1 
+                                    flex-auto 
+                                    items-center
+                                    justify-center
+                                    z-20"}
+                           [:h1
+                            {:class "text-center 
+                                     text-xl
+                                     font-black
+                                     text-white-700
+                                       hover: text-indigo-700"}
+                            "Advanced data"
+                            [:br]
+                            "analysis"]]]
+
+                         ;;  blue card
+
+                         [:div
+                          {:class "relative
+                                   flex 
+                                   w-full
+                                   justify-center
+                                   items-center
+                                   bg-blue-400/70
+                                   rounded-2xl
+                                   px-12 
+                                   py-6
+                                   shadow-lg
+                                   shadow-blue-400/40
+                                   transition-all
+                                   duration-700
+                                   ease-in-out
+                                   overflow-hidden
+                                   group cursor-pointer
+                                     hover:scale-105
+                                     hover:bg-blue-300/80"}
+                          [:img 
+                           {:class "absolute 
+                                         z-10
+                                         transition-all
+                                         opacity-90
+                                         duration-700
+                                         ease-in-out
+                                           group-hover:scale-125
+                                           group-hover:-translate-x-6
+                                           group-hover:-rotate-45"
+                                 :src (str assets-url "img/fragments_white.svg")}]
+                          [:section
+                           {:class "flex-1 
+                                    flex-auto
+                                    items-center 
+                                    justify-center
+                                    z-20"}
+                           [:h1
+                            {:class "text-center 
+                                     text-xl
+                                     font-black
+                                     text-blue-700
+                                       hover: text-blue-700"}
+                            "Efficient semantic"
+                            [:br]
+                            "querying"]]]
+
+
+                         ;;  cyan card 
+
+                         [:div
+                          {:class "relative 
+                                   flex 
+                                   w-full
+                                   justify-center
+                                   items-center
+                                   bg-cyan-400/70
+                                   rounded-2xl
+                                   px-12
+                                   py-6
+                                   shadow-lg
+                                   shadow-cyan-400/40
+                                   transition-all 
+                                   duration-700
+                                   ease-in-out 
+                                   overflow-hidden
+                                   group cursor-pointer
+                                     hover:scale-105
+                                     hover:bg-cyan-300/80"}
+                          [:img
+                           {:class "absolute 
+                                         z-10
+                                         transition-all
+                                         opacity-90
+                                         duration-700
+                                         ease-in-out
+                                           group-hover:scale-125
+                                           group-hover:-translate-x-6
+                                           group-hover:-rotate-45"
+                                 :src (str assets-url "img/fragments_white.svg")}]
+                          [:section
+                           {:class "flex-1 
+                                    flex-auto 
+                                    items-center 
+                                    justify-center 
+                                    z-20"}
+                           [:h1
+                            {:class "text-center
+                                     text-xl
+                                     font-black
+                                     text-white-700
+                                       hover: text-cyan-700"}
+                            "Bespoke application"
+                            [:br]
+                            "development"]]]]]])
+
+;; the map with expertise section keys and properties.Dynamic Cards creator
+
+(def expertise-sec-names
+  {:OntologyDaM {:sec-name "Ontology Development and Management"                      
+                 :icons
+                 {:src (str assets-url "img/ontology_devm.svg")}
+                 :content "Our expert small engineering team creates, maintains, and updates custom ontologies
+                           tailored to the biomedical domain, ensuring accurate representation of domain knowledge
+                           for efficient data organization, integration, and retrieval."
+                 :bg-colors "bg-gradient-to-br 
+                             from-indigo-50/95
+                             from-45% 
+                             to-fuchsia-100/90 
+                             to-90% bl"
+                 :bg-photo
+                 {:style
+                  {:background-image (str "url(" assets-url "img/ontology_devm_p.jpg" ")")}}}
+                
+
+   :DataIaH {:sec-name "Data Integration and Harmonization"
+             :icons
+             {:src (str assets-url"img/data_int.svg")}
+             :content "We offer bespoke data integration and harmonization solutions, 
+                       combining and refining disparate biomedical data sources into a unified, 
+                       consistent, and easily-accessible format. Our skilled team ensures improved 
+                       data quality and seamless information exchange."
+             :bg-colors "bg-gradient-to-br
+                         from-blue-50/80
+                         from-45% 
+                         to-purple-100/95
+                         to-90%"
+             :bg-photo
+             {:style
+              {:background-image (str "url("  assets-url "img/data_int_p.jpg" ")")}}}
+             
+
+   :KnowledgeGCaV {:sec-name "Knowledge Graph Construction and Visualization"
+                   :icons
+                   {:src (str assets-url "img/knowledge_graph.svg")}
+                   :content "Our team builds tailored knowledge graphs representing complex biomedical
+                            data as interconnected nodes and edges, enabling intuitive data exploration and 
+                            the discovery of hidden relationships and insights for informed decision-making."
+                   :bg-colors "bg-gradient-to-br 
+                               from-slate-50/90 
+                               from-45% 
+                               to-violet-100/95 
+                               to-90%"
+                   :bg-photo
+                   {:style
+                    {:background-image (str "url("  assets-url "img/knowledge_graph_p.jpg" ")")}}}
+                  
+
+   :DataAaI {:sec-name "Data Analysis and Insights"
+             :icons
+             {:src (str assets-url "img/data_ins.svg")}
+             :content "Our engineers employ advanced statistical and machine learning
+                       methods to uncover hidden patterns, trends, and correlations in biomedical data, 
+                       providing valuable insights that drive research, innovation, 
+                       and informed decision-making in the biomedical domain."
+             :bg-colors "bg-gradient-to-br 
+                         from-slate-50/90 
+                         from-45%
+                         to-indigo-100/90
+                         to-90%"
+             :bg-photo
+             {:style
+              {:background-image (str "url("  assets-url "img/data_ins_p.jpg" ")")}}}
+            
+
+   :SemanticDQaR {:sec-name "Semantic Data Querying and Retrieval"
+                  :icons
+                  {:src (str assets-url "img/semantic_dat.svg")}
+                  :content "We develop custom solutions for efficient and precise querying of biomedical data,
+                            allowing users to easily search, retrieve, and filter information using natural language queries 
+                            and ensuring quick access to relevant data and insights."
+                  :bg-colors "bg-gradient-to-br
+                              from-slate-100/85
+                              from-45%
+                              to-blue-100/90 
+                              to-90%"
+                  :bg-photo
+                  {:style
+                   {:background-image (str "url(" assets-url "img/semantic_dat_p.jpg" ")")}}}
+                  
+
+
+   :DataSaC {:sec-name "Data Security and Compliance"
+             :icons
+             {:src (str assets-url "img/data_sec.svg")}
+             :content "Our team prioritizes data security and adheres to industry best practices
+                       and regulatory standards, ensuring the protection of sensitive biomedical data while
+                       maintaining compliance with relevant data privacy regulations, such as HIPAA and GDPR."
+             :bg-colors "bg-gradient-to-br
+                         from-slate-100/80 
+                         from-45% 
+                         to-sky-100
+                         to-90%"
+             :bg-photo
+             {:style
+              {:background-image  (str  "url(" assets-url "img/data_sec_p.jpg" ")")}}}
+             
+
+
+   :CustomBAD {:sec-name "Custom Biomedical Application Development"
+               :icons
+               {:src (str assets-url "img/custom_app.svg")}
+               :content "We offer tailored application development services, collaborating closely with you to design, develop,
+                         and deploy applications that streamline biomedical workflows, improve collaboration,
+                         and boost productivity within the domain."
+               :bg-colors "bg-gradient-to-br 
+                           from-slate-100/80 
+                           from-45% 
+                           to-cyan-100/95
+                           to-90%"
+               :bg-photo
+               {:style               
+                {:background-image (str "url(" assets-url "img/custom_app_p.jpg" ")")}}}
+               
+
+
+   :PersonalizedTaS {:sec-name "Personalized Training and Support"
+                     :icons
+                     {:src (str assets-url "img/personalized_tra.svg")}
+                     :content "Our engineering team provides comprehensive training and ongoing support to help you 
+                               make the most of our solutions. We offer personalized guidance, hands-on workshops,
+                               and technical assistance, ensuring your team can confidently navigate and utilize our data integration,
+                               analysis, and visualization tools."
+                     :bg-colors "bg-gradient-to-br
+                                 from-slate-100/80
+                                 from-45%
+                                 to-teal-100/95
+                                 to-90%"
+                     :bg-photo
+                     {:style
+                      {:background-image  (str "url(" assets-url "img/personalized_tra_p.jpg" ")")}}}})   
+                 
+
+(def expertise-sec
+  [:div
+   {:id "expertise"
+    :class "flex 
+            h-auto
+            items-center
+            justify-center
+           py-36
+            bg-gradient-to-b 
+            from-white from-50%
+            to-slate-100"}
+  
+   [:div
+    {:class "flex
+             flex-col 
+             w-full
+             h-fit
+             items-center
+             gap-4
+             max-w-screen-md px-4 
+               md:max-w-screen-lg md:px-16
+               lg:max-w-screen-2xl lg:px-20"}
+    [:div
+     {:class "flex 
+              flex-col
+              w-full
+              lg:w-2/3
+              justify-center
+              items-center
+              text-custom-darkest-violet
+              p-4"}
+
+     [:div
+      {:class "flex 
+               flex-col
+               items-center 
+               justify-start 
+               lg:flex-row"}
+      [:img
+       {:class "mx-6
+                w-16
+                h-auto"
+                :src (str assets-url "img/expertise_icon.svg")}]
+      [:h1 {:class "text-center
+                    my-6 text-gray-950 
+                    text-3xl
+                    font-black
+                      md:text-6xl"}
+       "Expertise"]]
+
+     [:p
+      {:class "text-xl 
+               text-black/80
+               mt-4
+               mb-6
+               hyphens-auto
+                md:text-2xl
+                md:text-center"}
+      "\u2003 With years of experience in the biotech industry, we've honed our expertise in developing cutting-edge
+      software and database solutions tailored to the unique needs of life science organizations."]]
+
+
+    [:div {:class "grid 
+                   grid-cols
+                   gap-4 py-12
+                     sm:grid-cols-1 
+                     lg:grid-cols-2 
+                     xl:grid-cols-2 
+                     2xl:grid-cols-2"}
+
+     (for [[k {:keys [sec-name icons content bg-colors bg-photo]}] expertise-sec-names]
+
+       [:div
+        {:key k                        
+         :class "relative 
+                 flex 
+                 flex-col
+                 justify-start 
+                 items-start
+                 overflow-hidden
+                 rounded-3xl
+                 shadow-inner
+                 shadow-lg 
+                 shadow-white 
+                 bg-cover
+                 bg-left
+                 group
+                 cursor-pointer"
+         :style (get bg-photo :style)}
+        [:div {:class "opacity-0 
+                       bg-white
+                       backdrop-blur-xl
+                       absolute 
+                       w-full 
+                       h-full 
+                       z-20 
+                       group-hover:opacity-70
+                       transition-opacity duration-700 ease-in-out"}]
+        [:div
+         {:class (str "flex 
+                       items-strech 
+                       w-full
+                       h-full z-30" " " bg-colors)}
+         [:div
+          {:class "flex 
+                   flex-col 
+                   justify-start 
+                   items-center 
+                   px-8 
+                   py-12"}
+          [:img
+           {:class "w-16 
+                    h-auto
+                    group-hover:scale-95 
+                    transition-all 
+                    duration-700 
+                    ease-in-out"
+            :src (get icons :src)}]
+          [:h1
+           {:class "text-center 
+                    my-6 
+                    text-xl
+                    font-black
+                      md:text-2xl
+                    group-hover:-translate-y-2
+                    group-focus-within:-translate-y-2
+                    transition-all duration-700 ease-in-out"}
+           sec-name]
+          [:p
+           {:class "hyphens-auto 
+                    text-xl
+                    mt-2
+                    text-black/60 
+                    font-regular
+                    drop-shadow-sm 
+                    shadow-white 
+                    group-hover:-translate-y-2
+                    group-focus-within:-translate-y-2
+                    transition-all duration-700 ease-in-out"}
+           content]]]])]]])
+
+
+(defn video-cover []
+  (let [video-loaded? (r/atom false)]
+    (fn []
+      [:div
+       [:img {:src (str assets-url "img/bck_cover_image.png")
+              :alt "Backup Image"
+              :class (str "absolute 
+                           top-0 
+                           left-0 
+                           w-full 
+                           h-full 
+                           object-cover
+                           fixed 
+                           z-10 
+                           top-0
+                           left-0"
+                          (when @video-loaded? "hidden"))}]
+       [:video
+        {:class "top-0
+                 left-0
+                 w-full 
+                 h-full
+                 object-cover
+                 fixed
+                 z-20"
+         :autoPlay true
+         :muted true
+         :loop true
+         :playsInline true
+         :on-can-play #(reset! video-loaded? true)
+         :on-error #(js/console.error "Video error:", %)
+         :on-stalled #(js/console.warn "Video stalled:", %)}
+        [:source {:src (str assets-url "video/shtanglitze.mp4") :type "video/mp4"}]]])))
+       
+      
+(defn main []
+  [:main
+   {:class "w-full
+            h-max"}
+   [video-cover]
+   [:div
+    {:class "p-0
+             m-0
+             relative
+             z-30"}
+    header1
+    about-sec
+    capabilities-sec
+    expertise-sec]])
+
+                  
+(defn footer []
+  [:footer
+   {:class "w-full 
+            pt-36 
+            bg-gradient-to-r 
+            from-slate-950 
+            to-indigo-950
+            inset-x-0
+            bottom-0 
+            z-30"}
+   [:div
+    {:class "flex 
+             flex-wrap 
+             flex-col
+             mx-auto
+             justify-start
+             text-white
+             gap-8 
+             max-w-screen-md p-4 
+               md:max-w-screen-lg  md:p-16 md:flex-row md:justify-center
+               lg:max-w-screen-2xl lg:p-20 xl:gap-36 xl:justify-center"}
+    [:div
+     {:class "mx-6
+              my-6"}
+     [:a
+      {:href "#"}
+      [:img
+       {:src (str assets-url "img/shtanglitza_logo_w.svg")
+        :class "w-auto 
+                h-12
+                mb-6"}]]
+     [:div
+      {:class "flex
+               flex-col"}
+      [:a
+       {:href email-address
+        :class "flex
+                flex-row 
+                w-fit
+                mt-3
+                group"}
+       [:span
+        {:class "mr-2
+                 group-hover:ms-1              
+                 ease-in-out 
+                 duration-700"}
+        (icons/emailIcn)]
+       [:span
+        {:class "group-hover:text-indigo-400 
+                 ease-in-out
+                 duration-700"}
+        "office@shtanglitza.ai"]]
+      [:a
+       {:href linkedin-address
+        :target "_blank"
+        :class "flex 
+                flex-row
+                w-fit
+                mt-2 
+                group"}
+       [:span
+        {:class "mr-2
+                 group-hover:ms-1                   
+                 ease-in-out 
+                 duration-700"}
+        (icons/linkedIcn)]
+       [:span
+        {:href "https://google.com"
+         :class "group-hover:text-indigo-400 
+                 ease-in-out
+                 duration-700"}
+        "Connect with Us"]]]]
+    [:div
+     {:class "flex 
+              flex-col 
+                lg:flex-row"}
+     [:div
+      {:class "mx-6 
+               my-6"}
+      [:ul
+       {:class "list-image-[url()]"}
+       [:p
+        {:class "font-bold 
+                 text-indigo-400 
+                 tracking-widest mb-2"}
+        "Shortcuts"]
+
+       (for [link ["Home" "About" "Capabilities" "Expertise"]]
+         (let [href (str "#" (lower-case link))]
+           [:li {:key link}
+            [:a
+             {:href href
+              :class "font-light
+                      text-sm 
+                      ease-in-out duration-700
+                        hover:text-indigo-200"}
+             listDots link]]))]]
+     [:div
+      {:class "mx-6
+               my-6"}
+      [:ul
+       {:class "list-image-[url()]"}
+       [:p
+        {:class "font-bold
+                 text-indigo-400
+                 tracking-widest mb-2"}
+        "Expertise"]
+
+       (for [link [(-> expertise-sec-names :OntologyDaM :sec-name)
+                   (-> expertise-sec-names :DataIaH :sec-name)
+                   (-> expertise-sec-names :KnowledgeGCaV :sec-name)
+                   (-> expertise-sec-names :DataAaI :sec-name)
+                   (-> expertise-sec-names :SemanticDQaR :sec-name)
+                   (-> expertise-sec-names :DataSaC :sec-name)
+                   (-> expertise-sec-names :CustomBAD :sec-name)
+                   (-> expertise-sec-names :PersonalizedTaS :sec-name)]]
+
+         [:li {:key link}
+          [:a
+           {:href (href-maker link)
+            :class "font-light 
+                    text-sm
+                    ease-in-out
+                    duration-700
+                      hover:text-indigo-200"}
+           fSlash link]])]]]]
+
+   [:div
+    {:class "w-full
+             h-full 
+             flex
+             flex-row
+             m-0 
+              
+             py-14 
+             justify-center 
+             align-middle"}
+    [:p
+     {:class "text-white 
+              text-sm
+              font-light
+              tracking-widest"}
+     "All rights reserved (c) 2024 Shtangltza.ai"]]])
+
+
+(defn web-page []
+  [:div
+   {:class "flex
+            flex-col 
+            box-border"}
+   (navbar-menu/navbar)
+   [main]
+   [footer]])
+
 
 (defn ^:dev/after-load start []
-  (js/console.log "start")
-  (render)
-  (j/call (j/call js/document :getElementById "content")
-          :addEventListener
-          "scroll"
-          (fn []
-            (doseq [menu ["home" "about" "capabilities" "expertise" "contact"]]
-              (let [rect (j/call (j/call js/document :getElementById menu)
-                                 :getBoundingClientRect)
-                    rect-height (j/get rect :height)
-                    rect-top (j/get rect :top)
-                    rect-bottom (j/get rect :bottom)
-                    visible (and (>= (+ rect-top rect-height) 0)
-                                 (<= (- rect-bottom rect-height) (j/get js/window :innerHeight)))]
-                (swap! menu-el-visible assoc menu visible))))))
+  (js/console.log "start"))
+ 
 
 (defn init []
-  (js/console.log "init")
+  (.log js/console "Loading App")
+  (rdom/render [web-page] (js/document.getElementById "app"))
   (start))
+
