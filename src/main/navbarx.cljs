@@ -10,8 +10,6 @@
 
 (def show-bg? (r/atom false))
 
-
-
 (defn add-classes [element & class-names]
   (let [el (.getElementById js/document element)]
     (when el
@@ -31,11 +29,22 @@
 
 
 (defn toggle-menu []
-  (println "Before toggle:" @menu-open?)
-  (swap! menu-open? not)
- 
+  (swap! menu-open? not))
 
-  (println "After toggle:" @menu-open?))
+(def content-names ["Home" "About" "Capabilities" "Expertise"])
+
+(defn make-menu
+  "Creates menu. is-small? indicates usage of small screens and thus ...."
+  [cnt-names cnt-names-css is-small?]
+  (.log js/console "called make-menu")
+  (for [link cnt-names]
+    (let [href (str "#" (clojure.string/lower-case link))]
+      [:li {:key link}
+       [:a
+        (cond-> {:href href
+                 :class cnt-names-css}
+          is-small? (merge {:on-click toggle-menu}))
+        link]])))
 
 (defn navbar []
   (r/after-render
@@ -58,10 +67,9 @@
                  (do (println "Setting show-bg? to false") (reset! show-bg? false))))]
        (js/window.addEventListener "scroll" handle-scroll) ; Add scroll listener
        (handle-scroll) ; Check initial scroll position on mount
-       #(js/window.removeEventListener "scroll" handle-scroll))
-     ))
+       #(js/window.removeEventListener "scroll" handle-scroll))))
 
-  [:nav 
+  [:nav
    {:id "my-navbar"
     :class ["z-50 
              fixed 
@@ -99,28 +107,14 @@
                text-2xl
                font-semibold
                whitespace-nowrap
-               mix-blend-color-darken"}]] 
-    [:ul 
+               mix-blend-color-darken"}]]
+    [:ul
      {:class "hidden 
               sm:hidden 
               md:grid grid-flow-col auto-cols-max gap-5 text-custom-darkest-violet items-center text-lg"}
-     
-     (for [link ["Home" "About" "Capabilities" "Expertise"]]
-       
-       (let [href (str "#" (clojure.string/lower-case link))]
-         
-         [:li {:key link}
-          [:a
-           {:href href
-            :class (str "flex-auto 
-                         justify-start
-                         font-medium
-                         hover:text-violet-600")
-            
-            }
-           link]]
-         ))
-    
+
+     (make-menu content-names "flex-auto justify-start font-medium hover:text-violet-600" false)
+
      [:div
       {:class "group 
                flex 
@@ -159,22 +153,22 @@
 
     ;; ... (SVG icon for the button) ...
 
-     (if (= @menu-open? true) 
-       (icons/close-menu) 
+     (if (= @menu-open? true)
+       (icons/close-menu)
        (icons/hamburg-menu))]
-    (if @menu-open? 
-      (do 
+    (if @menu-open?
+      (do
         (remove-classes "small-menu-list" "close")
-        (add-classes "small-menu-list" "open")) 
-      (do 
-        (remove-classes "small-menu-list" "open") 
+        (add-classes "small-menu-list" "open"))
+      (do
+        (remove-classes "small-menu-list" "open")
         (add-classes "small-menu-list" "close")))
 
    ;; Navigation links 
 
     [:div
      {:id "small-menu-list"
-      :class 
+      :class
       [(str "fixed 
              top-0 
              righ-0 
@@ -189,9 +183,9 @@
              close 
              backdrop-blur-xl
              bg-white/30")]}
-     
+
     ;; (if @menu-open? " slide-left block backdrop-blur-md bg-violet-100/50 " " slide-close")
-     
+
      [:ul
       {:class "text-custom-darkest-violet
                space-y-5 
@@ -211,24 +205,9 @@
           :class "h-16 
                   my-1 
                   w-auto"}]]]
-      
-      (for [link-s ["Home"
-                    "About"
-                    "Capabilities"
-                    "Expertise"]]
 
-        (let [href (str "#" (clojure.string/lower-case link-s))]
+      (make-menu content-names "flex-auto justify-start font-medium hover:text-violet-600" true)
 
-          [:li {:key link-s}
-           [:a
-            {:href href
-             :class (str "flex-auto 
-                          justify-start 
-                          font-medium
-                          hover:text-violet-600")
-             :on-click toggle-menu}
-            link-s]])) 
-     
       [:div
        {:class "group 
                 flex 

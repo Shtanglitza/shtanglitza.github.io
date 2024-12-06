@@ -6,6 +6,7 @@
    [reagent.core :as r]
    [reagent.dom :as rdom]
    [main.icons :as icons]
+   [main.constants :as constants]
    [main.navbarx :as navbar-menu]
             ;; ["locomotive-scroll" :as LocomotiveScroll]
    [main.constants :refer [email-address linkedin-address assets-url]]))
@@ -1005,17 +1006,7 @@
                  text-indigo-400 
                  tracking-widest mb-2"}
         "Shortcuts"]
-
-       (for [link ["Home" "About" "Capabilities" "Expertise"]]
-         (let [href (str "#" (lower-case link))]
-           [:li {:key link}
-            [:a
-             {:href href
-              :class "font-light
-                      text-sm 
-                      ease-in-out duration-700
-                        hover:text-indigo-200"}
-             listDots link]]))]]
+       (navbar-menu/make-menu navbar-menu/content-names constants/menu-css-footer false)]]
      [:div
       {:class "mx-6
                my-6"}
