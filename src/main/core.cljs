@@ -198,7 +198,7 @@
                            w-full 
                            lg:w-50 
                            py-24"}
-                  [:img {:src (str assets-url "img/try.png")
+                  [:img {:src (str assets-url "img/try.webp")
                          :class "w-auto 
                                  h-auto 
                                  rounded-3xl"}]]]])
@@ -605,7 +605,7 @@
                              to-90% bl"
                  :bg-photo
                  {:style
-                  {:background-image (str "url(" assets-url "img/ontology_devm_p.jpg" ")")}}}
+                  {:background-image (str "url(" assets-url "img/ontology_devm_p.webp" ")")}}}
                 
 
    :DataIaH {:sec-name "Data Integration and Harmonization"
@@ -622,7 +622,7 @@
                          to-90%"
              :bg-photo
              {:style
-              {:background-image (str "url("  assets-url "img/data_int_p.jpg" ")")}}}
+              {:background-image (str "url("  assets-url "img/data_int_p.webp" ")")}}}
              
 
    :KnowledgeGCaV {:sec-name "Knowledge Graph Construction and Visualization"
@@ -638,7 +638,7 @@
                                to-90%"
                    :bg-photo
                    {:style
-                    {:background-image (str "url("  assets-url "img/knowledge_graph_p.jpg" ")")}}}
+                    {:background-image (str "url("  assets-url "img/knowledge_graph_p.webp" ")")}}}
                   
 
    :DataAaI {:sec-name "Data Analysis and Insights"
@@ -655,7 +655,7 @@
                          to-90%"
              :bg-photo
              {:style
-              {:background-image (str "url("  assets-url "img/data_ins_p.jpg" ")")}}}
+              {:background-image (str "url("  assets-url "img/data_ins_p.webp" ")")}}}
             
 
    :SemanticDQaR {:sec-name "Semantic Data Querying and Retrieval"
@@ -671,7 +671,7 @@
                               to-90%"
                   :bg-photo
                   {:style
-                   {:background-image (str "url(" assets-url "img/semantic_dat_p.jpg" ")")}}}
+                   {:background-image (str "url(" assets-url "img/semantic_dat_p.webp" ")")}}}
                   
 
 
@@ -688,7 +688,7 @@
                          to-90%"
              :bg-photo
              {:style
-              {:background-image  (str  "url(" assets-url "img/data_sec_p.jpg" ")")}}}
+              {:background-image  (str  "url(" assets-url "img/data_sec_p.webp" ")")}}}
              
 
 
@@ -705,7 +705,7 @@
                            to-90%"
                :bg-photo
                {:style               
-                {:background-image (str "url(" assets-url "img/custom_app_p.jpg" ")")}}}
+                {:background-image (str "url(" assets-url "img/custom_app_p.webp" ")")}}}
                
 
 
@@ -723,7 +723,7 @@
                                  to-90%"
                      :bg-photo
                      {:style
-                      {:background-image  (str "url(" assets-url "img/personalized_tra_p.jpg" ")")}}}})   
+                      {:background-image  (str "url(" assets-url "img/personalized_tra_p.webp" ")")}}}})   
                  
 
 (def expertise-sec
@@ -872,7 +872,7 @@
   (let [video-loaded? (r/atom false)]
     (fn []
       [:div
-       [:img {:src (str assets-url "img/bck_cover_image.png")
+       [:img {:src (str assets-url "img/bck_cover_image.webp")
               :alt "Backup Image"
               :class (str "absolute 
                            top-0 
