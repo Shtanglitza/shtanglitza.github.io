@@ -4,7 +4,7 @@
    [reagent.core :as r]
    [main.icons :as icons]
    [clojure.string :as string]
-   [main.constants :refer [email-address linkedin-address assets-url]]))
+   [main.constants :as constants]))
 
 (def menu-open? (r/atom false))
 
@@ -35,7 +35,7 @@
 
 (defn make-menu
   "Creates menu. is-small? indicates usage of small screens and thus ...."
-  [cnt-names cnt-names-css is-small?]
+  [cnt-names cnt-names-css is-small? is-footer?]
   (.log js/console "called make-menu")
   (for [link cnt-names]
     (let [href (str "#" (clojure.string/lower-case link))]
@@ -43,7 +43,8 @@
        [:a
         (cond-> {:href href
                  :class cnt-names-css}
-          is-small? (merge {:on-click toggle-menu}))
+          is-small? (merge {:on-click toggle-menu})) 
+        (when is-footer? constants/listDots)
         link]])))
 
 (defn navbar []
@@ -100,7 +101,7 @@
               rtl:space-x-reverse"}
      [:img
       {:id "S_logo"
-       :src (str assets-url "img/shtanglitza_logo_d.svg")
+       :src (str constants/assets-url "img/shtanglitza_logo_d.svg")
        :class "h-8
                my-1
                self-center
@@ -113,7 +114,7 @@
               sm:hidden 
               md:grid grid-flow-col auto-cols-max gap-5 text-custom-darkest-violet items-center text-lg"}
 
-     (make-menu content-names "flex-auto justify-start font-medium hover:text-violet-600" false)
+     (make-menu content-names constants/menu-css-navbar false false)
 
      [:div
       {:class "group 
@@ -129,13 +130,13 @@
        [:a
         {:class "flex-auto
                  justify-start"
-         :href email-address}
+         :href constants/email-address}
         (icons/emailIcn)]]
       [:li
        [:a
         {:class "flex-auto 
                  justify-start"
-         :href linkedin-address
+         :href constants/linkedin-address
          :target "_blank"}
         (icons/linkedIcn)]]]]
 
@@ -201,12 +202,12 @@
                  justify-start"
          :href "https://www.shtanglitza.ai"}
         [:img
-         {:src (str assets-url "img/f_icn.svg")
+         {:src (str constants/assets-url "img/f_icn.svg")
           :class "h-16 
                   my-1 
                   w-auto"}]]]
 
-      (make-menu content-names "flex-auto justify-start font-medium hover:text-violet-600" true)
+      (make-menu content-names "flex-auto justify-start font-medium hover:text-violet-600" true false)
 
       [:div
        {:class "group 
@@ -224,12 +225,12 @@
         [:a
          {:class "flex-auto 
                   justify-start"
-          :href email-address}
+          :href constants/email-address}
          (icons/emailIcn)]]
        [:li
         [:a
          {:class "flex-auto
                   justify-start"
-          :href linkedin-address
+          :href constants/linkedin-address
           :target "_blank"}
          (icons/linkedIcn)]]]]]]])

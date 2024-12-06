@@ -7,9 +7,9 @@
    [reagent.dom :as rdom]
    [main.icons :as icons]
    [main.constants :as constants]
-   [main.navbarx :as navbar-menu]
+   [main.navbarx :as navbar-menu]))
             ;; ["locomotive-scroll" :as LocomotiveScroll]
-   [main.constants :refer [email-address linkedin-address assets-url]]))
+  
 
 
 
@@ -25,22 +25,8 @@
 ;;                               )))
 
 
-(def listDots 
-  [:span 
-   {:class "font-bold
-            text-indigo-500
-            mr-2
-            text-xl"}
-   ":"])
-(def fSlash 
-  [:span 
-   {:class "font-black
-            text-indigo-500
-            mr-2 
-            text-md 
-            italic 
-            opacity-75"}
-   "/"])
+
+
 
 (defn transform-string [s]
   (let [words (clojure.string/split s #" ")
@@ -170,7 +156,7 @@
                     {:class "mx-6
                             w-12 
                             h-auto"
-                     :src (str assets-url "img/about_icon.svg")}]
+                     :src (str constants/assets-url "img/about_icon.svg")}]
                 
                    [:h1 
                     {:class "text-center 
@@ -199,7 +185,7 @@
                            w-full 
                            lg:w-50 
                            py-24"}
-                  [:img {:src (str assets-url "img/try.png")
+                  [:img {:src (str constants/assets-url "img/try.png")
                          :class "w-auto 
                                  h-auto 
                                  rounded-3xl"}]]]])
@@ -239,7 +225,7 @@
                                   -rotate-6 
                                   hidden
                                   lg:flex"
-                          :src (str assets-url "img/s_letter_l.svg")}]]
+                          :src (str constants/assets-url "img/s_letter_l.svg")}]]
 
                        [:div
                         {:class "flex 
@@ -270,7 +256,7 @@
                            {:class "mx-6 
                                     w-16
                                     h-auto"
-                                    :src (str assets-url "img/capabilities_icon.svg")}]
+                                    :src (str constants/assets-url "img/capabilities_icon.svg")}]
                           [:h1
                            {:class "text-center 
                                     my-6 
@@ -331,7 +317,7 @@
                                          group-hover:scale-125
                                          group-hover:-translate-x-6
                                          group-hover:-rotate-45"
-                                 :src (str assets-url "img/fragments_white.svg")}]
+                                 :src (str constants/assets-url "img/fragments_white.svg")}]
                           [:section
                            {:class "flex-1
                                     flex-auto 
@@ -380,7 +366,7 @@
                                            group-hover:scale-125
                                            group-hover:-translate-x-6
                                            group-hover:-rotate-45"
-                                 :src (str assets-url "img/fragments_white.svg")}]
+                                 :src (str constants/assets-url "img/fragments_white.svg")}]
                           [:section
                            {:class "flex-1 
                                     flex-auto
@@ -427,7 +413,7 @@
                                          group-hover:scale-125
                                          group-hover:-translate-x-6
                                          group-hover:-rotate-45"
-                                 :src (str assets-url "img/fragments_white.svg")}]
+                                 :src (str constants/assets-url "img/fragments_white.svg")}]
                           [:section
                            {:class "flex-1
                                     flex-auto 
@@ -476,7 +462,7 @@
                                            group-hover:scale-125
                                            group-hover:-translate-x-6
                                            group-hover:-rotate-45"
-                                 :src (str assets-url "img/fragments_white.svg")}]
+                                 :src (str constants/assets-url "img/fragments_white.svg")}]
                           [:section
                            {:class "flex-1 
                                     flex-auto 
@@ -524,7 +510,7 @@
                                            group-hover:scale-125
                                            group-hover:-translate-x-6
                                            group-hover:-rotate-45"
-                                 :src (str assets-url "img/fragments_white.svg")}]
+                                 :src (str constants/assets-url "img/fragments_white.svg")}]
                           [:section
                            {:class "flex-1 
                                     flex-auto
@@ -573,7 +559,7 @@
                                            group-hover:scale-125
                                            group-hover:-translate-x-6
                                            group-hover:-rotate-45"
-                                 :src (str assets-url "img/fragments_white.svg")}]
+                                 :src (str constants/assets-url "img/fragments_white.svg")}]
                           [:section
                            {:class "flex-1 
                                     flex-auto 
@@ -595,7 +581,7 @@
 (def expertise-sec-names
   {:OntologyDaM {:sec-name "Ontology Development and Management"                      
                  :icons
-                 {:src (str assets-url "img/ontology_devm.svg")}
+                 {:src (str constants/assets-url "img/ontology_devm.svg")}
                  :content "Our expert small engineering team creates, maintains, and updates custom ontologies
                            tailored to the biomedical domain, ensuring accurate representation of domain knowledge
                            for efficient data organization, integration, and retrieval."
@@ -606,12 +592,12 @@
                              to-90% bl"
                  :bg-photo
                  {:style
-                  {:background-image (str "url(" assets-url "img/ontology_devm_p.jpg" ")")}}}
+                  {:background-image (str "url(" constants/assets-url "img/ontology_devm_p.jpg" ")")}}}
                 
 
    :DataIaH {:sec-name "Data Integration and Harmonization"
              :icons
-             {:src (str assets-url"img/data_int.svg")}
+             {:src (str constants/assets-url"img/data_int.svg")}
              :content "We offer bespoke data integration and harmonization solutions, 
                        combining and refining disparate biomedical data sources into a unified, 
                        consistent, and easily-accessible format. Our skilled team ensures improved 
@@ -623,12 +609,12 @@
                          to-90%"
              :bg-photo
              {:style
-              {:background-image (str "url("  assets-url "img/data_int_p.jpg" ")")}}}
+              {:background-image (str "url("  constants/assets-url "img/data_int_p.jpg" ")")}}}
              
 
    :KnowledgeGCaV {:sec-name "Knowledge Graph Construction and Visualization"
                    :icons
-                   {:src (str assets-url "img/knowledge_graph.svg")}
+                   {:src (str constants/assets-url "img/knowledge_graph.svg")}
                    :content "Our team builds tailored knowledge graphs representing complex biomedical
                             data as interconnected nodes and edges, enabling intuitive data exploration and 
                             the discovery of hidden relationships and insights for informed decision-making."
@@ -639,12 +625,12 @@
                                to-90%"
                    :bg-photo
                    {:style
-                    {:background-image (str "url("  assets-url "img/knowledge_graph_p.jpg" ")")}}}
+                    {:background-image (str "url("  constants/assets-url "img/knowledge_graph_p.jpg" ")")}}}
                   
 
    :DataAaI {:sec-name "Data Analysis and Insights"
              :icons
-             {:src (str assets-url "img/data_ins.svg")}
+             {:src (str constants/assets-url "img/data_ins.svg")}
              :content "Our engineers employ advanced statistical and machine learning
                        methods to uncover hidden patterns, trends, and correlations in biomedical data, 
                        providing valuable insights that drive research, innovation, 
@@ -656,12 +642,12 @@
                          to-90%"
              :bg-photo
              {:style
-              {:background-image (str "url("  assets-url "img/data_ins_p.jpg" ")")}}}
+              {:background-image (str "url("  constants/assets-url "img/data_ins_p.jpg" ")")}}}
             
 
    :SemanticDQaR {:sec-name "Semantic Data Querying and Retrieval"
                   :icons
-                  {:src (str assets-url "img/semantic_dat.svg")}
+                  {:src (str constants/assets-url "img/semantic_dat.svg")}
                   :content "We develop custom solutions for efficient and precise querying of biomedical data,
                             allowing users to easily search, retrieve, and filter information using natural language queries 
                             and ensuring quick access to relevant data and insights."
@@ -672,13 +658,13 @@
                               to-90%"
                   :bg-photo
                   {:style
-                   {:background-image (str "url(" assets-url "img/semantic_dat_p.jpg" ")")}}}
+                   {:background-image (str "url(" constants/assets-url "img/semantic_dat_p.jpg" ")")}}}
                   
 
 
    :DataSaC {:sec-name "Data Security and Compliance"
              :icons
-             {:src (str assets-url "img/data_sec.svg")}
+             {:src (str constants/assets-url "img/data_sec.svg")}
              :content "Our team prioritizes data security and adheres to industry best practices
                        and regulatory standards, ensuring the protection of sensitive biomedical data while
                        maintaining compliance with relevant data privacy regulations, such as HIPAA and GDPR."
@@ -689,13 +675,13 @@
                          to-90%"
              :bg-photo
              {:style
-              {:background-image  (str  "url(" assets-url "img/data_sec_p.jpg" ")")}}}
+              {:background-image  (str  "url(" constants/assets-url "img/data_sec_p.jpg" ")")}}}
              
 
 
    :CustomBAD {:sec-name "Custom Biomedical Application Development"
                :icons
-               {:src (str assets-url "img/custom_app.svg")}
+               {:src (str constants/assets-url "img/custom_app.svg")}
                :content "We offer tailored application development services, collaborating closely with you to design, develop,
                          and deploy applications that streamline biomedical workflows, improve collaboration,
                          and boost productivity within the domain."
@@ -706,13 +692,13 @@
                            to-90%"
                :bg-photo
                {:style               
-                {:background-image (str "url(" assets-url "img/custom_app_p.jpg" ")")}}}
+                {:background-image (str "url(" constants/assets-url "img/custom_app_p.jpg" ")")}}}
                
 
 
    :PersonalizedTaS {:sec-name "Personalized Training and Support"
                      :icons
-                     {:src (str assets-url "img/personalized_tra.svg")}
+                     {:src (str constants/assets-url "img/personalized_tra.svg")}
                      :content "Our engineering team provides comprehensive training and ongoing support to help you 
                                make the most of our solutions. We offer personalized guidance, hands-on workshops,
                                and technical assistance, ensuring your team can confidently navigate and utilize our data integration,
@@ -724,7 +710,7 @@
                                  to-90%"
                      :bg-photo
                      {:style
-                      {:background-image  (str "url(" assets-url "img/personalized_tra_p.jpg" ")")}}}})   
+                      {:background-image  (str "url(" constants/assets-url "img/personalized_tra_p.jpg" ")")}}}})   
                  
 
 (def expertise-sec
@@ -769,7 +755,7 @@
        {:class "mx-6
                 w-16
                 h-auto"
-                :src (str assets-url "img/expertise_icon.svg")}]
+                :src (str constants/assets-url "img/expertise_icon.svg")}]
       [:h1 {:class "text-center
                     my-6 text-gray-950 
                     text-3xl
@@ -873,7 +859,7 @@
   (let [video-loaded? (r/atom false)]
     (fn []
       [:div
-       [:img {:src (str assets-url "img/bck_cover_image.png")
+       [:img {:src (str constants/assets-url "img/bck_cover_image.png")
               :alt "Backup Image"
               :class (str "absolute 
                            top-0 
@@ -901,7 +887,7 @@
          :on-can-play #(reset! video-loaded? true)
          :on-error #(js/console.error "Video error:", %)
          :on-stalled #(js/console.warn "Video stalled:", %)}
-        [:source {:src (str assets-url "video/shtanglitze.mp4") :type "video/mp4"}]]])))
+        [:source {:src (str constants/assets-url "video/shtanglitze.mp4") :type "video/mp4"}]]])))
        
       
 (defn main []
@@ -947,7 +933,7 @@
      [:a
       {:href "#"}
       [:img
-       {:src (str assets-url "img/shtanglitza_logo_w.svg")
+       {:src (str constants/assets-url "img/shtanglitza_logo_w.svg")
         :class "w-auto 
                 h-12
                 mb-6"}]]
@@ -955,7 +941,7 @@
       {:class "flex
                flex-col"}
       [:a
-       {:href email-address
+       {:href constants/email-address
         :class "flex
                 flex-row 
                 w-fit
@@ -973,7 +959,7 @@
                  duration-700"}
         "office@shtanglitza.ai"]]
       [:a
-       {:href linkedin-address
+       {:href constants/linkedin-address
         :target "_blank"
         :class "flex 
                 flex-row
@@ -1006,7 +992,7 @@
                  text-indigo-400 
                  tracking-widest mb-2"}
         "Shortcuts"]
-       (navbar-menu/make-menu navbar-menu/content-names constants/menu-css-footer false)]]
+       (navbar-menu/make-menu navbar-menu/content-names constants/menu-css-footer false true)]]
      [:div
       {:class "mx-6
                my-6"}
@@ -1035,7 +1021,7 @@
                     ease-in-out
                     duration-700
                       hover:text-indigo-200"}
-           fSlash link]])]]]]
+           constants/fSlash link]])]]]]
 
    [:div
     {:class "w-full
