@@ -2,16 +2,14 @@
 
   (:require
   ;;  [applied-science.js-interop :as j]
-   [clojure.string :as str :refer [lower-case]]
+   [clojure.string :as str]
    [reagent.core :as r]
    [reagent.dom :as rdom]
-   [main.icons :as icons]
+  ;;  [main.icons :as icons]
    [main.constants :as constants]
    [main.navbarx :as navbar-menu]))
             ;; ["locomotive-scroll" :as LocomotiveScroll]
   
-
-
 
 ;; (def scroll 
 ;;   (LocomotiveScroll. (clj->js {:el (js/document.querySelector "[data-scroll-container]")
@@ -23,10 +21,6 @@
 ;;                               :gestureDirection "vertical"
 ;;                               ;;  :smooth-mobile 0
 ;;                               )))
-
-
-
-
 
 (defn transform-string [s]
   (let [words (clojure.string/split s #" ")
@@ -292,32 +286,32 @@
                                    flex 
                                    w-full
                                    justify-center
-                                   items-center
-                                   bg-fuchsia-400/70
+                                   items-center                                  
                                    rounded-2xl
                                    px-12 
-                                   py-6 
-                                   shadow-lg 
-                                   shadow-fuchsia-400/40 
+                                   py-6                                 
                                    transition-all 
                                    duration-700 
                                    ease-in-out 
                                    overflow-hidden
-                                   group 
+                                   group
+                                   shadow-lg 
+                                   shadow-fuchsia-400/40 
+                                   bg-fuchsia-400/70
                                    cursor-pointer
                                      hover:scale-105
                                      hover:bg-fuchsia-300/80"}
                           [:img 
                            {:class "absolute
-                                         z-10
-                                         transition-all
-                                         opacity-90 
-                                         duration-700 
-                                         ease-in-out
-                                         group-hover:scale-125
-                                         group-hover:-translate-x-6
-                                         group-hover:-rotate-45"
-                                 :src (str constants/assets-url "img/fragments_white.svg")}]
+                                    z-10
+                                    transition-all
+                                    opacity-90 
+                                    duration-700 
+                                    ease-in-out
+                                    group-hover:scale-125
+                                    group-hover:-translate-x-6
+                                    group-hover:-rotate-45"
+                            :src (str constants/assets-url "img/fragments_white.svg")}]
                           [:section
                            {:class "flex-1
                                     flex-auto 
@@ -940,44 +934,7 @@
      [:div
       {:class "flex
                flex-col"}
-      [:a
-       {:href constants/email-address
-        :class "flex
-                flex-row 
-                w-fit
-                mt-3
-                group"}
-       [:span
-        {:class "mr-2
-                 group-hover:ms-1              
-                 ease-in-out 
-                 duration-700"}
-        (icons/emailIcn)]
-       [:span
-        {:class "group-hover:text-indigo-400 
-                 ease-in-out
-                 duration-700"}
-        "office@shtanglitza.ai"]]
-      [:a
-       {:href constants/linkedin-address
-        :target "_blank"
-        :class "flex 
-                flex-row
-                w-fit
-                mt-2 
-                group"}
-       [:span
-        {:class "mr-2
-                 group-hover:ms-1                   
-                 ease-in-out 
-                 duration-700"}
-        (icons/linkedIcn)]
-       [:span
-        {:href "https://google.com"
-         :class "group-hover:text-indigo-400 
-                 ease-in-out
-                 duration-700"}
-        "Connect with Us"]]]]
+       constants/footer-links]]
     [:div
      {:class "flex 
               flex-col 
@@ -985,19 +942,17 @@
      [:div
       {:class "mx-6 
                my-6"}
-      [:ul
-       {:class "list-image-[url()]"}
+      [:ul   
        [:p
         {:class "font-bold 
                  text-indigo-400 
                  tracking-widest mb-2"}
         "Shortcuts"]
-       (navbar-menu/make-menu navbar-menu/content-names constants/menu-css-footer false true)]]
+       (navbar-menu/make-menu navbar-menu/content-names true)]]
      [:div
       {:class "mx-6
                my-6"}
-      [:ul
-       {:class "list-image-[url()]"}
+      [:ul      
        [:p
         {:class "font-bold
                  text-indigo-400
@@ -1046,7 +1001,7 @@
    {:class "flex
             flex-col 
             box-border"}
-   (navbar-menu/navbar)
+   [navbar-menu/navbar]
    [main]
    [footer]])
 

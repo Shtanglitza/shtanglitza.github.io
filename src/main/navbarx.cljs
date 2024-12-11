@@ -22,44 +22,37 @@
       (doseq [class-name class-names]
         (.remove (.-classList el) class-name)))))
 
-
-;; (defn change-image-src [element-id new-src]
-;;   (if-let [img-element (gdom/getElement element-id)]
-;;     (set! (.-src img-element) new-src) (.log js/console "There is no src change")))
-
-
 (defn toggle-menu []
   (swap! menu-open? not))
 
 (def content-names ["Home" "About" "Capabilities" "Expertise"])
 
 (defn make-menu
-  "Creates menu. is-small? indicates usage of small screens and thus ...."
-  [cnt-names cnt-names-css is-small? is-footer?]
-  (.log js/console "called make-menu")
+  "Creates menu. is-footer? indicates the use of a list inside footer element
+   and in that way apply different conditions ...."
+  [cnt-names is-footer?]
+  (let [is-small? (< (.-innerWidth js/window) 769)]
+    (.log js/console "is-small? value is" is-small?) 
   (for [link cnt-names]
     (let [href (str "#" (clojure.string/lower-case link))]
       [:li {:key link}
        [:a
         (cond-> {:href href
-                 :class cnt-names-css}
+                 :class (if is-footer?
+                          constants/menu-css-footer
+                          constants/menu-css-navbar)}
           is-small? (merge {:on-click toggle-menu})) 
         (when is-footer? constants/listDots)
-        link]])))
+        link]]))))
 
 (defn navbar []
   (r/after-render
    (fn []
      (j/call js/document :addEventListener "click"
              (fn [event]
-               (let
-                [clicked-inside-navbar? (j/call (j/get event :target) :closest "#my-navbar")
-                 clicked-toggle-button? (j/call (j/get event :target) :closest "#toggle-menu-button")]
-
+               (let [clicked-toggle-button? (j/call (j/get event :target) :closest "#toggle-menu-button")]
                  (when (and @menu-open?
-                            (not clicked-inside-navbar?)
                             (not clicked-toggle-button?))
-
                    (toggle-menu)))))
 
      (letfn [(handle-scroll []
@@ -94,7 +87,7 @@
                md:max-w-screen-lg md:px-8
                lg:max-w-screen-2xl lg:px-20"}
     [:a
-     {:href "https://www.shtanglitza.ai"
+     {:href constants/website-url
       :class "font-bold
               text-lg 
               space-x-3
@@ -114,7 +107,7 @@
               sm:hidden 
               md:grid grid-flow-col auto-cols-max gap-5 text-custom-darkest-violet items-center text-lg"}
 
-     (make-menu content-names constants/menu-css-navbar false false)
+     (make-menu content-names false)
 
      [:div
       {:class "group 
@@ -124,21 +117,10 @@
                space-x-2 
                py-1 
                px-2
-               bg-indigo-500
+               bg-indigo-500/80
                rounded-md"}
-      [:li
-       [:a
-        {:class "flex-auto
-                 justify-start"
-         :href constants/email-address}
-        (icons/emailIcn)]]
-      [:li
-       [:a
-        {:class "flex-auto 
-                 justify-start"
-         :href constants/linkedin-address
-         :target "_blank"}
-        (icons/linkedIcn)]]]]
+      constants/contact-links
+      ]]
 
     [:button {:id "toggle-menu-button"
               :on-click toggle-menu
@@ -151,12 +133,11 @@
                        hover: bg-transparent w-fit"
                       (str "menu-icon" (when  @menu-open? " openly"))]
               :type "button"}
-
     ;; ... (SVG icon for the button) ...
-
      (if (= @menu-open? true)
        (icons/close-menu)
        (icons/hamburg-menu))]
+    
     (if @menu-open?
       (do
         (remove-classes "small-menu-list" "close")
@@ -184,8 +165,7 @@
              close 
              backdrop-blur-xl
              bg-white/30")]}
-
-    ;; (if @menu-open? " slide-left block backdrop-blur-md bg-violet-100/50 " " slide-close")
+     
 
      [:ul
       {:class "text-custom-darkest-violet
@@ -200,14 +180,13 @@
        [:a
         {:class "flex-auto
                  justify-start"
-         :href "https://www.shtanglitza.ai"}
+         :href constants/website-url}
         [:img
          {:src (str constants/assets-url "img/f_icn.svg")
           :class "h-16 
                   my-1 
                   w-auto"}]]]
-
-      (make-menu content-names "flex-auto justify-start font-medium hover:text-violet-600" true false)
+      (make-menu content-names false)
 
       [:div
        {:class "group 
@@ -219,18 +198,7 @@
                 translate-y-4
                 py-1 
                 px-2 
-                bg-indigo-500
-                rounded-md"}
-       [:li
-        [:a
-         {:class "flex-auto 
-                  justify-start"
-          :href constants/email-address}
-         (icons/emailIcn)]]
-       [:li
-        [:a
-         {:class "flex-auto
-                  justify-start"
-          :href constants/linkedin-address
-          :target "_blank"}
-         (icons/linkedIcn)]]]]]]])
+                bg-indigo-500/80
+                rounded-md"} 
+       constants/contact-links
+       ]]]]])
