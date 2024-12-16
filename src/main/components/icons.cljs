@@ -1,4 +1,4 @@
-(ns main.icons
+(ns main.components.icons
   (:require
    ["@mdi/react" :refer (Icon)]
    ["@mdi/js" :refer [mdiLinkedin mdiEmail mdiMenu mdiWindowClose]]))
