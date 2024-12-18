@@ -130,7 +130,7 @@ max-width:100vw;
   transition-property: all;
 transition-timing-function: ease-in-out;
 transition-duration: 150ms;
-font-weight: 600;
+/* font-weight: 600; */
 }
 .nav-link{
   /* text-shadow: 1px 0.5px 3px rgba(255, 255, 255, 0.3); */

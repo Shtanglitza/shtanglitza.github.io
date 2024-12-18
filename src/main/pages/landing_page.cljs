@@ -104,7 +104,7 @@
                           "flex-col"
                           "w-full"
                           "h-fit"
-                          "gap-4"
+                          "gap-10"
                           "max-w-screen-md"
                           "px-8"
                           "md:max-w-screen-lg"
@@ -164,14 +164,14 @@
                  [:div
                    {:class ["flex"
                             "w-full"
-                            "lg:w-50"
+                            "lg:w-50" 
                             "order-first"
                             "lg:order-last"]}
                    [:img 
                     {:src (str constants/assets-url "img/try.webp")
-                     :class ["w-auto"
-                             "h-auto"
-                             "rounded-3xl"]}]]]])
+                     :class ["w-full"
+                             "h-fit"
+                             "self-center"]}]]]])
 
 ; Defining Capabilities section
 
@@ -254,7 +254,7 @@
                            "Capabilities"]]
                          [:p
                           {:class ["text-xl"
-                                   "text-black/60"
+                                   "text-black/70"
                                    "mt-4"
                                    "mb-6"
                                    "hyphens-auto"

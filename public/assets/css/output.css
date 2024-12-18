@@ -868,6 +868,10 @@ video {
   justify-content: space-between;
 }
 
+.gap-16 {
+  gap: 4rem;
+}
+
 .gap-4 {
   gap: 1rem;
 }
@@ -878,6 +882,14 @@ video {
 
 .gap-8 {
   gap: 2rem;
+}
+
+.gap-12 {
+  gap: 3rem;
+}
+
+.gap-10 {
+  gap: 2.5rem;
 }
 
 .space-x-2 > :not([hidden]) ~ :not([hidden]) {
@@ -1307,6 +1319,10 @@ video {
   color: rgb(0 0 0 / 0.65);
 }
 
+.text-black\/70 {
+  color: rgb(0 0 0 / 0.7);
+}
+
 .text-black\/80 {
   color: rgb(0 0 0 / 0.8);
 }
@@ -1603,7 +1619,7 @@ html body{
   transition-property: all;
   transition-timing-function: ease-in-out;
   transition-duration: 150ms;
-  font-weight: 600;
+  /* font-weight: 600; */
 }
 
 .nav-link{
