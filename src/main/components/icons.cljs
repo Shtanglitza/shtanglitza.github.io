@@ -1,4 +1,4 @@
-(ns main.icons
+(ns main.components.icons
   (:require
    ["@mdi/react" :refer (Icon)]
    ["@mdi/js" :refer [mdiLinkedin mdiEmail mdiMenu mdiWindowClose]]))
@@ -13,9 +13,11 @@
    {:path mdiMenu}
    :h-close
    {:path mdiWindowClose}})
+
 (def typography
   {:size 0.9
    :color "white"})
+
 (def nav-typography
   {:size 1.5
    :color "#4c1d95"}) ; Larger size for hamburg
