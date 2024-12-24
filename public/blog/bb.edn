@@ -1,0 +1,14 @@
+{:deps {org.babashka/cli {:mvn/version "0.3.31"}
+        io.github.borkdude/quickblog {:local/root "../../../quickblog"}
+        }
+ :tasks {:requires ([quickblog.cli :as cli])
+         :init (def opts {:blog-title " Blog/index-page"
+                          :blog-description "A tech & domain blog powered by Shtanglitza"
+                          :twitter-handle ""
+                          :blog-author "Shtanglitza Mastermind Team"
+                          :blog-root "https://www.shtanglitza.ai/blog/" 
+                          :favicon true
+                          :blog-image "assets/blog_wall.png"
+                          })
+         quickblog {:doc "Tech & domain for Shtanglitza"
+                    :task (cli/dispatch opts)}}}

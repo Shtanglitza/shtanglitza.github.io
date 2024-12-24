@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{{title}}</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="application/atom+xml" rel="alternate" href="{{relative-path | safe}}atom.xml" title="{{title}}">
+    <link rel="stylesheet" href="{{relative-path | safe}}style.css">
+   
+    {{watch | safe }}
+    
+    <link rel= "stylesheet" href= "https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
+    {{watch | safe }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+{% if favicon-tags %}{{favicon-tags | safe}}{% endif %}
+
+    <!-- Social sharing (Facebook, Twitter, LinkedIn, etc.) -->
+    <meta name="title" content="{{title}}">
+    <meta name="twitter:title" content="{{title}}">
+    <meta property="og:title" content="{{title}}">
+    <meta property="og:type" content="website">
+{% if sharing.description %}
+    <meta name="description" content="{{sharing.description}}">
+    <meta name="twitter:description" content="{{sharing.description}}">
+    <meta property="og:description" content="{{sharing.description}}">
+{% endif %}
+{% if sharing.url %}
+    <meta name="twitter:url" content="{{sharing.url}}">
+    <meta property="og:url" content="{{sharing.url}}">
+{% endif %}
+{% if sharing.image %}
+    <meta name="twitter:image" content="{{sharing.image}}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:image" content="{{sharing.image}}">
+    <meta property="og:image:alt" content="{{sharing.image-alt}}">
+{% else %}
+    <meta name="twitter:card" content="summary">
+{% endif %}
+{% if sharing.author %}
+    <meta name="twitter:creator" content="{{sharing.author}}">
+{% endif %}
+{% if sharing.twitter-handle %}
+    <meta name="twitter:site" content="{{sharing.twitter-handle}}">
+{% endif %}
+  </head>
+  <body>
+
+    <div class="site-header">
+      <div class="wrapper nav-flex">
+        <div class="site-nav">
+          <a class="page-link" href="{{relative-path | safe}}archive{{page-suffix}}"><i class="la-lg las la-folder"></i> Archive</a>
+          <a class="page-link" href="{{relative-path | safe}}tags/index.html"><i class="la-lg las la-tags"></i> Tags</a>
+          {% if discuss-link %}<a class="page-link" href="{{discuss-link}}"><i class="la-lg las la-comment-dots"></i> Discuss</a>{% endif %}
+          {% if about-link %}
+          <a class="page-link" href="{{about-link}}"><i class="la-lg las la-user"></i> About</a>
+          {% endif %}
+
+	        {% if twitter-handle %}
+	        <a class="page-link" href="https://twitter.com/{{twitter-handle}}"><i class="la-lg lab la-twitter"></i> 
+            Twitter
+          </a>
+	        {% endif %}
+          <a class="page-link" href="{{relative-path | safe}}atom.xml"><i class="la-lg las la-rss"></i> 
+            Feed
+          </a>
+          <a class="page-link" href="../../../index.html"><i class="la-lg las la-sign-out-alt"></i></i>
+          </a>
+
+          
+        </div>
+        <div class="parent-header">
+          <h1 class="site-title">
+            <img class="nav-logo" src="https://shtanglitza.ai/public/assets/img/f_icn.svg"/>
+            <a class="page-link" href="{{relative-path | safe}}index.html">{{blog-title}}</a>
+          </h1>
+	        <p>{{blog-description}}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrapper parentFix">
+
+      {{body | safe }}
+
+      {% if not skip-archive %}
+      <div class="footer-bar">
+        <a class="page-link" href="{{relative-path | safe}}index.html" style="margin:0; padding-right: 24px;"><span></span><i class="la-lg las la-chevron-circle-left"></i>&nbspIndex</a>
+        <a class="page-link" href="#top" style="margin:0; padding-right: 24px;"><i class="la-lg las la-chevron-circle-up"></i>&nbspFast Up</a>
+        <a class="page-link" href="{{relative-path | safe}}archive{{page-suffix}}" style="margin:0; padding-right: 24px;"><i class="la-lg las la-folder"></i>&nbspArchive</a>
+      </div>
+      {% endif %}
+    </div>
+  </body>
+</html>
