@@ -1,7 +1,7 @@
 (ns main.components.icons
   (:require
    ["@mdi/react" :refer (Icon)]
-   ["@mdi/js" :refer [mdiLinkedin mdiEmail mdiMenu mdiWindowClose]]))
+   ["@mdi/js" :refer [mdiLinkedin mdiEmail mdiMenu mdiWindowClose mdiTextBoxMultiple]]))
 
 
 (def icon-paths
@@ -12,7 +12,9 @@
    :hamburg
    {:path mdiMenu}
    :h-close
-   {:path mdiWindowClose}})
+   {:path mdiWindowClose}
+   :blog
+   {:path mdiTextBoxMultiple}})
 
 (def typography
   {:size 0.9
@@ -44,3 +46,6 @@
 
 (defn close-menu []
   (make-icon :h-close))
+
+(defn blogIcn []
+  (make-icon :blog))
