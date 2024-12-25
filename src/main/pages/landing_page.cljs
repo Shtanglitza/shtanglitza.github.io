@@ -170,7 +170,7 @@
                    [:img 
                     {:src (str constants/assets-url "img/try.webp")
                      :class ["w-full"
-                             "h-fit"
+                             "h-auto"
                              "self-center"]}]]]])
 
 ; Defining Capabilities section
