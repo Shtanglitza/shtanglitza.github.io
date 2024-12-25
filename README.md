@@ -67,7 +67,7 @@ After that you should start watch again (or first make a new post with command a
 
 ==============
 
-## Usefull tips
+## Useful tips
 
 **Current Features:**
 
