@@ -12,13 +12,15 @@
         :asset-path "public/assets"
         :modules {:main {:entries [main.core]
                          :init-fn main.core/init}}
-        :closure-defines {main.constants/assets-url "assets/"}}
+        :closure-defines {main.constants/assets-url "assets/"
+                          main.constants/blog-address "./blog/index.html"}}
 
   :prod {:target :browser
          :output-dir "public/release/js"
          :asset-path "public/assets"
          :modules {:main {:entries [main.core]
                           :init-fn main.core/init}}
-         :closure-defines {main.constants/assets-url "public/assets/"}}}}
+         :closure-defines {main.constants/assets-url "public/assets/"
+                           main.constants/blog-address "./blog/index.html"}}}}
 
 
