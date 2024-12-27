@@ -60,10 +60,6 @@ Cleaning blog-public files
 ```babashka 
 bb quickblog clean 
 ```
-Re-render blog public files.
-```babashka
-bb quickblog render 
-```
 After that you should start watch again and Voila! 
 
 ==============
