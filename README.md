@@ -13,22 +13,22 @@
 Blog is produced using [BorkDude/QuickBlog](https://github.com/borkdude/quickblog) static site generator. Please clone quickblog repo to parent folder of this repository.
 
 
-```public/blog/bb.edn``` in the folder depends on it with relative path ` io.github.borkdude/quickblog {:local/root "../../../quickblog"}`. 
+```../blog/bb.edn``` in the folder depends on it with relative path ` io.github.borkdude/quickblog {:local/root "../../quickblog"}`. 
 
 ### How our Blog works - Instructions for post authors ?
 
 First of all you need to have ***Babashka installed***.
 
-It is assumed to clone the git branch where the bl0g feature is located (for testing purposes)
+It is assumed to clone the git branch where the blog feature is located.
 
 ***git branch name:*** `feature/website-blog`
 
-If you're working on a blog, you don't need to make any changes outside of the public/blog folder, so specifically for that reason access the menined folder.
-Once you are in the blog folder, you can run the command to create a new article from there:
+If you're working on a blog, you don't need to make any changes outside of the `./blog` folder (the main blog folder outside of the public), so specifically for that reason access the menined folder.
+Once you are in the blog folder`shtaglitza.github.io/blog`, you can run the command to create a new article from there:
 
 ### Creating and working with posts
 
-***Go to*** `public\blog` path and from there use this commands:
+***Go to*** `shtaglitza.github.io/blog` path and from there use this commands:
 
 ***Crate a new post***
 
@@ -37,37 +37,38 @@ bb quickblog new --file "file-name.md" --title "post-title"
 ```
 ***After that you can edit/write from the posts directory.The newly created file will be there***
 
-During editing/writing posts (.md), you need to run the following command to make the post visible on your blog. Check how the changes are happen on every save, it is useful to watch due to any errors or unexpected situations. For that we use the WATCH command:
+During editing/writing posts (.md), you need to run the following command to make the post visible on your blog. Check how the changes are happen on every save, it is useful to watch due to any errors or unexpected situations.
 
 ```babashka
 bb quickblog watch
 ```
-> **Important:** In my case, the results of the launched ***watch*** blog should be visible and tracked on `localhost:1888`
+> **Important:** The results of the launched ***watch*** blog should be visible and tracked on `localhost:1888`
 
-> **Important:** Don't mess with directories like /templates, /tags, everything inside blog/public except assets.(it's safe to add content there if needed)
+> **Important:** Don't mess with directories like /templates, /tags, everything inside `./blog` except ***assets (for post images) and posts (where your md files would be located)***.(it's safe to add content there if needed)
 
-> **Important:** Changes to the blog do not require a rebuild of the main shtanglitza website project. The `Watch` command simply generates new files in the `blog/public` folder that are immediately available.
+> **Important:** Changes to the blog do not require a rebuild of the main shtanglitza website project. The `watch` command simply generates new files in the `public/blog/` folder (another blog folder inside public) that are immediately available.
 
 ### Deleting posts and clearing the cache
 
-In the `public/blog`, every time a new post is created and the watch command is called, the entire public folder in the blog (`blog/public`) as well as the work folder (`blog/.work`) is recompiled.
+In the `public/blog`, every time a new post is created and the watch command is called, the entire content from the blog folder is recompiled.
 
-> **Important:** It's definitely an unconventional path, and not a good practice, because we have a repeating public folder.
+In order to successfully delete the post physically, you need to manually remove the post from the `blog/posts` directory. If you perform that durint watch it should delete that post immediately everywhere without leaving tails on the other places on the Blog.
 
-Pay attention the `public/blog` is not the same public as `public/blog/public` where the compiled files of our shtanglitza blog are located !!
+Sometimes (rare case) it happens that you still see deleted post then you need to go to `shtaglitza.github.io/blog/` folder and run the commands:
 
-*This problem exists because we actually need quickblog as a dependency for our blog, and that's how it builds static files.
-It assumes that our blog is a separate project and make a public folder for this. There is a possibility to route the quick blog from the Git where it is located, but that didn't work for me because od some reason.*
-
-In order to successfully delete the post physically, you need to manually remove the post from the `blog/posts` directory. If you perform that durint watch it should delete that post immediately everywhere without leaving tails.
-
-Sometimes (rare case) it happens that you still see deleted post then you need to go to `blog/work` folder and delete entire .work folder. Do not worry it will be recreated again when start watch command.
-
-After that you should start watch again (or first make a new post with command and then start watch) and Voila! 
+Cleaning blog-public files
+```babashka 
+bb quickblog clean 
+```
+Re-render blog public files.
+```babashka
+bb quickblog render 
+```
+After that you should start watch again and Voila! 
 
 ==============
 
-## Useful tips
+## Useful tips 
 
 **Current Features:**
 
