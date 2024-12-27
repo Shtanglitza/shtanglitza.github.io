@@ -1,8 +1,0 @@
-<div class="onLoad-anim" style="width: 800px; padding-bottom:5em;">
-    <h1>{{title}}</h1>
-    <ul class="index">
-        {% for tag in tags %}
-            <li style="margin-bottom:1rem;"><span class="tag"><a href="{{tag.url}}">{{tag.tag}}</a> - {{tag.count}} post{{tag.count|pluralize}}</span></li>
-        {% endfor %}
-    </ul>
-</div>

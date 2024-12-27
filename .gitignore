@@ -30,6 +30,5 @@ public/release/js/cljs-runtime/
 
 #Updating ignore list for the Blog
 blog/.work
-public/blog/
 yarn.lock
 
