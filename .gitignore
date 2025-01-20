@@ -28,6 +28,7 @@ pom.xml.asc
 .shadow-cljs
 public/release/js/cljs-runtime/
 
-#Updating ignore list for th Blog
-.work
-public/blog/public/
+#Updating ignore list for the Blog
+blog/.work
+yarn.lock
+
