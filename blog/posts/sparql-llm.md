@@ -2,13 +2,13 @@ Title: Exploring SPARQL-LLM integrations
 Date: 2024-12-25
 Tags: SPARQL, LLM
 
-The integration of Large Language Models (LLMs) with knowledge graphs is gaining significant traction, particularly in the context of Retrieval-Augmented Generation (RAGs). In these scenarios, LLMs usually act as interfaces for querying and summarizing information retrieved from a knowledge graph; however other scenarios remain to be explored. In this blog post, we explore the innovative application of LLMs for enriching structured data directly through SPARQL queries. Using the SPARQL.anything framework and the GROQ API, we'll demonstrate how to interact with a remote LLM, unlocking new possibilities for knowledge enrichment.
+The integration of Large Language Models (LLMs) with knowledge graphs is gaining significant traction, particularly in the context of Retrieval-Augmented Generation (RAGs). In these scenarios, LLMs usually act as interfaces for querying and summarizing information retrieved from a knowledge graph. However, other scenarios are yet to be explored. In this blog post, we explore the innovative application of LLMs for enriching structured data directly through SPARQL queries. Using the SPARQL.anything framework and the GROQ API, we'll demonstrate how to interact with a remote LLM, unlocking new possibilities for knowledge enrichment.
 
 ### Introduction to SPARQL.anything
 
-For those who are interested in knowledge graphs and data integration using RDF,  [SPARQL.anything](https://sparql-anything.cc/) is a powerful framework that allows users to query various data sources using the SPARQL query language. It supports querying different types of data sources, including JSON, XML, relational databases, and even remote APIs. 
+For those who are interested in knowledge graphs and data integration using RDF,  [SPARQL.anything](https://sparql-anything.cc/) is a powerful framework that allows users to query various data sources using the SPARQL query language. It supports querying different types of data sources, including JSON, XML, relational databases, and even remote APIs.
 
-SPARQL.anything functions as both a CLI and a server (utilizing Apache Fuseki). For a deeper dive, please refer to documentation on [link](https://sparql-anything.readthedocs.io/stable/#using-the-server). 
+SPARQL.anything functions as both a CLI and a server (utilizing Apache Fuseki). For a deeper dive, you can refer to the [documentation](https://sparql-anything.readthedocs.io/stable/#using-the-server).
 In this experiment, we will run the server using a simple command.
 
 ```
@@ -19,7 +19,7 @@ The Fuseki console should be accessible at [http://localhost:3000/sparql](http:/
 
 ### GROQ API
 
-In our experiment, GROQ, a remote LLM API, was queried using SPARQL.anything due to its ultra-low latency and cost effectiveness.
+In our experiment, GROQ, a remote LLM API, was queried using SPARQL.anything due to its ultra-low latency and cost efficiency.
 
 Create GROQ API keys on [https://console.groq.com/keys](https://console.groq.com/keys). For these experiments, We will use *mixtral-8x7b-32768.*
 
@@ -55,7 +55,7 @@ Notice special properties such as `fx:http.payload` or `fx:http.header.Authoriza
 
 Let's explore more practical use cases by applying some domain knowledge base, such as the publicly available SPARQL endpoint for Uniprot [https://sparql.uniprot.org/sparql](https://sparql.uniprot.org/sparql).
 
-Consider retrieving all genes associated with Alzheimer's disease from Uniprot and generating some preliminary hypotheses from LLM suitable for further exploration.
+We can try to retrieve all genes associated with Alzheimer's disease from Uniprot and generate some preliminary hypotheses from LLM suitable for further exploration.
 The prompt for this task could be structured as follows:  
 *Suggest unexplored links or genes that may need further investigation based on existing set of genes … in context of Alzheimer disease.*
 
@@ -108,7 +108,7 @@ Result:
 
 This is useful already.
 
-Let's investigate if we can get more structured output from LLM. We can apply json mode (supported from Groq API) and reframe our prompt by introducing system prompt for that purpose:
+Let's investigate if we can get a more structured output from the LLM. We can apply json mode (supported from Groq API) and rephrase our prompt by introducing a system prompt for that purpose:
 
 ```sparql
 PREFIX xyz: <http://sparql.xyz/facade-x/data/>
@@ -199,7 +199,7 @@ Subsequently, the LLM GROQ API was utilized to rapidly return gene names associa
 
 ### Conclusion
 
-What we shown so far:
+What we've shown so far:
 
 - We used SPARQL.anything to query a remote LLM GROQ API using JSON mode.
 - We can send the results from a standard Knowledge Graph (i.e. local or remote triple store) to an LLM (local or remote) for some extra work like summarizing the data.
@@ -213,9 +213,8 @@ Here are some additional notes from my experiment:
 - The SPARQL.anything framework is highly versatile and can be used to query a wide range of data sources.
 - The GROQ API provided a convenient and flexible way to interact with the LLM.
 - Make sure to correctly set Bearer token as shown in queries from above (as literal of `fx:http.header.Authorization` magic property).
-- The nesting order of the SERVICE clause should be carefully considered. (see discussion here).  
+- The nesting order of the SERVICE clause should be carefully considered. (see discussion here).
 - The combination of SPARQL.anything and the GROQ API offers a powerful approach for querying and exploring LLMs.
 - Further experimentation is needed to explore the full potential of this approach and investigate its limitations.
-
 
 
