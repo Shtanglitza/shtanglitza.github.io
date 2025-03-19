@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>hlog/index-page</title>
+  <link href="https://www.shtanglitza.ai/blog/atom.xml" rel="self"/>
+  <link href="https://www.shtanglitza.ai/blog/"/>
+  <updated>2025-03-18T15:14:12+00:00</updated>
+  <id>https://www.shtanglitza.ai/blog/</id>
+  <author>
+    <name>Shtanglitza Team</name>
+  </author>
+  <entry>
+    <id>https://www.shtanglitza.ai/blog/file-name.html</id>
+    <link href="https://www.shtanglitza.ai/blog/file-name.html"/>
+    <title>post-title</title>
+    <updated>2024-12-27T23:59:59+00:00</updated>
+    <content type="html"><![CDATA[<p>Write a blog post here!</p>]]></content>
+  </entry>
+</feed>

@@ -10,8 +10,8 @@ For those who are interested in knowledge graphs and data integration using RDF,
 
 SPARQL.anything functions as both a CLI and a server (utilizing Apache Fuseki). For a deeper dive, you can refer to the [documentation](https://sparql-anything.readthedocs.io/stable/#using-the-server).
 In this experiment, we will run the server using a simple command.
-
-```
+<!-- end-of-preview -->
+```SPAQL 
 java -jar sparql-anything-server-<version>.jar
 ``` 
 
@@ -48,7 +48,7 @@ SELECT * WHERE {
 
 The query successfully returned the requested data from the LLM GROQ API which is shown in Fuseki console.
 
-<img class="post-image" src = "../assets/sparql-llm/importance-of-language-models-prompt.png">
+<img class="post-image" src = "assets/sparql-llm/importance-of-language-models-prompt.png">
 
 Not bad.
 Notice special properties such as `fx:http.payload` or `fx:http.header.Authorization` that are used to interact with the GROQ API.
@@ -104,7 +104,7 @@ WHERE
 
 Result:
 
-<img class="post-image" src = "../assets/sparql-llm/suggest-unexplored-links.png">
+<img class="post-image" src = "assets/sparql-llm/suggest-unexplored-links.png">
 
 This is useful already.
 
@@ -143,7 +143,7 @@ SELECT ?gene
 ```
 returns:
 
-<img class="post-image" src = "../assets/sparql-llm/genes-json-array.png">
+<img class="post-image" src = "assets/sparql-llm/genes-json-array.png">
 
 We can double-check the LLM response above by looking up the gene-disease annotation in Uniprot:
 
@@ -193,7 +193,7 @@ SELECT ?gene ?disease
 }
 ```
 
-<img class="post-image-sm" src = "../assets/sparql-llm/gene-disease-assoc.png">
+<img class="post-image-sm" src = "assets/sparql-llm/gene-disease-assoc.png">
 
 Subsequently, the LLM GROQ API was utilized to rapidly return gene names associated with Alzheimer disease as described in prompt. Since the result from API is returned as a stringified JSON object, additional processing is done using `fx:anySlot` magic property. The retrieved gene names were then combined with the gene-disease annotation data obtained from the Uniprot database for further verification. This integration of data from multiple sources facilitated a comprehensive analysis of the relationship between the identified genes and their associated diseases.
 

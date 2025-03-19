@@ -104,6 +104,16 @@ When the html code for the blog is compiled, the default URL address will be `ht
 ```html
 <img class="post-image" src = "https://images.pexels.com/photos/3992930/pexels-photo-3992930.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2">
 ```
+Considering that we have articles with relative path defined in bb.edn (because previous example url is absolute)
+
+```clojure
+ :blog-root "https://www.shtanglitza.ai/blog/"
+ ```
+, we will write path to assets like this:
+```html
+<img class="post-image" src = "assets/<custom file or path>">
+```
+
 
 - Avatar responsive rectangular image 1:1 that is loaded on a post must have a class <em> ".avatar-r-image" </em>
 - Avatar responsive circle image 1:1 that is loaded on a post must have a class <em> ".avatar-c-image" </em>
