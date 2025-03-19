@@ -13,7 +13,7 @@
         :modules {:main {:entries [main.core]
                          :init-fn main.core/init}}
         :closure-defines {main.constants/assets-url "assets/"
-                          main.constants/blog-address "./blog/index.html"}}
+                          main.constants/blog-address "./public/blog/index.html"}}
 
   :prod {:target :browser
          :output-dir "public/release/js"
@@ -21,6 +21,6 @@
          :modules {:main {:entries [main.core]
                           :init-fn main.core/init}}
          :closure-defines {main.constants/assets-url "public/assets/"
-                           main.constants/blog-address "./blog/index.html"}}}}
+                           main.constants/blog-address "./public/blog/index.html"}}}}
 
 
