@@ -36,6 +36,8 @@
 
 (def website-url "https://www.shtanglitza.ai")
 
+(goog-define blog-address "")
+
 (goog-define assets-url "")
 
 (def listDots
@@ -56,26 +58,30 @@
             "opacity-90"]}
    "/"])
 
-(def contact-icons  ; Define contact-icons as a var
-  {:email {:icon icons/emailIcn :target email-address :title "office@shtanglitza.ai"}
-   :linkedin {:icon icons/linkedIcn :target linkedin-address :title "Connect with Us"}})
+(def contact-icons  ; Define contact-icons as a var 
+  {:blog {:icon icons/blogIcn :url-t main.constants/blog-address :title "Blog" :tooltip "Visit our blog" :label "Blog" :target ""}
+   :linkedin {:icon icons/linkedIcn :url-t linkedin-address :title "Connect with Us"  :tooltip "Connect with Us" :label "" :target "_blank"}
+   :email {:icon icons/emailIcn :url-t email-address :title "office@shtanglitza.ai"  :tooltip "Contact Us" :label "" :target "_blank"}})
 
 (def contact-links  ; Define contact-links as a var
-  (for [[key {:keys [icon target]}] contact-icons]
-    [:li {:key key}
+  (for [[key {:keys [icon url-t tooltip label target]}] contact-icons]
+    [:li {:key key :class ["flex items-center"]}
      [:a
-      {:class "flex-auto justify-start"
-       :href target
-       :target "_blank"}
+      {:class "flex items-center justify-start gap-2 text-white text-[17px]"
+       :href url-t
+       :target target
+       :title tooltip}
+      label
       (r/as-element (icon))]]))
 
 
 (def footer-links  ; Define contact-links as a var
-  (for [[key {:keys [icon target title]}] contact-icons]
+  (for [[key {:keys [icon title url-t target tooltip]}] contact-icons]
     [:a
      {:key key
-      :href target
-      :target "_blank"
+      :href url-t
+      :target target
+      :title tooltip
       :class ["flex"
               "flex-row"
               "w-fit"

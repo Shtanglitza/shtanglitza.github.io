@@ -29,9 +29,22 @@
   (navbar-menu/nav-scroll) 
   (navbar-menu/active-link-on-scroll))
  
+;Auto-height calculation
+(defn set-vh! []
+  (let [vh (* (.-innerHeight js/window) 0.01)]
+    (.setProperty (.-style (.-documentElement js/document))
+                  "--vh"
+                  (str vh "px"))))
+
+;; Add event listener for resize
+(.addEventListener js/window "resize" set-vh!)
+
+;; Call it once on load
+
 
 (defn init []
   (.log js/console "Loading App")
+  (set-vh!)
   (rdom/render [web-page] (js/document.getElementById "app"))
   (start))
 

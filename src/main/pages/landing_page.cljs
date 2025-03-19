@@ -6,13 +6,13 @@
 
 
 ;; Defining header section 
-
+;; Changed height for this parent container to calculated-height new class from css -auto-calculate height ased on provided script- origial setting is h-full
 (def header [:div
               {:id "home"
                :class ["flex"
                        "flex-wrap"
                        "justify-center"
-                       "h-screen"
+                       "calculated-height"
                        "w-full"
                        "items-center"
                        "bg-gradient-to-r"
@@ -170,7 +170,7 @@
                    [:img 
                     {:src (str constants/assets-url "img/try.webp")
                      :class ["w-full"
-                             "h-fit"
+                             "h-auto"
                              "self-center"]}]]]])
 
 ; Defining Capabilities section
@@ -354,7 +354,7 @@
                       "top-0"
                       "left-0"
                       "w-full"
-                      "h-full"
+                      "min-h-full" 
                       "object-cover"
                       "fixed"
                       "z-10"
@@ -365,7 +365,7 @@
         {:class ["top-0"
                  "left-0"
                  "w-full"
-                 "h-full"
+                 "min-h-full" 
                  "object-cover"
                  "fixed"
                  "z-20"]
