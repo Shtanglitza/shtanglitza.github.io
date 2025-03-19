@@ -107,7 +107,7 @@
 }
 
 /*
-! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.15 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -763,6 +763,10 @@ video {
   height: 100vh;
 }
 
+.min-h-full {
+  min-height: 100%;
+}
+
 .w-10 {
   width: 2.5rem;
 }
@@ -822,6 +826,10 @@ video {
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.resize {
+  resize: both;
 }
 
 .scroll-mt-\[120px\] {
@@ -1523,24 +1531,29 @@ video {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-html, body, div, span, a {
+html,
+body,
+div,
+span,
+a {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family:"Source Sans 3";
+  font-family: "Source Sans 3";
   font-weight: 400;
-  scroll-behavior:smooth!important;
-  scroll-margin-top:-1rem;
+  scroll-behavior: smooth !important;
+  /* fixed scroll to top with gap (-1rem is previous value) */
+  scroll-margin-top: 0rem;
   font-family: "Source Sans 3", serif;
   * {
-    box-sizing: border-box!important;
+    box-sizing: border-box !important;
   }
 }
 
-html body{
+html body {
   max-width: 100%;
   /* overflow-x: hidden!important; */
-  overflow-y: auto!important;
+  overflow-y: auto !important;
   /* color:#2D243A; */
 }
 
@@ -1559,7 +1572,7 @@ html body{
   /* transition: transform 0.1s cubic-bezier(0.075, 0.82, 0.165, 1); /* Add a transition */
 }
 
-.small-menu.slide-left{
+.small-menu.slide-left {
   animation: slide-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
 
@@ -1596,25 +1609,25 @@ html body{
   }
 }
 
-.hidden.slide-close{
+.hidden.slide-close {
   animation: slide-close 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
 
-#small-menu-list{
+#small-menu-list {
   overflow: hidden;
   transition: max-width 500ms cubic-bezier(0.785, 0.135, 0.15, 0.86)
 }
 
-.close{
-  max-width:0vw;
+.close {
+  max-width: 0vw;
 }
 
-.open{
-  max-width:100vw;
+.open {
+  max-width: 100vw;
 }
 
-.active{
-  color:rgb(104, 33, 226)!important;
+.active {
+  color: rgb(104, 33, 226) !important;
   text-shadow: 4px 4px 15px rgba(221, 216, 249, 0.28);
   transition-property: all;
   transition-timing-function: ease-in-out;
@@ -1622,8 +1635,12 @@ html body{
   /* font-weight: 600; */
 }
 
-.nav-link{
+.nav-link {
   /* text-shadow: 1px 0.5px 3px rgba(255, 255, 255, 0.3); */
+}
+
+.calculated-height {
+  height: calc(var(--vh, 1vh) * 100);
 }
 
 .hover\:scale-105:hover {
