@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>hlog / index-page</title>
-  <link href="https://www.shtanglitza.ai/blog/atom.xml" rel="self"/>
-  <link href="https://www.shtanglitza.ai/blog/"/>
-  <updated>2025-03-19T13:42:44+00:00</updated>
-  <id>https://www.shtanglitza.ai/blog/</id>
+  <link href="https://www.shtanglitza.ai/public/blog/atom.xml" rel="self"/>
+  <link href="https://www.shtanglitza.ai/public/blog/"/>
+  <updated>2025-03-31T15:54:40+00:00</updated>
+  <id>https://www.shtanglitza.ai/public/blog/</id>
   <author>
     <name>Shtanglitza Team</name>
   </author>
   <entry>
-    <id>https://www.shtanglitza.ai/blog/sparql-llm.html</id>
-    <link href="https://www.shtanglitza.ai/blog/sparql-llm.html"/>
+    <id>https://www.shtanglitza.ai/public/blog/sparql-llm.html</id>
+    <link href="https://www.shtanglitza.ai/public/blog/sparql-llm.html"/>
     <title>Exploring SPARQL-LLM integrations</title>
     <updated>2024-12-25T23:59:59+00:00</updated>
     <content type="html"><![CDATA[<p>The integration of Large Language Models (LLMs) with knowledge graphs is gaining significant traction, particularly in the context of Retrieval-Augmented Generation (RAGs). In these scenarios, LLMs usually act as interfaces for querying and summarizing information retrieved from a knowledge graph. However, other scenarios are yet to be explored. In this blog post, we explore the innovative application of LLMs for enriching structured data directly through SPARQL queries. Using the SPARQL.anything framework and the GROQ API, we'll demonstrate how to interact with a remote LLM, unlocking new possibilities for knowledge enrichment.</p><h3 id="introduction_to_sparql.anything">Introduction to SPARQL.anything</h3><p>For those who are interested in knowledge graphs and data integration using RDF,  <a href='https://sparql-anything.cc/'>SPARQL.anything</a> is a powerful framework that allows users to query various data sources using the SPARQL query language. It supports querying different types of data sources, including JSON, XML, relational databases, and even remote APIs.</p><p>SPARQL.anything functions as both a CLI and a server (utilizing Apache Fuseki). For a deeper dive, you can refer to the <a href='https://sparql-anything.readthedocs.io/stable/#using-the-server'>documentation</a>. In this experiment, we will run the server using a simple command. <!-- end-of-preview --><pre class="language-SPAQL"><code class="lang-SPAQL language-SPAQL">java -jar sparql-anything-server-&lt;version&gt;.jar

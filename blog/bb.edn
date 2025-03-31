@@ -6,7 +6,7 @@
                           :blog-description "A tech & domain blog powered by Shtanglitza"
                           :twitter-handle ""
                           :blog-author "Shtanglitza Team"
-                          :blog-root "https://www.shtanglitza.ai/blog/"
+                          :blog-root "https://www.shtanglitza.ai/public/blog/"
                           :favicon true
                           :blog-image "assets/blog_wall.png"
                           :out-dir "../public/blog"})
