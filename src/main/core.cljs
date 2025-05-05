@@ -24,6 +24,7 @@
 
 ; All functions that need to be executed after DOM render are called here
 
+
 (defn ^:dev/after-load start []
   (js/console.log "start") 
   (navbar-menu/nav-scroll) 
