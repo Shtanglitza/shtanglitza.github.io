@@ -43,7 +43,7 @@
 
 
 (defn init []
-  (.log js/console "Loading App")
+  (.log js/console "Loading    App")
   (set-vh!)
   (rdom/render [web-page] (js/document.getElementById "app"))
   (start))

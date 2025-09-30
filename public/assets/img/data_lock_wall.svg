@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 27.5.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   version="1.1"
+   x="0px"
+   y="0px"
+   viewBox="0 0 2200 2200"
+   style="enable-background:new 0 0 2200 2200;"
+   xml:space="preserve"
+   id="svg5"
+   sodipodi:docname="data_lock_wall.svg"
+   inkscape:version="1.4.2 (ebf0e940, 2025-05-08)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs5" /><sodipodi:namedview
+   id="namedview5"
+   pagecolor="#ffffff"
+   bordercolor="#000000"
+   borderopacity="0.25"
+   inkscape:showpageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#d1d1d1"
+   inkscape:zoom="0.53482986"
+   inkscape:cx="1179.8145"
+   inkscape:cy="636.65107"
+   inkscape:window-width="2560"
+   inkscape:window-height="1440"
+   inkscape:window-x="0"
+   inkscape:window-y="0"
+   inkscape:window-maximized="0"
+   inkscape:current-layer="g5" />
+
+<g
+   id="Objects"
+   style="fill:#f1f4f9;fill-opacity:1">
+	<g
+   id="g5"
+   style="fill:#f1f4f9;fill-opacity:1">
+		<linearGradient
+   id="SVGID_1_"
+   gradientUnits="userSpaceOnUse"
+   x1="450.2289"
+   y1="517.0085"
+   x2="1747.4558"
+   y2="1452.7133">
+			<stop
+   offset="0"
+   style="stop-color:#A6CC52"
+   id="stop1" />
+			<stop
+   offset="1"
+   style="stop-color:#4CD971"
+   id="stop2" />
+		</linearGradient>
+		<path
+   id="path2"
+   style="fill:#f1f4f9;fill-opacity:1"
+   d="M 1100 171 C 1100 171 891.32728 517.10542 394.11328 537.85742 L 394.11328 854.66406 C 394.11328 1746.8031 1100 1851 1100 1851 C 1100 1851 1805.8867 1746.8031 1805.8867 854.66406 L 1805.8867 537.85742 C 1308.6727 517.10542 1100 171 1100 171 z M 1095.0898 386.98047 C 1095.0898 386.98047 1257.0087 655.542 1642.8223 671.64453 L 1642.8223 917.4707 C 1642.8223 1609.7266 1095.0898 1690.5781 1095.0898 1690.5781 C 1095.0898 1690.5781 547.35547 1609.7266 547.35547 917.4707 L 547.35547 671.64453 C 933.16897 655.542 1095.0898 386.98047 1095.0898 386.98047 z " />
+		<g
+   id="g4"
+   style="fill:#f1f4f9;fill-opacity:1">
+			<path
+   style="fill:#f1f4f9;fill-opacity:1"
+   d="M 1282.12,973.827 H 917.88 c -44.328,0 -80.269,35.931 -80.269,80.259 v 326.403 c 0,44.328 35.941,80.259 80.269,80.259 h 364.24 c 44.328,0 80.269,-35.931 80.269,-80.259 v -326.403 c 0,-44.329 -35.941,-80.259 -80.269,-80.259 z"
+   id="path3"
+   sodipodi:nodetypes="sssssssss" />
+			<path
+   style="fill:#f1f4f9;fill-opacity:1"
+   d="m 985.585,859.34434 c 0,-63.086 51.329,-114.403 114.415,-114.403 63.086,0 114.415,51.317 114.415,114.403 v 122.959 h 50.459 v -122.959 c 0,-91.052 -73.821,-164.861 -164.874,-164.861 -91.053,0 -164.874,73.809 -164.874,164.861 v 122.959 h 50.459 z"
+   id="path4" />
+		</g>
+		
+	</g>
+</g>
+</svg>

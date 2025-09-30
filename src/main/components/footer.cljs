@@ -29,7 +29,7 @@
              "md:justify-center"
              "lg:max-w-screen-2xl"
              "lg:p-20"
-             "xl:gap-36"
+             "xl:gap-6"
              "xl:justify-center"]}
     [:div
      {:class ["mx-6"
@@ -89,7 +89,23 @@
                     "ease-in-out"
                     "duration-700"
                     "hover:text-indigo-200"]}
-           constants/fSlash link]])]]]]
+           constants/fSlash link]])]]]
+    [:div {:class ["mx-6"
+                   "my-6"
+                   "bg-slate-900/40"
+                   "w-[250px]"
+                   "h-[180px]"
+                   "flex"
+                   "justify-center"
+                   "items-center"
+                   "text-slate-300/30"
+                   "rounded-xl"
+                   "border-2"
+                   "border-dotted"
+                   "border-white/10"]}
+                  "Placeholder for the Badge"
+     ]
+    ]
 
    [:div
     {:class ["w-full"

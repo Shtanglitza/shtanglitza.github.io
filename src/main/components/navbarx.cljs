@@ -30,7 +30,7 @@
 (defn toggle-menu []
   (swap! menu-open? not))
 
-(def content-names ["Home" "About" "Capabilities" "Expertise"])
+(def content-names ["Home" "About" "Capabilities" "Expertise" "Security"])
 
 (defn- make-menu
   "Creates menu. is-footer? indicates the use of a list inside footer element

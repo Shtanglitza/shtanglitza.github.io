@@ -267,7 +267,7 @@
                         
                                          
  ; Defining Expertise section
-                                         
+
 (def expertise-sec [:div
                     {:id "expertise"
                      :class ["flex"
@@ -341,6 +341,226 @@
                                     "xl:grid-cols-2"
                                     "2xl:grid-cols-2"]}
                       ui-cards/expertise-ui-cards]]])
+
+(def security-sec [:div
+                       {:id "security"
+                        :class ["relative"
+                                "overflow-hidden"
+                                "h-auto"
+                                "py-36"
+                                "flex"
+                                "items-center"
+                                "justify-center"
+                                "bg-indigo-50"]}
+                       [:div
+                        {:class ["w-full"
+                                 "h-full"
+                                 "bg-gradient-to-br"
+                                 "from-[#F1F5FB]"
+                                 "from-10%"
+                                 "to-indigo-200/70"
+                                 "via-42%"
+                                 "to-indigo-500/40"
+                                 "to-33% absolute"
+                                 "bottom-0"
+                                 "right-0"
+                                 "z-20"
+                                 "justify-start"
+                                 "items-center"
+                                 "overflow-hidden"]}
+                        ;[:img
+                        ; {:class ["absolute"
+                        ;          "right-0"
+                        ;          "-mt-4"
+                        ;          "-mr-20"
+                        ;          "h-full"
+                        ;          "scale-[150%]"
+                        ;          "-rotate-[18deg]"
+                        ;          "hidden"
+                        ;          "lg:flex"
+                        ;          "mix-blend-lighten"
+                        ;          "opacity-[20%]"
+                        ;          "animate-rotateWobble18"
+                        ;          "[animation-delay-1500]"]
+                        ;  :src (str constants/assets-url "img/data_lock_wall.svg")}]
+                        ;[:img
+                        ; {:class ["absolute"
+                        ;          "right-0"
+                        ;          "-mt-6"
+                        ;          "-mr-24"
+                        ;          "h-full"
+                        ;          "scale-[150%]"
+                        ;          "-rotate-[14deg]"
+                        ;          "hidden"
+                        ;          "lg:flex"
+                        ;          "opacity-[40%]"
+                        ;          "animate-rotateWobble16"]
+                        ;  :src (str constants/assets-url "img/data_lock_wall.svg")}]
+                        [:img
+                         {:class ["absolute"
+                                  "right-0"
+                                  "-mt-12"
+                                  "-mr-28"
+                                  "h-full"
+                                  "scale-[150%]"
+                                  "-rotate-[10deg]"
+                                  "hidden"
+                                  "lg:flex"
+                                  "mix-blend-lighten"]
+                          :src (str constants/assets-url "img/data_lock_wall.svg")}]
+                        ]
+
+                       [:div
+                        {:class ["flex"
+                                 "flex-col"
+                                 "w-full"
+                                 "h-fit"
+                                 "items-center"
+                                 "max-w-screen-md"
+                                 "p-8"
+                                 "md:max-w-screen-lg"
+                                 "md:p-16"
+                                 "lg:max-w-screen-2xl"
+                                 "lg:p-6 z-30"]}
+
+                        [:div
+                         {:class ["flex"
+                                  "flex-col"
+                                  "w-full"
+                                  "justify-center"
+                                  "items-center"
+                                  "text-custom-darkest-violet"
+                                  "lg:w-2/3"]}
+
+                         [:div
+                          {:class ["flex"
+                                   "flex-col"
+                                   "items-center"
+                                   "justify-start"
+                                   "lg:flex-row"]}
+                          [:img
+                           {:class ["mx-6"
+                                    "w-14"
+                                    "h-auto"]
+                            :src (str constants/assets-url "img/data_sec_lock.svg")}]
+                          [:h1
+                           {:class ["text-center"
+                                    "my-6"
+                                    "text-gray-950"
+                                    "text-3xl"
+                                    "font-black"
+                                    "md:text-6xl"]}
+                           "Security"]]
+                         [:p
+                          {:class ["text-xl"
+                                   "text-black/70"
+                                   "mt-4"
+                                   "mb-6"
+                                   "hyphens-auto"
+                                   "md:text-2xl"
+                                   "md:text-center"]}
+                          "\u2003 At Shtanglitza " [:span {:class ["font-bold"]} "we treat the security of our client’s information  as our top priority"] ".
+                          We maintain a robust " [:span {:class ["font-bold"]} "ISO 27001:2022"] " compliant, control framework that protects our people, technology,
+                          and physical assets. By consistently applying these controls, we provide a foundation of trust that enables
+                          our client relationships to thrive."]
+
+
+                         [:section
+                          {:class ["flex" "w-full" "h-fit"
+                                   "flex-col" "lg:flex-row" "flex-wrap"
+                                   "items-center" "justify-center" "gap-3"
+                                   "mt-6"
+                                   ]}
+                          ;; children come after the attrs map ⤵
+                          [:a {:href "/your-link"
+                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
+                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
+                           "Information Classification"]
+
+                          [:a {:href "/your-link"
+                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
+                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
+                           "Access Control"]
+
+                          [:a {:href "/your-link"
+                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
+                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
+                           "Supplier Risk Management"]
+
+                          [:a {:href "/your-link"
+                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
+                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
+                           "Incident Management"]
+
+                          [:a {:href "/your-link"
+                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
+                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
+                           "Business Continuity"]
+
+                          [:a {:href "/your-link"
+                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
+                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
+                           "Legal and Regulatory Requirements"]
+
+                          [:a {:href "/your-link"
+                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
+                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
+                           "People Security"]
+
+                          [:a {:href "/your-link"
+                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
+                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
+                           "Remote Working, Endpoint Logical and Physical Security"]
+
+                          [:a {:href "/your-link"
+                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
+                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
+                           "Vulnerability Management"]
+
+                          [:a {:href "/your-link"
+                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
+                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
+                           "Information Backup"]
+
+                          [:a {:href "/your-link"
+                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
+                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
+                           "Logging"]
+
+                          [:a {:href "/your-link"
+                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
+                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
+                           "Cryptography"]
+
+                          [:a {:href "/your-link"
+                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
+                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
+                           "SDLC and Change Management"]
+
+
+                          ]
+
+                         [:a {:href "/your-link"
+                              :class ["inline-flex"
+                                      "items-center"
+                                      "justify-center"
+                                      "mt-12"
+                                      "px-6"
+                                      "py-3"
+                                      "rounded-lg"
+                                      "bg-[#8284F4]"
+                                      "hover:bg-[#7375ecff]"
+                                      "text-white"
+                                      "font-semibold"
+                                      "shadow-[#7375ecff]/30"
+                                      "shadow-lg"
+                                      "transition-colors"
+                                      "duration-200"]}
+                          "More Details"]
+
+                         ]
+                      ]
+                   ])
                                      
 ;Defining video cover
 
@@ -392,7 +612,8 @@
     header
     about-sec
     capabilities-sec
-    expertise-sec]])                                                                                  
+    expertise-sec
+    security-sec]])
                                                                                            
                                                                                            
 
