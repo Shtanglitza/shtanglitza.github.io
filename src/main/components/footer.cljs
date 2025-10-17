@@ -90,21 +90,19 @@
                     "duration-700"
                     "hover:text-indigo-200"]}
            constants/fSlash link]])]]]
-    [:div {:class ["mx-6"
-                   "my-6"
-                   "bg-slate-900/40"
-                   "w-[250px]"
-                   "h-[180px]"
-                   "flex"
-                   "justify-center"
-                   "items-center"
-                   "text-slate-300/30"
-                   "rounded-xl"
-                   "border-2"
-                   "border-dotted"
-                   "border-white/10"]}
-                  "Placeholder for the Badge"
-     ]
+
+    [:div
+     {:class ["flex" "flex-col" "lg:flex-row"]}
+     [:div {:class ["mx-6" "my-6" "max-w-[350px]" "min-h-[200px]" "flex" "flex-col" "justify-center" "items-center" "text-slate-300/70" "text-[14px]" "rounded-xl"]}
+      [:img
+       {:src (str constants/assets-url "img/iso_27001.svg")
+        :class ["w-full" "h-auto"]}]
+      [:span {:class "ml-2 my-2"}
+       [:a {:href (str constants/assets-url "files/certificates/Shtanglitza sert 27k_02102025111313.pdf")
+            :class ["text-teal-500" "hover:text-teal-600" "whitespace-nowrap" "hover:no-underline" "tracking-wider"]
+            :target "_blank"}
+        "Click here"]
+       " or scan the QR code above to download PDF certificate."]]]
     ]
 
    [:div
@@ -114,11 +112,11 @@
              "flex-row"
              "m-0"     
              "py-14 "
-             "justify-center" 
+             "justify-center"
              "align-middle"]}
     [:p
      {:class ["text-white"
               "text-sm"
               "font-light"
               "tracking-widest"]}
-     "All rights reserved (c) 2024 Shtangltza.ai"]]])
+     "All rights reserved (c) " (.getFullYear (js/Date.)) " Shtangltza.ai"]]])

@@ -2,11 +2,36 @@
   (:require
    [reagent.core :as r]
    [main.constants :as constants]
-   [main.components.ui-cards :as ui-cards]))
+   [main.components.ui-cards :as ui-cards]
+   [reitit.frontend.easy :as rfe]))
 
 
-;; Defining header section 
-;; Changed height for this parent container to calculated-height new class from css -auto-calculate height ased on provided script- origial setting is h-full
+(defn goto-security []
+  (rfe/push-state :security)
+  (.scrollTo js/window #js{ :top 0 :behavior "instant"}))
+
+(defn goto-security-with-hash [hash-id]
+  (rfe/push-state :security)
+  (r/next-tick #(set! (.-hash js/location) hash-id)))
+
+(defn goto-security-top []
+  (rfe/push-state :security)
+  (r/next-tick #(set! (.-hash js/location) "top")))
+
+(defn security-chip [{:keys [id label]}]
+  [:button
+   {:on-click #(goto-security-with-hash id)
+    :class ["flex-inline" "px-4" "py-2" "rounded-full"
+            "border"
+            "border-emerald-200/30"
+            "bg-emerald-300/80"
+            "hover:bg-emerald-300"
+            "transition-all ease-in-out duration-700"
+            "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"
+            "hover:shadow-2xl" "hover:shadow-emerald-400"
+            ""]}
+   label])
+
 (def header [:div
               {:id "home"
                :class ["flex"
@@ -342,227 +367,127 @@
                                     "2xl:grid-cols-2"]}
                       ui-cards/expertise-ui-cards]]])
 
-(def security-sec [:div
-                       {:id "security"
-                        :class ["relative"
-                                "overflow-hidden"
-                                "h-auto"
-                                "py-36"
-                                "flex"
-                                "items-center"
-                                "justify-center"
-                                "bg-indigo-50"]}
-                       [:div
-                        {:class ["w-full"
-                                 "h-full"
-                                 "bg-gradient-to-br"
-                                 "from-[#F1F5FB]"
-                                 "from-10%"
-                                 "to-indigo-200/70"
-                                 "via-42%"
-                                 "to-indigo-500/40"
-                                 "to-33% absolute"
-                                 "bottom-0"
-                                 "right-0"
-                                 "z-20"
-                                 "justify-start"
-                                 "items-center"
-                                 "overflow-hidden"]}
-                        ;[:img
-                        ; {:class ["absolute"
-                        ;          "right-0"
-                        ;          "-mt-4"
-                        ;          "-mr-20"
-                        ;          "h-full"
-                        ;          "scale-[150%]"
-                        ;          "-rotate-[18deg]"
-                        ;          "hidden"
-                        ;          "lg:flex"
-                        ;          "mix-blend-lighten"
-                        ;          "opacity-[20%]"
-                        ;          "animate-rotateWobble18"
-                        ;          "[animation-delay-1500]"]
-                        ;  :src (str constants/assets-url "img/data_lock_wall.svg")}]
-                        ;[:img
-                        ; {:class ["absolute"
-                        ;          "right-0"
-                        ;          "-mt-6"
-                        ;          "-mr-24"
-                        ;          "h-full"
-                        ;          "scale-[150%]"
-                        ;          "-rotate-[14deg]"
-                        ;          "hidden"
-                        ;          "lg:flex"
-                        ;          "opacity-[40%]"
-                        ;          "animate-rotateWobble16"]
-                        ;  :src (str constants/assets-url "img/data_lock_wall.svg")}]
-                        [:img
-                         {:class ["absolute"
-                                  "right-0"
-                                  "-mt-12"
-                                  "-mr-28"
-                                  "h-full"
-                                  "scale-[150%]"
-                                  "-rotate-[10deg]"
-                                  "hidden"
-                                  "lg:flex"
-                                  "mix-blend-lighten"]
-                          :src (str constants/assets-url "img/data_lock_wall.svg")}]
-                        ]
-
-                       [:div
-                        {:class ["flex"
-                                 "flex-col"
-                                 "w-full"
-                                 "h-fit"
-                                 "items-center"
-                                 "max-w-screen-md"
-                                 "p-8"
-                                 "md:max-w-screen-lg"
-                                 "md:p-16"
-                                 "lg:max-w-screen-2xl"
-                                 "lg:p-6 z-30"]}
-
-                        [:div
-                         {:class ["flex"
-                                  "flex-col"
-                                  "w-full"
-                                  "justify-center"
-                                  "items-center"
-                                  "text-custom-darkest-violet"
-                                  "lg:w-2/3"]}
-
-                         [:div
-                          {:class ["flex"
-                                   "flex-col"
-                                   "items-center"
-                                   "justify-start"
-                                   "lg:flex-row"]}
-                          [:img
-                           {:class ["mx-6"
-                                    "w-14"
-                                    "h-auto"]
-                            :src (str constants/assets-url "img/data_sec_lock.svg")}]
-                          [:h1
-                           {:class ["text-center"
-                                    "my-6"
-                                    "text-gray-950"
-                                    "text-3xl"
-                                    "font-black"
-                                    "md:text-6xl"]}
-                           "Security"]]
-                         [:p
-                          {:class ["text-xl"
-                                   "text-black/70"
-                                   "mt-4"
-                                   "mb-6"
-                                   "hyphens-auto"
-                                   "md:text-2xl"
-                                   "md:text-center"]}
-                          "\u2003 At Shtanglitza " [:span {:class ["font-bold"]} "we treat the security of our client’s information  as our top priority"] ".
-                          We maintain a robust " [:span {:class ["font-bold"]} "ISO 27001:2022"] " compliant, control framework that protects our people, technology,
-                          and physical assets. By consistently applying these controls, we provide a foundation of trust that enables
-                          our client relationships to thrive."]
+(def security-sec
+  (let [bg-url (str constants/assets-url "img/security_bck.webp")]
+  [:div
+                   {:id "security"
+                    :class ["relative"
+                            "overflow-hidden"
+                            "h-auto"
+                            "py-36"
+                            "flex"
+                            "items-center"
+                            "justify-center"
+                            "bg-center"
+                            "bg-cover"
+                            "bg-no-repeat"
+                            ]
+                    :style {:backgroundImage (str "url('" bg-url "')")}
+                    }
+                   [:div {:class ["absolute inset-0" "bg-[linear-gradient(to_bottom_right,_#1D1B48_0%,_#726AF0_60%,_#726AF000_100%)]" "backdrop-blur-[2px]" "mix-blend-multiply" "opacity-[90%]" "z-1"]}]
+                    [:div {:class ["absolute inset-0"
+                  "bg-[linear-gradient(to_bottom_right,_#1A1944_0%,_#1A1944E6_50%,_#1A194400_100%)]"
+                  "backdrop-blur-[8px]"
+                  "opacity-100"
+                  "z-2"]}]
 
 
-                         [:section
-                          {:class ["flex" "w-full" "h-fit"
-                                   "flex-col" "lg:flex-row" "flex-wrap"
-                                   "items-center" "justify-center" "gap-3"
-                                   "mt-6"
-                                   ]}
-                          ;; children come after the attrs map ⤵
-                          [:a {:href "/your-link"
-                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
-                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
-                           "Information Classification"]
+   [:div
+                    {:class ["flex"
+                             "flex-col"
+                             "w-full"
+                             "h-fit"
+                             "items-center"
+                             "max-w-screen-md"
+                             "p-8"
+                             "md:max-w-screen-lg"
+                             "md:p-16"
+                             "lg:max-w-screen-2xl"
+                             "lg:p-6 z-30"]}
 
-                          [:a {:href "/your-link"
-                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
-                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
-                           "Access Control"]
+                    [:div
+                     {:class ["flex"
+                              "flex-col"
+                              "w-full"
+                              "justify-center"
+                              "items-center"
+                              "text-custom-darkest-violet"
+                              "lg:w-2/3"]}
 
-                          [:a {:href "/your-link"
-                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
-                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
-                           "Supplier Risk Management"]
+                     [:div
+                      {:class ["flex"
+                               "flex-col"
+                               "items-center"
+                               "justify-start"
+                               "lg:flex-row"]}
+                      [:img
+                       {:class ["mx-6"
+                                "w-14"
+                                "h-auto"]
+                        :src (str constants/assets-url "img/data_sec_lock.svg")}]
+                      [:h1
+                       {:class ["text-center"
+                                "my-6"
+                                "text-white"
+                                "text-3xl"
+                                "font-black"
+                                "md:text-6xl"
+                                "text-shadow-md"]}
+                       "Security"]]
+                     [:p
+                      {:class ["text-xl"
+                               "text-white"
+                               "drop-shadow-sm"
+                               "mt-4"
+                               "mb-6"
+                               "hyphens-auto"
+                               "md:text-2xl"
+                               "md:text-center"
+                               "text-shadow-md"]}
+                      "\u2003 At Shtanglitza " [:span {:class ["font-bold"]} "we treat the security of our client's information as our top priority"] ".
+                      We maintain a robust " [:span {:class ["font-bold"]} "ISO 27001:2022"] " compliant, control framework that protects our people, technology,
+                      and physical assets. By consistently applying these controls, we provide a foundation of trust that enables
+                      our client relationships to thrive.\n
+                      "]
+                     [:p
+                      {:class ["text-xl"
+                               "text-white"
+                               "mt-4"
+                               "mb-6"
+                               "hyphens-auto"
+                               "md:text-2xl"
+                               "md:text-center"]}
+                      "If you would like to know more about Shtanglitza’s Information Security program, please read the"
+                      [:button {::on-click #(goto-security)
+                      :class ["text-[#77F7E8]" "hover:text-[#4ED9CB]" "whitespace-nowrap" "hover:no-underline" "tracking-wider"]}
+                      " \"How we do it" \"]
 
-                          [:a {:href "/your-link"
-                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
-                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
-                           "Incident Management"]
+                      " section "
+                      [:span
+                       {:class ["italic" "font-light"]}
+                       "(click here or Read more button below)"
+                       ]
+                      " or contact us at  "
+                      [:a
+                       {:href (str "mailto:" constants/email-address)
+                        :class ["text-[#77F7E8]" "hover:text-[#4ED9CB]" "whitespace-nowrap" "hover:no-underline" "tracking-wider"]
+                        :title "Contact us via email"}
+                       "security@shtanglitza.ai"]]
 
-                          [:a {:href "/your-link"
-                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
-                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
-                           "Business Continuity"]
+                     [:section
+                      {:class ["flex" "w-full" "h-fit" "flex-row" "flex-wrap"
+                               "items-center" "justify-center" "gap-3" "mt-6"]}
+                      (for [chip constants/security-chips]
+                        ^{:key (:id chip)} [security-chip chip])]
 
-                          [:a {:href "/your-link"
-                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
-                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
-                           "Legal and Regulatory Requirements"]
+                     [:button
+                      {:on-click #(goto-security)
+                       :class ["inline-flex" "items-center" "justify-center" "mt-12" "w-fit"
+                               "px-6" "py-3" "rounded-lg" "bg-white/90" "hover:bg-white"
+                               "text-[#8284F4]" "font-semibold" "shadow-[#7375ec]/30" "shadow-lg"
+                               "transition-colors" "duration-200"]}
+                      "Read More"]]]]))
 
-                          [:a {:href "/your-link"
-                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
-                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
-                           "People Security"]
-
-                          [:a {:href "/your-link"
-                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
-                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
-                           "Remote Working, Endpoint Logical and Physical Security"]
-
-                          [:a {:href "/your-link"
-                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
-                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
-                           "Vulnerability Management"]
-
-                          [:a {:href "/your-link"
-                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
-                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
-                           "Information Backup"]
-
-                          [:a {:href "/your-link"
-                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
-                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
-                           "Logging"]
-
-                          [:a {:href "/your-link"
-                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
-                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
-                           "Cryptography"]
-
-                          [:a {:href "/your-link"
-                               :class ["inline-flex" "px-4" "py-2" "rounded-full"
-                                       "bg-green-400/30" "hover:bg-green-400/50" "transition-all ease-in-out duration-700" "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"]}
-                           "SDLC and Change Management"]
-
-
-                          ]
-
-                         [:a {:href "/your-link"
-                              :class ["inline-flex"
-                                      "items-center"
-                                      "justify-center"
-                                      "mt-12"
-                                      "px-6"
-                                      "py-3"
-                                      "rounded-lg"
-                                      "bg-[#8284F4]"
-                                      "hover:bg-[#7375ecff]"
-                                      "text-white"
-                                      "font-semibold"
-                                      "shadow-[#7375ecff]/30"
-                                      "shadow-lg"
-                                      "transition-colors"
-                                      "duration-200"]}
-                          "More Details"]
-
-                         ]
-                      ]
-                   ])
-                                     
-;Defining video cover
 
 (defn video-cover []
  (let [video-loaded? (r/atom false)]
@@ -600,7 +525,7 @@
                                                                                            
 ; Definng initial component for landing-page render
 
-(defn init-landing-page []
+(defn Page []
   [:div 
    
    [video-cover]
