@@ -25,7 +25,7 @@ module.exports = {
     }
   },
   plugins: [
-    // require('daisyui'),  
+    // require('daisyui'),
   ],
   output: {
     path: './public/assets/css',

@@ -93,9 +93,9 @@
     {:sec-name title
      :card-id (str (constants/transform-string title))
      :icons (str constants/assets-url "img/data_sec.svg")
-     :content "Our team prioritizes data security and adheres to industry best practices
-               and regulatory standards, ensuring the protection of sensitive biomedical data while
-               maintaining compliance with relevant data privacy regulations, such as HIPAA and GDPR."
+     :content "Our team prioritizes data security and adheres to industry best practices and regulatory requirements,
+     ensuring the protection of sensitive biomedical data while maintaining compliance international standards,
+     such as ISO 27001."
      :bg-colors ["bg-gradient-to-br"
                  "from-slate-100/80" 
                  "from-45%" 

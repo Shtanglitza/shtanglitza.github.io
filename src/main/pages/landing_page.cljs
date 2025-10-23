@@ -2,11 +2,40 @@
   (:require
    [reagent.core :as r]
    [main.constants :as constants]
-   [main.components.ui-cards :as ui-cards]))
+   [main.components.ui-cards :as ui-cards]
+   [main.pages.security-page :refer [handle-nav-click]]
+   [reitit.frontend.easy :as rfe]))
 
 
-;; Defining header section 
-;; Changed height for this parent container to calculated-height new class from css -auto-calculate height ased on provided script- origial setting is h-full
+(defn goto-security []
+  (rfe/push-state :security)
+  (.scrollTo js/window #js{ :top 0 :behavior "instant"}))
+
+(defn goto-security-with-hash [hash-id]
+  (rfe/push-state :security)
+  (js/setTimeout
+    (fn []
+      (handle-nav-click hash-id)) ; Use the imported function directly
+    400))
+
+(defn goto-security-top []
+  (rfe/push-state :security)
+  (r/next-tick #(set! (.-hash js/location) "top")))
+
+(defn security-chip [{:keys [id label]}]
+  [:button
+   {:on-click #(goto-security-with-hash id)
+    :class ["flex-inline" "px-4" "py-2" "rounded-full"
+            "border"
+            "border-emerald-200/30"
+            "bg-emerald-300/80"
+            "hover:bg-emerald-300"
+            "transition-all ease-in-out duration-700"
+            "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"
+            "hover:shadow-2xl" "hover:shadow-emerald-400"
+            ""]}
+   label])
+
 (def header [:div
               {:id "home"
                :class ["flex"
@@ -267,7 +296,7 @@
                         
                                          
  ; Defining Expertise section
-                                         
+
 (def expertise-sec [:div
                     {:id "expertise"
                      :class ["flex"
@@ -341,8 +370,129 @@
                                     "xl:grid-cols-2"
                                     "2xl:grid-cols-2"]}
                       ui-cards/expertise-ui-cards]]])
-                                     
-;Defining video cover
+
+(def security-sec
+  (let [bg-url (str constants/assets-url "img/security_bck.webp")]
+  [:div
+                   {:id "security"
+                    :class ["relative"
+                            "overflow-hidden"
+                            "h-auto"
+                            "py-36"
+                            "flex"
+                            "items-center"
+                            "justify-center"
+                            "bg-center"
+                            "bg-cover"
+                            "bg-no-repeat"
+                            "animate-subtle-move"
+                            ]
+                    :style {:backgroundImage (str "url('" bg-url "')")}
+                    }
+                   [:div {:class ["absolute inset-0" "bg-[linear-gradient(to_bottom_right,_#1D1B48_0%,_#726AF0_60%,_#726AF000_100%)]" "backdrop-blur-[2px]" "mix-blend-multiply" "opacity-[90%]" "z-1"]}]
+                    [:div {:class ["absolute inset-0"
+                  "bg-[linear-gradient(to_bottom_right,_#1A1944_0%,_#1A1944E6_50%,_#1A194400_100%)]"
+                  "backdrop-blur-[8px]"
+                  "opacity-100"
+                  "z-2"]}]
+
+
+   [:div
+                    {:class ["flex"
+                             "flex-col"
+                             "w-full"
+                             "h-fit"
+                             "items-center"
+                             "max-w-screen-md"
+                             "p-8"
+                             "md:max-w-screen-lg"
+                             "md:p-16"
+                             "lg:max-w-screen-2xl"
+                             "lg:p-6 z-30"]}
+
+                    [:div
+                     {:class ["flex"
+                              "flex-col"
+                              "w-full"
+                              "justify-center"
+                              "items-center"
+                              "text-custom-darkest-violet"
+                              "lg:w-2/3"]}
+
+                     [:div
+                      {:class ["flex"
+                               "flex-col"
+                               "items-center"
+                               "justify-start"
+                               "lg:flex-row"]}
+                      [:img
+                       {:class ["mx-6"
+                                "w-14"
+                                "h-auto"]
+                        :src (str constants/assets-url "img/data_sec_lock.svg")}]
+                      [:h1
+                       {:class ["text-center"
+                                "my-6"
+                                "text-white"
+                                "text-3xl"
+                                "font-black"
+                                "md:text-6xl"
+                                "text-shadow-md"]}
+                       "Security"]]
+                     [:p
+                      {:class ["text-xl"
+                               "text-white"
+                               "drop-shadow-sm"
+                               "mt-4"
+                               "mb-6"
+                               "hyphens-auto"
+                               "md:text-2xl"
+                               "md:text-center"
+                               "text-shadow-md"]}
+                      "\u2003 At Shtanglitza " [:span {:class ["font-bold"]} "we treat the security of our client's information as our top priority"] ".
+                      We maintain a robust " [:span {:class ["font-bold"]} "ISO 27001:2022"] " compliant, control framework that protects our people, technology,
+                      and physical assets. By consistently applying these controls, we provide a foundation of trust that enables
+                      our client relationships to thrive.\n
+                      "]
+                     [:p
+                      {:class ["text-xl"
+                               "text-white"
+                               "mt-4"
+                               "mb-6"
+                               "hyphens-auto"
+                               "md:text-2xl"
+                               "md:text-center"]}
+                      "If you would like to know more about Shtanglitza’s Information Security program, please read the"
+                      [:button {::on-click #(goto-security)
+                      :class ["text-[#77F7E8]" "hover:text-[#4ED9CB]" "whitespace-nowrap" "hover:no-underline" "tracking-wider"]}
+                      " \"How we do it" \"]
+
+                      " section "
+                      [:span
+                       {:class ["italic" "font-light"]}
+                       "(click here or Read more button below)"
+                       ]
+                      " or contact us at  "
+                      [:a
+                       {:href (str "mailto:" constants/email-address)
+                        :class ["text-[#77F7E8]" "hover:text-[#4ED9CB]" "whitespace-nowrap" "hover:no-underline" "tracking-wider"]
+                        :title "Contact us via email"}
+                       "security@shtanglitza.ai"]]
+
+                     [:section
+                      {:class ["flex" "w-full" "h-fit" "flex-row" "flex-wrap"
+                               "items-center" "justify-center" "gap-3" "mt-6"]}
+                      (for [chip constants/security-chips]
+                        ^{:key (:id chip)} [security-chip chip])]
+
+                     [:button
+                      {:on-click #(goto-security)
+                       :class ["inline-flex" "items-center" "justify-center" "mt-12" "w-fit"
+                               "px-6" "py-3" "rounded-lg" "bg-white/90" "hover:bg-white"
+                               "text-[#8284F4]" "font-semibold" "shadow-[#7375ec]/30" "shadow-lg"
+                               "transition-colors" "duration-200"]}
+                      "Read More"]]]]))
+
 
 (defn video-cover []
  (let [video-loaded? (r/atom false)]
@@ -380,7 +530,7 @@
                                                                                            
 ; Definng initial component for landing-page render
 
-(defn init-landing-page []
+(defn Page []
   [:div 
    
    [video-cover]
@@ -388,11 +538,13 @@
     {:class ["p-0"
              "m-0"
              "relative"
-             "z-30"]}
+             "z-30"
+             "fade-in"]}
     header
     about-sec
     capabilities-sec
-    expertise-sec]])                                                                                  
+    expertise-sec
+    security-sec]])
                                                                                            
                                                                                            
 
