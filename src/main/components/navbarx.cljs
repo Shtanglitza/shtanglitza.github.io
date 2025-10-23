@@ -342,7 +342,7 @@
                 (toggle-menu)))))
 
   (letfn [(handle-scroll []
-            (if (>= (.-pageYOffset js/window) 100)
+            (if (>= (.-pageYOffset js/window) 50)
               (do (reset! show-bg? true))
               (do (reset! show-bg? false))))]
     (js/window.addEventListener "scroll" handle-scroll)

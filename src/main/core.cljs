@@ -5,14 +5,6 @@
    [main.components.footer :as footer-section]
    ;[main.pages.landing-page :as landing-page]
    [main.router :as router]))
-   
-
-;(defn main []
-;  [:main
-;   {:class ["w-full"
-;            "h-max"]}
-;   [landing-page/init-landing-page]
-;   ])
 
 (defn main []
   [:main {:class ["flex-grow" "w-full"]}
@@ -42,14 +34,11 @@
    [main]
    [footer-section/footer]])
 
-; All functions that need to be executed after DOM render are called here
-
 (defn ^:dev/after-load start []
   (js/console.log "start")
   (navbar-menu/nav-scroll)
   (navbar-menu/active-link-on-scroll)
 
-  ;; Handle initial page load with hash
   (let [hash (.-hash js/location)]
     (when (and (not (empty? hash)) (not= hash "#"))
       (js/console.log "🔄 Handling initial hash:" hash)

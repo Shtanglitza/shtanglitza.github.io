@@ -3,6 +3,7 @@
    [reagent.core :as r]
    [main.constants :as constants]
    [main.components.ui-cards :as ui-cards]
+   [main.pages.security-page :refer [handle-nav-click]]
    [reitit.frontend.easy :as rfe]))
 
 
@@ -12,7 +13,10 @@
 
 (defn goto-security-with-hash [hash-id]
   (rfe/push-state :security)
-  (r/next-tick #(set! (.-hash js/location) hash-id)))
+  (js/setTimeout
+    (fn []
+      (handle-nav-click hash-id)) ; Use the imported function directly
+    400))
 
 (defn goto-security-top []
   (rfe/push-state :security)
@@ -381,6 +385,7 @@
                             "bg-center"
                             "bg-cover"
                             "bg-no-repeat"
+                            "animate-subtle-move"
                             ]
                     :style {:backgroundImage (str "url('" bg-url "')")}
                     }
@@ -533,7 +538,8 @@
     {:class ["p-0"
              "m-0"
              "relative"
-             "z-30"]}
+             "z-30"
+             "fade-in"]}
     header
     about-sec
     capabilities-sec

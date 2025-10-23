@@ -182,3 +182,35 @@ html body {
 .text-shadow-none {
   text-shadow: none;
 }
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.6s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes subtle-move {
+  0%, 100% {
+    background-position: center center;
+  }
+  33% {
+    background-position: 2% 2%;
+  }
+  66% {
+    background-position: -2% -2%;
+  }
+}
+
+.animate-subtle-move {
+  animation: subtle-move 45s ease-in-out infinite;
+}

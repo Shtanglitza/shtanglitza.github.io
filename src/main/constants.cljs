@@ -218,23 +218,6 @@
      [:li "Changes to Shtanglitza ICT products and services prior to being deployed are planned, tested, and approved."]]}])
 
 
-
-;;old version
-;(def security-chips
-;  [{:id "information-classification" :label "Information Classification"}
-;   {:id "access-control" :label "Access Control"}
-;   {:id "supplier-risk-management" :label "Supplier Risk Management"}
-;   {:id "incident-management" :label "Incident Management"}
-;   {:id "business-continuity" :label "Business Continuity"}
-;   {:id "legal-regulatory" :label "Legal and Regulatory Requirements"}
-;   {:id "people-security" :label "People Security"}
-;   {:id "remote-working" :label "Remote Working, Endpoint Logical and Physical Security"}
-;   {:id "vulnerability-management" :label "Vulnerability Management"}
-;   {:id "information-backup" :label "Information Backup"}
-;   {:id "logging" :label "Logging"}
-;   {:id "cryptography" :label "Cryptography"}
-;   {:id "sdlc-change-management" :label "SDLC and Change Management"}])
-
 (def security-chips
   (mapv (fn [section]
           {:id (:id section)
