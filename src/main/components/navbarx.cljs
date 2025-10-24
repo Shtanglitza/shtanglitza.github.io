@@ -352,18 +352,20 @@
   (let [links (array-seq (.querySelectorAll js/document ".nav-link"))]
     (js/window.addEventListener "scroll"
                                 (fn []
-                                  (let [scroll-y (.-pageYOffset js/window)
-                                        new-index (->> links
-                                                       (map-indexed vector)
-                                                       (filter #(let [href (j/call (second %) :getAttribute "href")
-                                                                      target (j/call js/document :querySelector href)]
-                                                                  (and target
-                                                                       (<= (j/get target :offsetTop) scroll-y)
-                                                                       (> (+ (j/get target :offsetTop) (j/get target :offsetHeight)) scroll-y))))
-                                                       ffirst)]
-                                    (reset! active-index new-index))))))
+                                  (if (on-landing?) ; ONLY this line added
+                                    (let [scroll-y (.-pageYOffset js/window)
+                                          new-index (->> links
+                                                         (map-indexed vector)
+                                                         (filter #(let [href (j/call (second %) :getAttribute "href")
+                                                                        target (j/call js/document :querySelector href)]
+                                                                    (and target
+                                                                         (<= (j/get target :offsetTop) scroll-y)
+                                                                         (> (+ (j/get target :offsetTop) (j/get target :offsetHeight)) scroll-y))))
+                                                         ffirst)]
+                                      (reset! active-index new-index))
+                                    (reset! active-index nil))))))
 
-;; Navbar component - UNCHANGED from your working version
+
 (defn navbar []
   [:nav
    {:id "my-navbar"

@@ -172,7 +172,7 @@
                                     "flex" "flex-row"]}
 
          [:div {:class ["xl:ml-[25%]"]}
-          [:div {:class [ "mx-auto" "px-6" "py-16"]}
+          [:div {:class [ "mx-auto" "lg:px-6" "py-16"]}
 
            [:section {:class ["mb-16" "mt-12" "relative" "overflow-hidden" "bg-center" "bg-cover" "bg-no-repeat" "min-h-[420px]" "rounded-3xl" "shadow-sm" "px-8" "pt-16" "pb-8" "animate-subtle-move"]
                       :style {:backgroundImage (str "url('" bg-url "')")} }
