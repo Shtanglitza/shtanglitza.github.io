@@ -7,7 +7,6 @@
 (def open-section (r/atom nil))
 
 
-
 (defn toggle-section [section-id]
   (swap! open-section
          (fn [current-open]
@@ -48,13 +47,41 @@
        :class ["w-full" "text-left" "text-sm"  "px-3" "py-0.5" "rounded" "text-[#6366F1]" "hover:text-indigo-900" "transition-colors"
                (when @is-open? "text-indigo-900 font-bold")]}
       (:title section)]]))
-
+;;new sidebar version with fixed position and scroll opacity fade in-out transition
 (defn sidebar []
-  [:div {:class ["sticky" "top-4" "w-64" "bg-transparent"  "pt-8" "hidden" "lg:block" "overflow-y-auto" "sm:h-[calc(100vh-8rem)]" "2xl:h-[calc(100vh-34rem)]" "pl-0" "-ml-8"]}
-   [:h3 {:class ["text-lg" "font-bold" "text-gray-900" "mb-4" "mt-24" "ms-3" "border-b" "pb-2"]} "Section Overview"]
-   [:ul {:class ["space-y-1"]}
-    (for [section constants/security-sections]
-      ^{:key (:id section)} [sidebar-item section])]])
+  (let [scroll-position (r/atom 1)
+        handle-scroll (fn []
+                        (let [scroll-top (.-scrollY js/window)
+                              doc-height (.-scrollHeight (.-documentElement js/document))
+                              win-height (.-innerHeight js/window)
+                              from-bottom (+ scroll-top win-height)
+                              scroll-percent (/ from-bottom doc-height)
+                              fade-start 0.78
+                              opacity (if (> scroll-percent fade-start)
+                                        (let [progress (/ (- scroll-percent fade-start) (- 1 fade-start))]
+                                          (max 0 (- 1 (* progress 1.8))))
+                                        1)]
+                          (reset! scroll-position opacity)))]
+
+    (r/create-class
+      {:component-did-mount
+       (fn []
+         (.addEventListener js/window "scroll" handle-scroll)
+         (handle-scroll))
+
+       :component-will-unmount
+       (fn []
+         (.removeEventListener js/window "scroll" handle-scroll))
+
+       :reagent-render
+       (fn []
+         [:div {:class ["fixed" "top-0" "w-fit" "max-w-[20%]" "bg-transparent" "hidden" "xl:block" "overflow-y-auto" "h-full" "pl-16" "self-start" "z-10" "mt-16"]
+                :style {:opacity @scroll-position
+                        :transition "opacity 0.3s ease-in-out"}}
+          [:h3 {:class ["text-lg" "font-bold" "text-gray-900" "mb-4" "mt-12" "ms-3" "border-b" "pb-2"]} "Section Overview"]
+          [:ul {:class ["space-y-1"]}
+           (for [section constants/security-sections]
+             ^{:key (:id section)} [sidebar-item section])]])})))
 
 
 (defn accordion-section [section]
@@ -82,7 +109,7 @@
        (:title section)]
       [:img {:src (str constants/assets-url "img/chevron.svg")
              :alt "chevron icon"
-             :class ["w-5" "h-5" "text-gray-300" "transform" "transition-transform" "duration-500" "ease-in-out"
+             :class ["w-3" "h-3" "text-gray-300" "transform" "transition-transform" "duration-500" "ease-in-out"
                      (if is-open? "rotate-180" "rotate-0")]}]]
 
      [:div {:class ["overflow-hidden"
@@ -136,12 +163,12 @@
        "w-full"
        "min-h-screen"
        "bg-[#FEFEFF]" "pb-24"]}
-
+        [sidebar]
         [:div {:id "top232" :class ["mx-auto" "max-w-7xl" "relative"
-                                    "lg:grid" "lg:grid-cols-[16rem_1fr]" "lg:gap-8"]}
-         [sidebar]
-         [:div {:class ["lg:ml-[1%]"]}
-          [:div {:class ["max-w-6xl" "mx-auto" "px-6" "py-16"]}
+                                    "flex" "flex-row" "gap-8"]}
+
+         [:div {:class ["xl:ml-[20%]"]}
+          [:div {:class [ "mx-auto" "px-6" "py-16"]}
 
            [:section {:class ["mb-16" "mt-12" "relative" "overflow-hidden" "bg-center" "bg-cover" "bg-no-repeat" "min-h-[420px]" "rounded-3xl" "shadow-sm" "px-8" "pt-16" "pb-8" "animate-subtle-move"]
                       :style {:backgroundImage (str "url('" bg-url "')")} }
@@ -151,7 +178,7 @@
                            "backdrop-blur-[0px]"
                            "opacity-100"
                            "z-2"]}]
-            [:dic {:class ["flex" "flex-col" "items-start" "w-fit"]}
+            [:div {:class ["flex" "flex-col" "items-start" "w-fit"]}
              [:h6 {:class ["relative" "text-[#A9F5C8E6]" "text-xl"]} "Security"]
              [:h1 {:class ["relative" "text-4xl" "md:text-6xl" "font-bold" "text-white" "mb-6" "drop-shadow-sm"]}
               "How We Do It?"]
@@ -161,7 +188,7 @@
             [:p {:class ["relative" "text-xl" "md:text-2xl" "text-white" "leading-relaxed" "max-w-3xl" "ps-0" "drop-shadow-sm" "font-light"]}
              "Comprehensive security controls and policies based on ISO 27001:2022 standards to ensure the highest level of data protection and compliance."]
 
-            [:div {:class ["mt-8" "flex" "flex-row" "gap-4" "justify-center" "align-center" "text-center"]}
+            [:div {:class ["mt-8" "flex" "sm:flex-row" "flex-col" "gap-4" "justify-center" "align-center" "text-center"]}
              [:div {:class ["p-4"
                             "relative"
                             "flex-1"
