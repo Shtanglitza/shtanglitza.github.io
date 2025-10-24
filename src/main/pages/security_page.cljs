@@ -59,7 +59,7 @@
                               fade-start 0.88
                               opacity (if (> scroll-percent fade-start)
                                         (let [progress (/ (- scroll-percent fade-start) (- 1 fade-start))]
-                                          (max 0 (- 1 (* progress 1.8))))
+                                          (max 0 (Math/pow (- 1 progress) 3))) ; Exponential fade
                                         1)]
                           (reset! scroll-position opacity)))]
 
