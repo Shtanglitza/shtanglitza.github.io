@@ -6,6 +6,8 @@
 
 (def open-section (r/atom nil))
 
+
+
 (defn toggle-section [section-id]
   (swap! open-section
          (fn [current-open]
@@ -115,6 +117,9 @@
              ;(js/setTimeout #(scroll-to-element section-id) 100)
              ))))
 
+     :component-will-unmount
+     (fn []
+       (reset! open-section nil))
      :component-did-update
      (fn [this old-argv]
        (let [hash (.-hash js/location)]
