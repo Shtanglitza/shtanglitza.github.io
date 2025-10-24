@@ -56,7 +56,7 @@
                               win-height (.-innerHeight js/window)
                               from-bottom (+ scroll-top win-height)
                               scroll-percent (/ from-bottom doc-height)
-                              fade-start 0.78
+                              fade-start 0.88
                               opacity (if (> scroll-percent fade-start)
                                         (let [progress (/ (- scroll-percent fade-start) (- 1 fade-start))]
                                           (max 0 (- 1 (* progress 1.8))))
@@ -75,7 +75,7 @@
 
        :reagent-render
        (fn []
-         [:div {:class ["fixed" "top-0" "w-fit" "max-w-[20%]" "bg-transparent" "hidden" "xl:block" "overflow-y-auto" "h-full" "pl-16" "self-start" "z-10" "mt-16"]
+         [:div {:class ["fixed" "top-0" "w-fit" "max-w-[255px]" "bg-transparent" "hidden" "xl:block" "overflow-y-auto" "ms-12" "h-full" "mt-20" "me-8" "self-start" "z-10" ]
                 :style {:opacity @scroll-position
                         :transition "opacity 0.3s ease-in-out"}}
           [:h3 {:class ["text-lg" "font-bold" "text-gray-900" "mb-4" "mt-12" "ms-3" "border-b" "pb-2"]} "Section Overview"]
@@ -161,13 +161,17 @@
        [:main {:class [
        ;"scroll-mt-[280px]"
        "w-full"
+       "max-w-[1536px]"
+       "mx-auto"
        "min-h-screen"
-       "bg-[#FEFEFF]" "pb-24"]}
+       "bg-[#FEFEFF]"
+       "pb-24"
+       "px-6"]}
         [sidebar]
-        [:div {:id "top232" :class ["mx-auto" "max-w-7xl" "relative"
-                                    "flex" "flex-row" "gap-8"]}
+        [:div {:id "top232" :class ["mx-auto"  "relative"
+                                    "flex" "flex-row"]}
 
-         [:div {:class ["xl:ml-[20%]"]}
+         [:div {:class ["xl:ml-[25%]"]}
           [:div {:class [ "mx-auto" "px-6" "py-16"]}
 
            [:section {:class ["mb-16" "mt-12" "relative" "overflow-hidden" "bg-center" "bg-cover" "bg-no-repeat" "min-h-[420px]" "rounded-3xl" "shadow-sm" "px-8" "pt-16" "pb-8" "animate-subtle-move"]
