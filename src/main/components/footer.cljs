@@ -2,7 +2,8 @@
   (:require
    [main.components.navbarx :as navbar-menu]
    [main.constants :as constants]
-   [main.components.ui-cards :as ui-cards]))
+   [main.components.ui-cards :as ui-cards]
+   [clojure.string :as string]))
 
 (defn footer []
   [:footer
@@ -93,15 +94,16 @@
                    (-> ui-cards/expertise-card-data :CustomBAD :sec-name)
                    (-> ui-cards/expertise-card-data :PersonalizedTaS :sec-name)]]
 
-         [:li {:key link}
-          [:a
-           {:href (constants/href-maker link)
-            :class ["font-light"
-                    "text-sm"
-                    "ease-in-out"
-                    "duration-700"
-                    "hover:text-indigo-200"]}
-           constants/fSlash link]])]]]
+         (let [href (constants/href-maker link)
+               section-id (subs href 1)]
+           [:li {:key link}
+            [:a
+             {:href href
+              :class ["font-light" "text-sm" "ease-in-out" "duration-700" "hover:text-indigo-200"]
+              :on-click (fn [e]
+                          (.preventDefault e)
+                          (navbar-menu/nav-click! section-id {:close-mobile? false}))}
+             constants/fSlash link]]))]]]
 
 
     ]
