@@ -1,19 +1,95 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-  <title>hlog / index-page</title>
-  <link href="https://www.shtanglitza.ai/public/blog/atom.xml" rel="self"/>
-  <link href="https://www.shtanglitza.ai/public/blog/"/>
-  <updated>2025-11-07T13:04:10+00:00</updated>
-  <id>https://www.shtanglitza.ai/public/blog/</id>
-  <author>
-    <name>Shtanglitza Team</name>
-  </author>
-  <entry>
-    <id>https://www.shtanglitza.ai/public/blog/rama-lsh.html</id>
-    <link href="https://www.shtanglitza.ai/public/blog/rama-lsh.html"/>
-    <title>Diving into Rama: A Clojure LSH Vector Search Experiment</title>
-    <updated>2025-11-07T23:59:59+00:00</updated>
-    <content type="html"><![CDATA[<p>Vector search is a common requirement for AI applications, enabling features like recommendation engines and semantic search. However, building a scalable, real-time vector search system often involves integrating multiple distinct technologies: a message queue for ingestion, various databases for indexing and storage, and a compute layer for processing.</p><p>As part of evaluating <a href='https://redplanetlabs.com/'>Rama</a> as a development platform for our product solution, which incorporates several data models to capture different stages in biotech lab experiment design and execution, we decided to try building a vector search system from scratch.</p><p>While modern vector search often relies on complex graph-based algorithms like <a href='https://www.pinecone.io/learn/series/faiss/hnsw/'>HNSW</a>, this post explores a different approach: implementing the classic Locality-Sensitive Hashing (LSH) algorithm. LSH is a great starting point for an experiment like this because its principles - hashing, bucketing, and re-ranking - map clearly to data processing primitives. The goal is to see how Rama's unified model handles the components of this traditionally complex task.</p><h2 id="what_is_locality-sensitive_hashing_%28lsh%29%3F">What is Locality-Sensitive Hashing (LSH)?</h2><p>Locality-Sensitive Hashing is an algorithm for approximate nearest-neighbor search. Instead of comparing a query vector to every other vector in a dataset (which is slow), LSH uses a special hashing technique. <!-- end-of-preview --> The core idea is that similar vectors are "hashed" into the same "bucket" with high probability. A query then only needs to be compared against the vectors in its own bucket and a few nearby ones, drastically reducing the search space. This is typically followed by a re-ranking step that computes the exact distance for this smaller set of candidates.</p><p><em>(For a deeper dive, see: <a href='https://www.pinecone.io/learn/series/faiss/locality-sensitive-hashing/'>Pinecone article</a>)</em></p><h2 id="what_is_rama%3F">What is Rama?</h2><p>Rama is a platform for building distributed backends. It integrates data storage and computation into a single system, aiming to reduce the "glue code" connecting separate services.</p><p>Its core components are:</p><ul><li><strong>Depots:</strong> Durable, partitioned, append-only logs for data ingestion.</li><li><strong>PStates:</strong> Durable, replicated, and arbitrarily structured data structures for storing indexed views.</li><li><strong>Topologies:</strong> Distributed, fault-tolerant dataflow programs that define all data processing, from real-time ETLs to on-demand queries.</li></ul><p><em>(For more information, see the <a href='https://redplanetlabs.com/docs/~/index.html'>Rama Documentation</a>)</em></p><h2 id="the_lsh_module_implementation">The LSH Module Implementation</h2><p><strong>A Quick Note:</strong> Before diving in, a disclaimer. This code comes from a developer with very little Rama experience. It's an experiment, not a production-ready, heavily-optimized solution. The code is probably very far from perfect, but it's a way to learn the platform.</p><p>The implementation consists of one Rama module that handles ingestion, indexing, and querying.</p><h3 id="1._pstate_schemas%3A_defining_the_data">1. PState Schemas: Defining the Data</h3><p>The module relies on two PStates, Rama's durable data stores, to hold the data.</p><ul><li><strong>$$embeddings:</strong> This is the "source of truth." It maps a vector's unique ID (<code>String</code>) to its full data. It's defined as a <code>fixed-keys-schema</code>, which is ideal for object-like structures where the keys (<code>:vec</code>, <code>:norm</code>, <code>:body</code>) are known in advance.</li><li><strong>$$lsh-tables:</strong> This is the LSH index itself. It maps a bucket ID (a string) to a <code>set-schema</code> of vector IDs. This set is declared with <code>{:subindex? true}</code>, a key Rama feature. It tells Rama to index the elements of the set individually, which is critical for performance when a single bucket grows to contain thousands or millions of IDs.<pre class="language-clojure"><code class="lang-clojure language-clojure">   &#40;declare-pstate etl
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Diving into Rama: A Clojure LSH Vector Search Experiment</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Diving into Rama: A Clojure LSH Vector Search Experiment">
+  <link rel="stylesheet" href="style.css">
+
+  <script type="text/javascript" src="https://livejs.com/live.js"></script>
+
+  <link rel="stylesheet"
+    href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
+  <script type="text/javascript" src="https://livejs.com/live.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+      <!-- See Features > favicon in README.md -->
+    <!-- <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/f_icn.svg"> -->
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/favicon.ico">
+    <link rel="manifest" href="assets/favicon/site.webmanifest">
+    <link rel="mask-icon" href="../assets/img/favicon.ico" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+
+  <!-- Social sharing (Facebook, Twitter, LinkedIn, etc.) -->
+  <meta name="title" content="Diving into Rama: A Clojure LSH Vector Search Experiment">
+  <meta name="twitter:title" content="Diving into Rama: A Clojure LSH Vector Search Experiment">
+  <meta property="og:title" content="Diving into Rama: A Clojure LSH Vector Search Experiment">
+  <meta property="og:type" content="website">
+  
+  
+  <meta name="twitter:url" content="https://www.shtanglitza.ai/public/blog/rama-lsh.html">
+  <meta property="og:url" content="https://www.shtanglitza.ai/public/blog/rama-lsh.html">
+  
+  
+  <meta name="twitter:card" content="summary">
+  
+  
+  
+</head>
+
+<body>
+
+
+  <div class="site-header">
+    <div class="wrapper nav-flex">
+      <div class="site-nav">
+        <a class="page-link" href="archive.html" title="Posts archive page"><i
+            class="la-lg las la-folder"></i> Archive</a>
+        <a class="page-link" href="tags/index.html" title="Filter posts by Tags"><i
+            class="la-lg las la-tags"></i> Tags</a>
+        
+        
+
+        
+        <a class="page-link" href="atom.xml" title="feed page"><i class="la-lg las la-rss"></i>
+          Feed
+        </a>
+        <a class="page-link" href="https://www.shtanglitza.ai" title="Navigate to shtanglitza.ai"><i
+            class="la-lg las la-sign-out-alt"></i></i>
+        </a>
+
+
+      </div>
+      <div class="nav-placeholder"></div>
+      <div class="parent-header">
+        <h1 class="site-title">
+          <img class="nav-logo" src="https://shtanglitza.ai/public/assets/img/f_icn.svg" />
+          <a class="page-link blog-logo-title" href="index.html">hlog / index-page</a>
+        </h1>
+        <p>A tech &amp; domain blog powered by Shtanglitza</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrapper parentFix">
+
+    <div class="onLoad-anim">
+<h1>
+  
+  Diving into Rama: A Clojure LSH Vector Search Experiment
+  
+</h1>
+<p>Vector search is a common requirement for AI applications, enabling features like recommendation engines and semantic search. However, building a scalable, real-time vector search system often involves integrating multiple distinct technologies: a message queue for ingestion, various databases for indexing and storage, and a compute layer for processing.</p><p>As part of evaluating <a href='https://redplanetlabs.com/'>Rama</a> as a development platform for our product solution, which incorporates several data models to capture different stages in biotech lab experiment design and execution, we decided to try building a vector search system from scratch.</p><p>While modern vector search often relies on complex graph-based algorithms like <a href='https://www.pinecone.io/learn/series/faiss/hnsw/'>HNSW</a>, this post explores a different approach: implementing the classic Locality-Sensitive Hashing (LSH) algorithm. LSH is a great starting point for an experiment like this because its principles - hashing, bucketing, and re-ranking - map clearly to data processing primitives. The goal is to see how Rama's unified model handles the components of this traditionally complex task.</p><h2 id="what_is_locality-sensitive_hashing_%28lsh%29%3F">What is Locality-Sensitive Hashing (LSH)?</h2><p>Locality-Sensitive Hashing is an algorithm for approximate nearest-neighbor search. Instead of comparing a query vector to every other vector in a dataset (which is slow), LSH uses a special hashing technique. <!-- end-of-preview --> The core idea is that similar vectors are "hashed" into the same "bucket" with high probability. A query then only needs to be compared against the vectors in its own bucket and a few nearby ones, drastically reducing the search space. This is typically followed by a re-ranking step that computes the exact distance for this smaller set of candidates.</p><p><em>(For a deeper dive, see: <a href='https://www.pinecone.io/learn/series/faiss/locality-sensitive-hashing/'>Pinecone article</a>)</em></p><h2 id="what_is_rama%3F">What is Rama?</h2><p>Rama is a platform for building distributed backends. It integrates data storage and computation into a single system, aiming to reduce the "glue code" connecting separate services.</p><p>Its core components are:</p><ul><li><strong>Depots:</strong> Durable, partitioned, append-only logs for data ingestion.</li><li><strong>PStates:</strong> Durable, replicated, and arbitrarily structured data structures for storing indexed views.</li><li><strong>Topologies:</strong> Distributed, fault-tolerant dataflow programs that define all data processing, from real-time ETLs to on-demand queries.</li></ul><p><em>(For more information, see the <a href='https://redplanetlabs.com/docs/~/index.html'>Rama Documentation</a>)</em></p><h2 id="the_lsh_module_implementation">The LSH Module Implementation</h2><p><strong>A Quick Note:</strong> Before diving in, a disclaimer. This code comes from a developer with very little Rama experience. It's an experiment, not a production-ready, heavily-optimized solution. The code is probably very far from perfect, but it's a way to learn the platform.</p><p>The implementation consists of one Rama module that handles ingestion, indexing, and querying.</p><h3 id="1._pstate_schemas%3A_defining_the_data">1. PState Schemas: Defining the Data</h3><p>The module relies on two PStates, Rama's durable data stores, to hold the data.</p><ul><li><strong>$$embeddings:</strong> This is the "source of truth." It maps a vector's unique ID (<code>String</code>) to its full data. It's defined as a <code>fixed-keys-schema</code>, which is ideal for object-like structures where the keys (<code>:vec</code>, <code>:norm</code>, <code>:body</code>) are known in advance.</li><li><strong>$$lsh-tables:</strong> This is the LSH index itself. It maps a bucket ID (a string) to a <code>set-schema</code> of vector IDs. This set is declared with <code>{:subindex? true}</code>, a key Rama feature. It tells Rama to index the elements of the set individually, which is critical for performance when a single bucket grows to contain thousands or millions of IDs.<pre class="language-clojure"><code class="lang-clojure language-clojure">   &#40;declare-pstate etl
                    $$embeddings
                    {String &#40;fixed-keys-schema
                              {:vec  &#40;vector-schema Double&#41;
@@ -265,6 +341,73 @@ Title: Fresnes, Yonne Content: Fresnes is a commune. It is found i...
                  :sort-type :ascending}
       :&gt; &#42;top-results&#41;&#41;
   &#41;
-</code></pre>]]></content>
-  </entry>
-</feed>
+</code></pre>
+
+<br>
+<p><i><span style="font-weight: 600;">Published:  </span>2025-11-07</i></p>
+<p><i><span style="font-weight: 600;">Written by: </span> Marko Djordjevic</i></p>
+
+
+<p>
+  <i>
+  <!-- Tagged: -->
+  
+  <span class="tag">
+    <a href="tags/clojure.html">clojure</a>
+  </span>
+  
+  <span class="tag">
+    <a href="tags/rama.html">rama</a>
+  </span>
+  
+  <span class="tag">
+    <a href="tags/lsh.html">lsh</a>
+  </span>
+  
+  <span class="tag">
+    <a href="tags/vector-search.html">vector search</a>
+  </span>
+  
+  </i>
+</p>
+
+<!--  -->
+</div>
+
+    
+
+    
+  </div>
+  <div
+    style="position:fixed; bottom:0!important; left:0!important; z-index: 1500; display: flex; justify-content:center; width:100%; background-color:rgba(255, 255, 255, 0.829);">
+    <div class="footer-bar">
+      <a class="page-link" href="index.html"
+        style="margin:0; padding-right: 24px;"><span></span><i
+          class="la-lg las la-chevron-circle-left"></i>&nbspIndex</a>
+      <a class="page-link" href="#top" style="margin:0; padding-right: 24px;"><i
+          class="la-lg las la-chevron-circle-up"></i>&nbspFast Up</a>
+      <a class="page-link" href="archive.html"
+        style="margin:0; padding-right: 4px;"><i class="la-lg las la-folder"></i>&nbspArchive</a>
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('scroll', function () {
+
+      if (window.innerWidth < 700) {
+        const header = document.querySelector('.site-header');
+
+        if (window.scrollY >= 100) {
+          header.classList.add('sticky');
+          document.body.classList.add('sticky-active');
+        } else {
+          header.classList.remove('sticky');
+          document.body.classList.remove('sticky-active');
+        }
+      }
+    });
+  </script>
+  <script src='https://cdn.jsdelivr.net/gh/eddymens/markdown-external-link-script@v2.0.0/main.min.js'></script>
+</body>
+
+</html>
