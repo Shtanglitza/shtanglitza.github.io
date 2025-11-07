@@ -92,8 +92,47 @@
 
     
     <div class="onLoad-anim" style="border-bottom:1px solid rgba(58, 5, 39, 0.126); padding-bottom:24px; margin-bottom:24px">
+        <h1><a href="rama-lsh.html">Diving into Rama: A Clojure LSH Vector Search Experiment</a></h1>
+        <p>Vector search is a common requirement for AI applications, enabling features like recommendation engines and semantic search. However, building a scalable, real-time vector search system often involves integrating multiple distinct technologies: a message queue for ingestion, various databases for indexing and storage, and a compute layer for processing.</p><p>As part of evaluating <a href='https://redplanetlabs.com/'>Rama</a> as a development platform for our product solution, which incorporates several data models to capture different stages in biotech lab experiment design and execution, we decided to try building a vector search system from scratch.</p><p>While modern vector search often relies on complex graph-based algorithms like <a href='https://www.pinecone.io/learn/series/faiss/hnsw/'>HNSW</a>, this post explores a different approach: implementing the classic Locality-Sensitive Hashing (LSH) algorithm. LSH is a great starting point for an experiment like this because its principles - hashing, bucketing, and re-ranking - map clearly to data processing primitives. The goal is to see how Rama's unified model handles the components of this traditionally complex task.</p><h2 id="what_is_locality-sensitive_hashing_%28lsh%29%3F">What is Locality-Sensitive Hashing (LSH)?</h2><p>Locality-Sensitive Hashing is an algorithm for approximate nearest-neighbor search. Instead of comparing a query vector to every other vector in a dataset (which is slow), LSH uses a special hashing technique. 
+        
+        <div style="position:relative;">
+        <div style = "background: linear-gradient(6deg, rgba(255,254,255,1) 0%, rgba(255,254,255,0) 100%); width:100%; height:150px; position:absolute; bottom:35px"></div>
+            <p class="read-more"><a href="rama-lsh.html">Read More</a></p>
+        </div>
+        
+       
+        
+        <br>
+        <p><i><span style="font-weight: 600;">Published:</span> 2025-11-07</i></p>
+        <p><i><span style="font-weight: 600;">Approved by:</span> Shtanglitza Team</i></p>
+        
+        
+            <p><i>
+                Tags:
+                
+                    <span class="tag">
+                        <a href="tags/clojure.html" style="margin-bottom:30px;">clojure</a>
+                    </span>
+                
+                    <span class="tag">
+                        <a href="tags/rama.html" style="margin-bottom:30px;">rama</a>
+                    </span>
+                
+                    <span class="tag">
+                        <a href="tags/lsh.html" style="margin-bottom:30px;">lsh</a>
+                    </span>
+                
+                    <span class="tag">
+                        <a href="tags/vector-search.html" style="margin-bottom:30px;">vector search</a>
+                    </span>
+                
+            </i></p>
+        
+    </div>
+
+    <div class="onLoad-anim" style="border-bottom:1px solid rgba(58, 5, 39, 0.126); padding-bottom:24px; margin-bottom:24px">
         <h1><a href="sparql-llm.html">Exploring SPARQL-LLM integrations</a></h1>
-        <div><p>The integration of Large Language Models (LLMs) with knowledge graphs is gaining significant traction, particularly in the context of Retrieval-Augmented Generation (RAGs). In these scenarios, LLMs usually act as interfaces for querying and summarizing information retrieved from a knowledge graph. However, other scenarios are yet to be explored. In this blog post, we explore the innovative application of LLMs for enriching structured data directly through SPARQL queries. Using the SPARQL.anything framework and the GROQ API, we&apos;ll demonstrate how to interact with a remote LLM, unlocking new possibilities for knowledge enrichment.</p><h3 id="introduction-to-sparql.anything">Introduction to SPARQL.anything</h3><p>For those who are interested in knowledge graphs and data integration using RDF,  <a href="https://sparql-anything.cc/">SPARQL.anything</a> is a powerful framework that allows users to query various data sources using the SPARQL query language. It supports querying different types of data sources, including JSON, XML, relational databases, and even remote APIs.</p><p>SPARQL.anything functions as both a CLI and a server (utilizing Apache Fuseki). For a deeper dive, you can refer to the <a href="https://sparql-anything.readthedocs.io/stable/#using-the-server">documentation</a>. In this experiment, we will run the server using a simple command.</p>
+        <p>The integration of Large Language Models (LLMs) with knowledge graphs is gaining significant traction, particularly in the context of Retrieval-Augmented Generation (RAGs). In these scenarios, LLMs usually act as interfaces for querying and summarizing information retrieved from a knowledge graph. However, other scenarios are yet to be explored. In this blog post, we explore the innovative application of LLMs for enriching structured data directly through SPARQL queries. Using the SPARQL.anything framework and the GROQ API, we'll demonstrate how to interact with a remote LLM, unlocking new possibilities for knowledge enrichment.</p><h3 id="introduction_to_sparql.anything">Introduction to SPARQL.anything</h3><p>For those who are interested in knowledge graphs and data integration using RDF,  <a href='https://sparql-anything.cc/'>SPARQL.anything</a> is a powerful framework that allows users to query various data sources using the SPARQL query language. It supports querying different types of data sources, including JSON, XML, relational databases, and even remote APIs.</p><p>SPARQL.anything functions as both a CLI and a server (utilizing Apache Fuseki). For a deeper dive, you can refer to the <a href='https://sparql-anything.readthedocs.io/stable/#using-the-server'>documentation</a>. In this experiment, we will run the server using a simple command. 
         
         <div style="position:relative;">
         <div style = "background: linear-gradient(6deg, rgba(255,254,255,1) 0%, rgba(255,254,255,0) 100%); width:100%; height:150px; position:absolute; bottom:35px"></div>
