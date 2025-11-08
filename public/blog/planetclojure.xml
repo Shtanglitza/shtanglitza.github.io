@@ -3,7 +3,7 @@
   <title>hlog / index-page</title>
   <link href="https://www.shtanglitza.ai/public/blog/atom.xml" rel="self"/>
   <link href="https://www.shtanglitza.ai/public/blog/"/>
-  <updated>2025-11-07T13:04:10+00:00</updated>
+  <updated>2025-11-08T17:06:19+00:00</updated>
   <id>https://www.shtanglitza.ai/public/blog/</id>
   <author>
     <name>Shtanglitza Team</name>
@@ -56,30 +56,31 @@
                          NONE-ELEM
                          &#40;termval &#42;id&#41;&#93;
         $$lsh-tables&#41;&#41;&#41;&#41;
-</code></pre><h3 id="4._the_query%3A_a_two-phase_scatter-gather">4. The Query: A Two-Phase Scatter-Gather</h3><p>The query is a multi-stage operation. To keep the code efficient, it's split into two phases.</p><h4 id="phase_1%3A_the_generator_%28find_candidates%29">Phase 1: The Generator (Find Candidates)</h4><p>A <code>defgenerator</code> (a reusable sub-batch) is defined to handle the "approximate" search. It scatters the query to all LSH buckets, gathers all potential candidates, and deduplicates them.</p><pre class="language-clojure"><code class="lang-clojure language-clojure">&#40;defgenerator gather-unique-ids
-  &#91;query-vec&#93;
-  &#40;batch&lt;- &#91;&#42;unique-id&#93;
-    ;; 1. Hash the query vector against all tables and
-    ;;    probe nearby buckets.
-    &#40;get-hyperplane-sets :&gt; &#42;all-planes&#41;
-    &#40;ops/explode &#42;all-planes :&gt; &#42;plane&#41;
-    &#40;vector/vector-&gt;bucket-id query-vec &#42;plane :&gt; &#42;bucket-str&#41;
-    &#40;vector/nearby-buckets &#42;bucket-str 2 :&gt; &#42;nbr-strs&#41;
-    &#40;set/union #{&#42;bucket-str} &#42;nbr-strs :&gt; &#42;probe-buckets&#41;
+</code></pre><h3 id="4._the_query%3A_a_two-phase_scatter-gather">4. The Query: A Two-Phase Scatter-Gather</h3><p>The query is a multi-stage operation. To keep the code efficient, it's split into two phases.</p><h4 id="phase_1%3A_the_generator_%28find_candidates%29">Phase 1: The Generator (Find Candidates)</h4><p>A <code>defgenerator</code> (a reusable sub-batch) is defined to handle the "approximate" search. It scatters the query to all LSH buckets, gathers all potential candidates, and deduplicates them in a scalable, parallel way.</p><pre class="language-clojure"><code class="lang-clojure language-clojure">&#40;defgenerator gather-unique-ids
+              &#91;query-vec&#93;
+              &#40;batch&lt;- &#91;&#42;unique-id&#93;
+                       ;; 1. Hash the query vector against all tables and
+                       ;;    probe nearby buckets.
+                       &#40;get-hyperplane-sets :&gt; &#42;all-planes&#41;
+                       &#40;ops/explode &#42;all-planes :&gt; &#42;plane&#41;
+                       &#40;vector/vector-&gt;bucket-id query-vec &#42;plane :&gt; &#42;bucket-str&#41;
+                       &#40;vector/nearby-buckets &#42;bucket-str 2 :&gt; &#42;nbr-strs&#41;
+                       &#40;set/union #{&#42;bucket-str} &#42;nbr-strs :&gt; &#42;probe-buckets&#41;
 
-    ;; 2. Scatter: For every bucket, fetch the set of IDs.
-    &#40;ops/explode &#42;probe-buckets :&gt; &#42;bucket-str2&#41;
-    &#40;|hash &#42;bucket-str2&#41;
-    &#40;local-select&gt; &#40;keypath &#42;bucket-str2&#41; $$lsh-tables :&gt; &#42;ids-in-bucket&#41;
-    &#40;ops/explode &#42;ids-in-bucket :&gt; &#42;cand-id&#41;
+                       ;; 2. Scatter: For every bucket, fetch the set of IDs.
+                       &#40;ops/explode &#42;probe-buckets :&gt; &#42;bucket-str2&#41;
+                       &#40;|hash &#42;bucket-str2&#41;
+                       &#40;local-select&gt; &#40;keypath &#42;bucket-str2&#41; $$lsh-tables :&gt; &#42;ids-in-bucket&#41;
+                       &#40;ops/explode &#42;ids-in-bucket :&gt; &#42;cand-id&#41;
 
-    ;; 3. Gather &amp; Deduplicate: Aggregate all IDs into one unique set.
-    &#40;|global&#41;
-    &#40;aggs/+set-agg &#42;cand-id :&gt; &#42;all-unique-cands&#41;
+                       ;; 3. Gather &amp; Deduplicate &#40;in parallel&#41;:
+                       ;;    This partitions all candidate IDs by their own value.
+                       &#40;|hash &#42;cand-id&#41;
+                       &#40;aggs/+set-agg &#42;cand-id :&gt; &#42;all-unique-cands&#41;
 
-    ;; 4. Emit a stream of &#42;unique&#42; IDs.
-    &#40;ops/explode &#42;all-unique-cands :&gt; &#42;unique-id&#41;&#41;&#41;
-</code></pre><h4 id="phase_2%3A_the_query_topology_%28re-rank%29">Phase 2: The Query Topology (Re-rank)</h4><p>This is the main query API. It calls the generator from Phase 1, then performs the exact distance calculation only on the unique candidates.</p><pre class="language-clojure"><code class="lang-clojure language-clojure"> &#40;&lt;&lt;query-topology topologies &quot;top-vec-search&quot;
+                       ;; 4. Emit a stream of &#42;unique&#42; IDs &#40;also in parallel&#41;.
+                       &#40;ops/explode &#42;all-unique-cands :&gt; &#42;unique-id&#41;&#41;&#41;
+</code></pre><p>This generator performs a <strong>fully distributed deduplication</strong>. After fetching all <em>non-unique</em> IDs from the LSH tables, it uses <code>&#40;|hash &#42;cand-id&#41;</code> to re-partition the data. This ensures all occurrences of <code>cand-id-123</code> go to one task, and all occurrences of <code>cand-id-456</code> go to another. The <code>aggs/+set-agg</code> then runs <strong>in parallel</strong> on many tasks, each building a small, partial, unique set. This is a highly scalable pattern that avoids a single-task bottleneck.</p><h4 id="phase_2%3A_the_query_topology_%28re-rank%29">Phase 2: The Query Topology (Re-rank)</h4><p>This is the main query API. It calls the generator from Phase 1, then performs the exact distance calculation only on the unique candidates.</p><pre class="language-clojure"><code class="lang-clojure language-clojure"> &#40;&lt;&lt;query-topology topologies &quot;top-vec-search&quot;
     &#91;&#42;query-vec :&gt; &#42;top-results&#93;
 
     ;; 1. Call Phase 1. This emits a stream of &#42;unique&#42; IDs.
@@ -197,7 +198,7 @@ Title: Fresnes, Yonne Content: Fresnes is a commune. It is found i...
     &#40;local-select&gt; &#40;keypath &#42;bucket-str2&#41; $$lsh-tables :&gt; &#42;ids-in-bucket&#41;
     &#40;ops/explode &#42;ids-in-bucket :&gt; &#42;cand-id&#41;
 
-    &#40;|global&#41;
+    &#40;|hash &#42;cand-id&#41;
     &#40;aggs/+set-agg &#42;cand-id :&gt; &#42;all-unique-cands&#41; ; Aggregates all IDs into one unique set
 
     &#40;ops/explode &#42;all-unique-cands :&gt; &#42;unique-id&#41; ; Emits each unique ID
