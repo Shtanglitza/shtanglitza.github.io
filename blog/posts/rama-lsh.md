@@ -1,7 +1,7 @@
 Title: Diving into Rama: A Clojure LSH Vector Search Experiment
 Date: 2025-11-07
 Tags: clojure, vector search, rama, lsh
-Blog-author: Marko Đorđević
+Blog-author: Marko Djordjevic
 
 Vector search is a common requirement for AI applications, enabling features like recommendation engines and semantic search. However, building a scalable, real-time vector search system often involves integrating multiple distinct technologies: a message queue for ingestion, various databases for indexing and storage, and a compute layer for processing.
 
@@ -112,33 +112,36 @@ The query is a multi-stage operation. To keep the code efficient, it's split int
 
 #### Phase 1: The Generator (Find Candidates)
 
-A `defgenerator` (a reusable sub-batch) is defined to handle the "approximate" search. It scatters the query to all LSH buckets, gathers all potential candidates, and deduplicates them.
+A `defgenerator` (a reusable sub-batch) is defined to handle the "approximate" search. It scatters the query to all LSH buckets, gathers all potential candidates, and deduplicates them in a scalable, parallel way.
 
 ```clojure
 (defgenerator gather-unique-ids
-  [query-vec]
-  (batch<- [*unique-id]
-    ;; 1. Hash the query vector against all tables and
-    ;;    probe nearby buckets.
-    (get-hyperplane-sets :> *all-planes)
-    (ops/explode *all-planes :> *plane)
-    (vector/vector->bucket-id query-vec *plane :> *bucket-str)
-    (vector/nearby-buckets *bucket-str 2 :> *nbr-strs)
-    (set/union #{*bucket-str} *nbr-strs :> *probe-buckets)
+              [query-vec]
+              (batch<- [*unique-id]
+                       ;; 1. Hash the query vector against all tables and
+                       ;;    probe nearby buckets.
+                       (get-hyperplane-sets :> *all-planes)
+                       (ops/explode *all-planes :> *plane)
+                       (vector/vector->bucket-id query-vec *plane :> *bucket-str)
+                       (vector/nearby-buckets *bucket-str 2 :> *nbr-strs)
+                       (set/union #{*bucket-str} *nbr-strs :> *probe-buckets)
 
-    ;; 2. Scatter: For every bucket, fetch the set of IDs.
-    (ops/explode *probe-buckets :> *bucket-str2)
-    (|hash *bucket-str2)
-    (local-select> (keypath *bucket-str2) $$lsh-tables :> *ids-in-bucket)
-    (ops/explode *ids-in-bucket :> *cand-id)
+                       ;; 2. Scatter: For every bucket, fetch the set of IDs.
+                       (ops/explode *probe-buckets :> *bucket-str2)
+                       (|hash *bucket-str2)
+                       (local-select> (keypath *bucket-str2) $$lsh-tables :> *ids-in-bucket)
+                       (ops/explode *ids-in-bucket :> *cand-id)
 
-    ;; 3. Gather & Deduplicate: Aggregate all IDs into one unique set.
-    (|global)
-    (aggs/+set-agg *cand-id :> *all-unique-cands)
+                       ;; 3. Gather & Deduplicate (in parallel):
+                       ;;    This partitions all candidate IDs by their own value.
+                       (|hash *cand-id)
+                       (aggs/+set-agg *cand-id :> *all-unique-cands)
 
-    ;; 4. Emit a stream of *unique* IDs.
-    (ops/explode *all-unique-cands :> *unique-id)))
+                       ;; 4. Emit a stream of *unique* IDs (also in parallel).
+                       (ops/explode *all-unique-cands :> *unique-id)))
 ```
+
+This generator performs a **fully distributed deduplication**. After fetching all *non-unique* IDs from the LSH tables, it uses `(|hash *cand-id)` to re-partition the data. This ensures all occurrences of `cand-id-123` go to one task, and all occurrences of `cand-id-456` go to another. The `aggs/+set-agg` then runs **in parallel** on many tasks, each building a small, partial, unique set. This is a highly scalable pattern that avoids a single-task bottleneck.
 
 #### Phase 2: The Query Topology (Re-rank)
 
@@ -326,7 +329,7 @@ Here is the complete `lsh-module.clj` file:
     (local-select> (keypath *bucket-str2) $$lsh-tables :> *ids-in-bucket)
     (ops/explode *ids-in-bucket :> *cand-id)
 
-    (|global)
+    (|hash *cand-id)
     (aggs/+set-agg *cand-id :> *all-unique-cands) ; Aggregates all IDs into one unique set
 
     (ops/explode *all-unique-cands :> *unique-id) ; Emits each unique ID
