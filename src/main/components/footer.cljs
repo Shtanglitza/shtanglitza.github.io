@@ -3,6 +3,7 @@
    [main.components.navbarx :as navbar-menu]
    [main.constants :as constants]
    [main.components.ui-cards :as ui-cards]
+   [reitit.frontend.easy :as rfe]
    [clojure.string :as string]))
 
 (defn footer []
@@ -73,7 +74,11 @@
                  "tracking-widest"
                  "mb-2"]}
         "Shortcuts"]
-       (navbar-menu/make-footer-menu navbar-menu/content-names)]]
+       (navbar-menu/make-footer-menu navbar-menu/content-names)
+       [:li
+        [:a {:href (rfe/href :batch-iq)
+             :class ["font-light" "text-sm" "ease-in-out" "duration-700" "hover:text-indigo-200"]}
+         constants/fSlash "BatchIQ"]]]]
      [:div
       {:class ["mx-6"
                "my-6"]}
@@ -103,17 +108,14 @@
               :on-click (fn [e]
                           (.preventDefault e)
                           (navbar-menu/nav-click! section-id {:close-mobile? false}))}
-             constants/fSlash link]]))]]]
-
-
-    ]
+             constants/fSlash link]]))]]]]
 
    [:div
     {:class ["w-full"
-             "h-full" 
+             "h-full"
              "flex"
              "flex-row"
-             "m-0"     
+             "m-0"
              "py-14 "
              "justify-center"
              "align-middle"]}

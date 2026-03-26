@@ -6,17 +6,16 @@
    [main.pages.security-page :refer [handle-nav-click]]
    [reitit.frontend.easy :as rfe]))
 
-
 (defn goto-security []
   (rfe/push-state :security)
-  (.scrollTo js/window #js{ :top 0 :behavior "instant"}))
+  (.scrollTo js/window #js{:top 0 :behavior "instant"}))
 
 (defn goto-security-with-hash [hash-id]
   (rfe/push-state :security)
   (js/setTimeout
-    (fn []
-      (handle-nav-click hash-id)) ; Use the imported function directly
-    400))
+   (fn []
+     (handle-nav-click hash-id)) ; Use the imported function directly
+   400))
 
 (defn goto-security-top []
   (rfe/push-state :security)
@@ -37,85 +36,97 @@
    label])
 
 (def header [:div
-              {:id "home"
-               :class ["flex"
-                       "flex-wrap"
-                       "justify-center"
-                       "calculated-height"
-                       "w-full"
-                       "items-center"
-                       "bg-gradient-to-r"
+             {:id "home"
+              :class ["flex"
+                      "flex-wrap"
+                      "justify-center"
+                      "calculated-height"
+                      "w-full"
+                      "items-center"
+                      "bg-gradient-to-r"
+                      "from-white/90"
+                      "from-15%"
+                      "via-bg-white/30"
+                      "via-40%"
+                      "to-white/0"
+                      "to-90%"
+                      "relative"]}
+
+             [:div
+              {:class ["w-full"
+                       "h-full"
+                       "bg-gradient-to-tr"
                        "from-white/90"
-                       "from-15%"
-                       "via-bg-white/30" 
-                       "via-40%"
-                       "to-white/0"
-                       "to-90%"
-                       "relative"]}
+                       "from-1%"
+                       "via-violet-300/30"
+                       "via-42%"
+                       "to-cyan-300/80"
+                       "to-33%"
+                       "absolute"
+                       "bottom-0"
+                       "left-0"
+                       "z-20"
+                       "mix-blend-multiply"
+                       "lg:from-15%"]}]
 
-              [:div
-               {:class ["w-full"
-                        "h-full"
-                        "bg-gradient-to-tr"
-                        "from-white/90"
-                        "from-1%"
-                        "via-violet-300/30"
-                        "via-42%"
-                        "to-cyan-300/80"
-                        "to-33%"
-                        "absolute"
-                        "bottom-0"
-                        "left-0"
-                        "z-20"
-                        "mix-blend-multiply"
-                        "lg:from-15%"]}]
+             [:div
+              {:class ["flex"
+                       "flex-wrap"
+                       "items-center"
+                       "justify-between"
+                       "w-full"
+                       "z-30"
+                       "max-w-screen-md"
+                       "p-8"
+                       "md:max-w-screen-lg"
+                       "md:p-16"
+                       "lg:max-w-screen-2xl"
+                       "lg:p-20"]}
+              [:h1
+               {:class ["text-start"
+                        "mt-6"
+                        "mb-2"
+                        "text-gray-950"
+                        "text-5xl"
+                        "font-black"
+                        "w-fit"
+                        "md:text-7xl"
+                        "xl:text-7xl"]}
 
-              [:div
-               {:class ["flex"
-                        "flex-wrap"
-                        "items-center"
-                        "justify-between"
-                        "w-full"
-                        "z-30"
-                        "max-w-screen-md"
-                        "p-8"
-                        "md:max-w-screen-lg"
-                        "md:p-16"
-                        "lg:max-w-screen-2xl"
-                        "lg:p-20"]}
-               [:h1
-                {:class ["text-start"
-                         "mt-6"
-                         "mb-2"
-                         "text-gray-950"
-                         "text-5xl"
-                         "font-black"
-                         "w-fit"
-                         "md:text-7xl"
-                         "xl:text-7xl"]}
+               "Unlock The Potential of" [:br]
 
-                "Unlock The Potential of" [:br]
+               [:span
+                {:class ["text-violet-500"
+                         "font-black"]}
+                " Biomedical "]
+               [:span
+                {:class ["text-cyan-500/80"
+                         "font-black"]}
+                " Data "]]
 
-                [:span
-                 {:class ["text-violet-500"
-                          "font-black"]}
-                 " Biomedical "]
-                [:span
-                 {:class ["text-cyan-500/80"
-                          "font-black"]}
-                 " Data "]]
+              [:h5
+               {:class ["text-start"
+                        "mt-2" "mb-6"
+                        "text-black/65"
+                        "text-xl"
+                        "font-normal"
+                        "hyphens-auto"
+                        "w-fit"
+                        "md:text-3xl"]}
+               "Revolutionizing ontologies, data integration,
+                and knowledge graphs to fuel innovation and drive informed decision-making."]
 
-               [:h5
-                {:class ["text-start"
-                         "mt-2" "mb-6"
-                         "text-black/65"
-                         "text-xl"
-                         "font-normal"
-                         "hyphens-auto"
-                         "w-fit"
-                         "md:text-3xl"]}
-                "Revolutionizing ontologies, data integration,
-                and knowledge graphs to fuel innovation and drive informed decision-making."]]])
+              [:a
+               {:href "/batch-iq"
+                :class ["inline-flex" "items-center" "gap-2"
+                        "mt-2" "px-7" "py-3"
+                        "rounded-lg" "bg-[#5253D1]" "text-white"
+                        "font-semibold" "text-lg"
+                        "shadow-lg" "shadow-indigo-500/25"
+                        "hover:bg-[#4A435F]"
+                        "transition-colors" "duration-300"]}
+               "Discover BatchIQ"
+               [:span {:class ["text-[#71D5D6]"]} "\u2192"]]]])
 
 ; Defining About section
 
@@ -155,19 +166,19 @@
                            "lg:order-first"]}
 
                   [:div
-                   {:class ["flex" 
-                            "flex-col" 
-                            "w-full" 
-                            "items-center" 
-                            "justify-center" 
+                   {:class ["flex"
+                            "flex-col"
+                            "w-full"
+                            "items-center"
+                            "justify-center"
                             "lg:flex-row"]}
                    [:img
                     {:class ["mx-6"
                              "w-10"
                              "h-auto"]
                      :src (str constants/assets-url "img/about_icon.svg")}]
-                
-                   [:h1 
+
+                   [:h1
                     {:class ["text-center"
                              "my-6"
                              "text-gray-950"
@@ -189,18 +200,18 @@
                    data integration, harmonization, analysis, and knowledge graphs. With our small but highly skilled
                    engineering team, we offer tailored solutions to enhance data organization, uncover hidden insights, 
                    and drive informed decision-making."]]
-                                    
+
                  [:div
-                   {:class ["flex"
-                            "w-full"
-                            "lg:w-50" 
-                            "order-first"
-                            "lg:order-last"]}
-                   [:img 
-                    {:src (str constants/assets-url "img/try.webp")
-                     :class ["w-full"
-                             "h-auto"
-                             "self-center"]}]]]])
+                  {:class ["flex"
+                           "w-full"
+                           "lg:w-50"
+                           "order-first"
+                           "lg:order-last"]}
+                  [:img
+                   {:src (str constants/assets-url "img/try.webp")
+                    :class ["w-full"
+                            "h-auto"
+                            "self-center"]}]]]])
 
 ; Defining Capabilities section
 
@@ -263,8 +274,8 @@
                                   "lg:w-2/3"]}
 
                          [:div
-                          {:class ["flex" 
-                                   "flex-col" 
+                          {:class ["flex"
+                                   "flex-col"
                                    "items-center"
                                    "justify-start"
                                    "lg:flex-row"]}
@@ -272,7 +283,7 @@
                            {:class ["mx-6"
                                     "w-14"
                                     "h-auto"]
-                                    :src (str constants/assets-url "img/capabilities_icon.svg")}]
+                            :src (str constants/assets-url "img/capabilities_icon.svg")}]
                           [:h1
                            {:class ["text-center"
                                     "my-6"
@@ -293,9 +304,8 @@
                           our clients to achieve their goals and deliver exceptional results.
                           Our capabilities include:"]]
                         ui-cards/capability-ui-cards]])
-                        
-                                         
- ; Defining Expertise section
+
+; Defining Expertise section
 
 (def expertise-sec [:div
                     {:id "expertise"
@@ -315,7 +325,7 @@
                               "h-fit"
                               "items-center"
                               "gap-4"
-                              "max-w-screen-md" 
+                              "max-w-screen-md"
                               "px-4"
                               "md:max-w-screen-lg"
                               "md:px-16"
@@ -341,7 +351,7 @@
                                  "w-14"
                                  "h-auto"]
                          :src (str constants/assets-url "img/expertise_icon.svg")}]
-                       
+
                        [:h1 {:class ["text-center"
                                      "my-6"
                                      "text-gray-950"
@@ -373,129 +383,124 @@
 
 (def security-sec
   (let [bg-url (str constants/assets-url "img/security_bck.webp")]
-  [:div
-                   {:id "security"
-                    :class ["relative"
-                            "overflow-hidden"
-                            "h-auto"
-                            "py-36"
-                            "flex"
-                            "items-center"
-                            "justify-center"
-                            "bg-center"
-                            "bg-cover"
-                            "bg-no-repeat"
-                            "animate-subtle-move"
-                            ]
-                    :style {:backgroundImage (str "url('" bg-url "')")}
-                    }
-                   [:div {:class ["absolute inset-0" "bg-[linear-gradient(to_bottom_right,_#1D1B48_0%,_#726AF0_60%,_#726AF000_100%)]" "backdrop-blur-[2px]" "mix-blend-multiply" "opacity-[90%]" "z-1"]}]
-                    [:div {:class ["absolute inset-0"
-                  "bg-[linear-gradient(to_bottom_right,_#1A1944_0%,_#1A1944E6_50%,_#1A194400_100%)]"
-                  "backdrop-blur-[8px]"
-                  "opacity-100"
-                  "z-2"]}]
+    [:div
+     {:id "security"
+      :class ["relative"
+              "overflow-hidden"
+              "h-auto"
+              "py-36"
+              "flex"
+              "items-center"
+              "justify-center"
+              "bg-center"
+              "bg-cover"
+              "bg-no-repeat"
+              "animate-subtle-move"]
+      :style {:backgroundImage (str "url('" bg-url "')")}}
+     [:div {:class ["absolute inset-0" "bg-[linear-gradient(to_bottom_right,_#1D1B48_0%,_#726AF0_60%,_#726AF000_100%)]" "backdrop-blur-[2px]" "mix-blend-multiply" "opacity-[90%]" "z-1"]}]
+     [:div {:class ["absolute inset-0"
+                    "bg-[linear-gradient(to_bottom_right,_#1A1944_0%,_#1A1944E6_50%,_#1A194400_100%)]"
+                    "backdrop-blur-[8px]"
+                    "opacity-100"
+                    "z-2"]}]
 
+     [:div
+      {:class ["flex"
+               "flex-col"
+               "w-full"
+               "h-fit"
+               "items-center"
+               "max-w-screen-md"
+               "p-8"
+               "md:max-w-screen-lg"
+               "md:p-16"
+               "lg:max-w-screen-2xl"
+               "lg:p-6 z-30"]}
 
-   [:div
-                    {:class ["flex"
-                             "flex-col"
-                             "w-full"
-                             "h-fit"
-                             "items-center"
-                             "max-w-screen-md"
-                             "p-8"
-                             "md:max-w-screen-lg"
-                             "md:p-16"
-                             "lg:max-w-screen-2xl"
-                             "lg:p-6 z-30"]}
+      [:div
+       {:class ["flex"
+                "flex-col"
+                "w-full"
+                "justify-center"
+                "items-center"
+                "text-custom-darkest-violet"
+                "lg:w-2/3"]}
 
-                    [:div
-                     {:class ["flex"
-                              "flex-col"
-                              "w-full"
-                              "justify-center"
-                              "items-center"
-                              "text-custom-darkest-violet"
-                              "lg:w-2/3"]}
-
-                     [:div
-                      {:class ["flex"
-                               "flex-col"
-                               "items-center"
-                               "justify-start"
-                               "lg:flex-row"]}
-                      [:img
-                       {:class ["mx-6"
-                                "w-14"
-                                "h-auto"]
-                        :src (str constants/assets-url "img/data_sec_lock.svg")}]
-                      [:h1
-                       {:class ["text-center"
-                                "my-6"
-                                "text-white"
-                                "text-3xl"
-                                "font-black"
-                                "md:text-6xl"
-                                "text-shadow-md"]}
-                       "Security"]]
-                     [:p
-                      {:class ["text-xl"
-                               "text-white"
-                               "drop-shadow-sm"
-                               "mt-4"
-                               "mb-6"
-                               "hyphens-auto"
-                               "md:text-2xl"
-                               "md:text-center"
-                               "text-shadow-md"]}
-                      "\u2003 At Shtanglitza " [:span {:class ["font-bold"]} "we treat the security of our client's information as our top priority"] ".
+       [:div
+        {:class ["flex"
+                 "flex-col"
+                 "items-center"
+                 "justify-start"
+                 "lg:flex-row"]}
+        [:img
+         {:class ["mx-6"
+                  "w-14"
+                  "h-auto"]
+          :src (str constants/assets-url "img/data_sec_lock.svg")}]
+        [:h1
+         {:class ["text-center"
+                  "my-6"
+                  "text-white"
+                  "text-3xl"
+                  "font-black"
+                  "md:text-6xl"
+                  "text-shadow-md"]}
+         "Security"]]
+       [:p
+        {:class ["text-xl"
+                 "text-white"
+                 "drop-shadow-sm"
+                 "mt-4"
+                 "mb-6"
+                 "hyphens-auto"
+                 "md:text-2xl"
+                 "md:text-center"
+                 "text-shadow-md"]}
+        "\u2003 At Shtanglitza " [:span {:class ["font-bold"]} "we treat the security of our client's information as our top priority"] ".
                       We maintain a robust " [:span {:class ["font-bold"]} "ISO 27001:2022"] " compliant, control framework that protects our people, technology,
                       and physical assets. By consistently applying these controls, we provide a foundation of trust that enables
                       our client relationships to thrive.\n
                       "]
-                     [:p
-                      {:class ["text-xl"
-                               "text-white"
-                               "mt-4"
-                               "mb-6"
-                               "hyphens-auto"
-                               "md:text-2xl"
-                               "md:text-center"]}
-                      "If you would like to know more about Shtanglitza’s Information Security program, please read the"
-                      [:button {::on-click #(goto-security)
-                      :class ["text-[#77F7E8]" "hover:text-[#4ED9CB]" "whitespace-nowrap" "hover:no-underline" "tracking-wider"]}
-                      " \"How we do it" \"]
+       [:p
+        {:class ["text-xl"
+                 "text-white"
+                 "mt-4"
+                 "mb-6"
+                 "hyphens-auto"
+                 "md:text-2xl"
+                 "md:text-center"]}
+        "If you would like to know more about Shtanglitza’s Information Security program, please read the"
+        [:button {::on-click #(goto-security)
+                  :class ["text-[#77F7E8]" "hover:text-[#4ED9CB]" "whitespace-nowrap" "hover:no-underline" "tracking-wider"]}
+         " \"How we do it" \"]
 
-                      " section "
-                      [:span
-                       {:class ["italic" "font-light"]}
-                       "(click here or Read more button below)"
-                       ]
-                      " or contact us at  "
-                      [:a
-                       {:href (str "mailto:" constants/email-address)
-                        :class ["text-[#77F7E8]" "hover:text-[#4ED9CB]" "whitespace-nowrap" "hover:no-underline" "tracking-wider"]
-                        :title "Contact us via email"}
-                       "security@shtanglitza.ai"]]
+        " section "
+        [:span
+         {:class ["italic" "font-light"]}
+         "(click here or Read more button below)"]
+        " or contact us at  "
+        [:a
+         {:href (str "mailto:" constants/email-address)
+          :class ["text-[#77F7E8]" "hover:text-[#4ED9CB]" "whitespace-nowrap" "hover:no-underline" "tracking-wider"]
+          :title "Contact us via email"}
+         "security@shtanglitza.ai"]]
 
-                     [:section
-                      {:class ["flex" "w-full" "h-fit" "flex-row" "flex-wrap"
-                               "items-center" "justify-center" "gap-3" "mt-6"]}
-                      (for [chip constants/security-chips]
-                        ^{:key (:id chip)} [security-chip chip])]
+       [:section
+        {:class ["flex" "w-full" "h-fit" "flex-row" "flex-wrap"
+                 "items-center" "justify-center" "gap-3" "mt-6"]}
+        (for [chip constants/security-chips]
+          ^{:key (:id chip)} [security-chip chip])]
 
-                     [:button
-                      {:on-click #(goto-security)
-                       :class ["inline-flex" "items-center" "justify-center" "mt-12" "w-fit"
-                               "px-6" "py-3" "rounded-lg" "bg-white/90" "hover:bg-white"
-                               "text-[#8284F4]" "font-semibold" "shadow-[#7375ec]/30" "shadow-lg"
-                               "transition-colors" "duration-200"]}
-                      "Read More"]]]]))
-
+       [:button
+        {:on-click #(goto-security)
+         :class ["inline-flex" "items-center" "justify-center" "mt-12" "w-fit"
+                 "px-6" "py-3" "rounded-lg" "bg-white/90" "hover:bg-white"
+                 "text-[#8284F4]" "font-semibold" "shadow-[#7375ec]/30" "shadow-lg"
+                 "transition-colors" "duration-200"]}
+        "Read More"]]]]))
 
 (defn video-cover []
- (let [video-loaded? (r/atom false)]
+  (let [video-loaded? (r/atom false)]
     (fn []
       [:div
        [:img {:src (str constants/assets-url "img/bck_cover_image.webp")
@@ -504,7 +509,7 @@
                       "top-0"
                       "left-0"
                       "w-full"
-                      "min-h-full" 
+                      "min-h-full"
                       "object-cover"
                       "fixed"
                       "z-10"
@@ -515,7 +520,7 @@
         {:class ["top-0"
                  "left-0"
                  "w-full"
-                 "min-h-full" 
+                 "min-h-full"
                  "object-cover"
                  "fixed"
                  "z-20"]
@@ -527,12 +532,12 @@
          :on-error #(js/console.error "Video error:", %)
          :on-stalled #(js/console.warn "Video stalled:", %)}
         [:source {:src (str constants/assets-url "video/shtanglitze.mp4") :type "video/mp4"}]]])))
-                                                                                           
+
 ; Definng initial component for landing-page render
 
 (defn Page []
-  [:div 
-   
+  [:div
+
    [video-cover]
    [:div
     {:class ["p-0"
@@ -545,8 +550,8 @@
     capabilities-sec
     expertise-sec
     security-sec]])
-                                                                                           
-                                                                                           
+
+
 
 
 

@@ -1,19 +1,20 @@
 (ns main.router
   (:require
-    [reagent.core :as r]
-    [reitit.frontend :as rf]
-    [reitit.frontend.easy :as rfe]
-    [main.pages.landing-page :as landing]
-    [main.pages.security-page :as security]
-    [main.pages.not-found-page :as not-found ]
-    [clojure.string :as str]))
+   [reagent.core :as r]
+   [reitit.frontend :as rf]
+   [reitit.frontend.easy :as rfe]
+   [main.pages.landing-page :as landing]
+   [main.pages.security-page :as security]
+   [main.pages.batch-iq-page :as batch-iq]
+   [main.pages.not-found-page :as not-found]
+   [clojure.string :as str]))
 
 (defonce current-route (r/atom nil))
 
 (def routes
   [["/" {:name :home :view landing/Page}]
    ["/security" {:name :security :view security/Page}]
-   ])
+   ["/batch-iq" {:name :batch-iq :view batch-iq/Page}]])
 
 (def router (rf/router routes))
 
@@ -43,9 +44,7 @@
       (reset! current-route
               {:data {:view not-found/Page}
                :path invalid-path
-               :path-params {:path invalid-path}
-               }))))
-
+               :path-params {:path invalid-path}}))))
 
 (defn start! []
   (js/console.log "🔧 Starting router...")

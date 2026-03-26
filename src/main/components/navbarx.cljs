@@ -249,13 +249,13 @@
 ;
 (ns main.components.navbarx
   (:require
-    [applied-science.js-interop :as j]
-    [reagent.core :as r]
-    [main.components.icons :as icons]
-    [clojure.string :as string]
-    [main.constants :as constants]
-    [reitit.frontend.easy :as rfe]
-    [main.router :as router]))  ;; Keep this import for route detection
+   [applied-science.js-interop :as j]
+   [reagent.core :as r]
+   [main.components.icons :as icons]
+   [clojure.string :as string]
+   [main.constants :as constants]
+   [reitit.frontend.easy :as rfe]
+   [main.router :as router]))  ;; Keep this import for route detection
 
 ;; States -------
 (def active-index (r/atom 0))
@@ -311,20 +311,20 @@
   [cnt-names is-footer?]
   (let [is-small? (< (.-innerWidth js/window) 769)]
     (doall
-      (for [[i link] (map-indexed vector cnt-names)]
-        (let [section-id (-> link string/lower-case)
-              href (str "#" section-id)]
-          [:li {:key i}
-           [:a
-            {:href href
-             :class (if is-footer?
-                      constants/menu-css-footer
-                      (str constants/menu-css-navbar " nav-link " (when (= i @active-index) "active")))
-             :on-click (fn [e]
-                         (.preventDefault e)
-                         (nav-click! section-id {:close-mobile? (and is-small? @menu-open?)}))}
-            (when is-footer? constants/listDots)
-            link]])))))
+     (for [[i link] (map-indexed vector cnt-names)]
+       (let [section-id (-> link string/lower-case)
+             href (str "#" section-id)]
+         [:li {:key i}
+          [:a
+           {:href href
+            :class (if is-footer?
+                     constants/menu-css-footer
+                     (str constants/menu-css-navbar " nav-link " (when (= i @active-index) "active")))
+            :on-click (fn [e]
+                        (.preventDefault e)
+                        (nav-click! section-id {:close-mobile? (and is-small? @menu-open?)}))}
+           (when is-footer? constants/listDots)
+           link]])))))
 
 (defn make-regular-menu [cnt-names]
   (make-menu cnt-names false))
@@ -365,7 +365,6 @@
                                       (reset! active-index new-index))
                                     (reset! active-index nil))))))
 
-
 (defn navbar []
   [:nav
    {:id "my-navbar"
@@ -393,6 +392,12 @@
       :class ["hidden" "sm:hidden" "md:grid" "grid-flow-col" "auto-cols-max"
               "gap-5" "text-custom-darkest-violet" "items-center" "text-lg"]}
      (make-regular-menu content-names)
+     [:a {:href (rfe/href :batch-iq)
+          :class ["px-3" "py-1" "rounded-md" "bg-[#5253D1]" "text-white"
+                  "text-sm" "font-semibold" "hover:bg-[#4A435F]"
+                  "transition-colors" "duration-300"
+                  "shadow-sm" "shadow-indigo-500/20"]}
+      "BatchIQ"]
      [:div
       {:class (into ["group" "flex" "flex-row" "inline" "space-x-4" "py-1" "px-2"
                      "bg-indigo-500/80" "rounded-md"]
@@ -436,6 +441,13 @@
          {:src (str constants/assets-url "img/f_icn.svg")
           :class ["h-16" "my-1" "w-auto"]}]]]
       (make-regular-menu content-names)
+      [:li
+       [:a {:href (rfe/href :batch-iq)
+            :on-click (fn [_] (toggle-menu))
+            :class ["inline-flex" "px-4" "py-2" "rounded-md" "bg-[#5253D1]"
+                    "text-white" "font-semibold" "hover:bg-[#4A435F]"
+                    "transition-colors" "duration-300"]}
+        "BatchIQ"]]
       [:div
        {:class ["group" "flex" "flex-row" "inline" "w-fit" "space-x-4"
                 "translate-y-4" "py-1" "px-2" "bg-indigo-500/80"
