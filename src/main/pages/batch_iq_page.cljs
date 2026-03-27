@@ -46,10 +46,27 @@
 
         [:div {:class ["max-w-screen-md" "mx-auto" "text-center"]}
 
-         ;; Logo
-         [:img {:src (str constants/assets-url "img/batchiq_logo.svg")
-                :alt "BatchIQ"
-                :class ["h-14" "md:h-20" "mx-auto" "mb-10" "drop-shadow-sm"]}]
+         ;; Logo (inline SVG matching pitch deck design)
+         [:div {:class ["mx-auto" "mb-10" "drop-shadow-sm" "flex" "justify-center"]}
+          [:svg {:xmlns "http://www.w3.org/2000/svg"
+                 :viewBox "0 0 340 80"
+                 :fill "none"
+                 :class ["h-14" "md:h-20"]}
+           [:defs
+            [:linearGradient {:id "batchGrad" :x1 "0" :y1 "0" :x2 "1" :y2 "0"}
+             [:stop {:offset "0%" :stop-color "#e0f0f8" :stop-opacity "0.7"}]
+             [:stop {:offset "40%" :stop-color "#b8e8f0"}]
+             [:stop {:offset "100%" :stop-color "#7dd8e8"}]]
+            [:linearGradient {:id "iqGrad" :x1 "0" :y1 "0" :x2 "1" :y2 "1"}
+             [:stop {:offset "0%" :stop-color "#5dcce0"}]
+             [:stop {:offset "50%" :stop-color "#6b7de0"}]
+             [:stop {:offset "100%" :stop-color "#5253D1"}]]]
+           [:text {:x "0" :y "62" :font-family "Poppins, sans-serif"
+                   :font-size "64" :font-weight "200" :fill "url(#batchGrad)"
+                   :letter-spacing "-1"} "Batch"]
+           [:text {:x "185" :y "62" :font-family "Poppins, sans-serif"
+                   :font-size "64" :font-weight "700" :fill "url(#iqGrad)"
+                   :letter-spacing "-1"} "IQ"]]]
 
          ;; Stage badge (glassmorphism matching site card pattern)
          [:div {:class ["inline-flex" "items-center" "gap-2" "px-5" "py-2" "mb-10"
@@ -75,7 +92,7 @@
          ;; One-liner
          [:p {:class ["text-xl" "md:text-2xl" "text-white/55" "font-light"
                       "leading-relaxed" "max-w-2xl" "mx-auto" "mb-14"]}
-          "Life science organizations have invested millions in systems of record \u2014 LIMS, MES \u2014 "
+          "Life science organizations have invested millions in systems of record \u2014 LIMS, MES and ELN \u2014 "
           "but none of them semantically connect procedural knowledge across silos. "
           "BatchIQ is the complementary semantic layer that transforms scattered SOPs into structured, "
           "traceable knowledge \u2014 ready for agentic workflows and AI-native operations."]
