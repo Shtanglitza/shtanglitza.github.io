@@ -21,6 +21,8 @@ Bridging these two models is the core design problem. The adapter must present c
 
 That is not just a compatibility detail. It is what makes the adapter usable inside the rest of the RDF4J ecosystem, including future integrations like stackable inferencing layers that depend on `NotifyingSailConnection` and statement-level change notification.
 
+<!-- end-of-preview -->
+
 ## The Storage Model: Four Quad Indices
 
 Each quad is indexed four ways, each PState hash-partitioned by its leading key:
