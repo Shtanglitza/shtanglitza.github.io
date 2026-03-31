@@ -92,8 +92,51 @@
 
     
     <div class="onLoad-anim" style="border-bottom:1px solid rgba(58, 5, 39, 0.126); padding-bottom:24px; margin-bottom:24px">
+        <h1><a href="rama-sail-graph.html">Building a Distributed RDF Store on Rama</a></h1>
+        <div><p>How much of an RDF database can you push into a distributed execution model before the abstractions stop fitting?</p><p><a href="https://github.com/Shtanglitza/rama-sail-graph">rama-sail-graph</a> is an attempt to find out. It is a Rama-backed RDF quad store where SPARQL queries compile into distributed execution plans that run across Rama partitions, and the whole thing sits behind RDF4J&apos;s SAIL API so that existing Java tooling can query it through familiar interfaces, within the bounds of what the engine currently supports.</p><h2 id="the-design-tension:-sail-meets-distributed-dataflow">The Design Tension: SAIL Meets Distributed Dataflow</h2><p>For this project, the interesting problem is not storage. It is the mismatch between two execution models.</p><p>On one side is <a href="https://rdf4j.org/documentation/reference/sail/">RDF4J&apos;s SAIL API</a>: a connection-oriented, transaction-aware storage contract. A <code>SailConnection</code> exposes <code>begin</code>, <code>commit</code>, <code>rollback</code>. Clients expect to buffer writes, read their own uncommitted changes, and roll back cleanly. RDF4J&apos;s entire ecosystem (repositories, query preparation, SPARQL evaluation) layers on top of this contract. If the goal is compatibility with the existing RDF4J world, SAIL is the right boundary to implement.</p><p>On the other side is <a href="https://redplanetlabs.com/">Rama</a>: a distributed runtime where data flows through depots, gets indexed in partitioned PStates, and queries run as topologies across the cluster. There are no connections in the traditional sense. There is no local transaction buffer.</p><p>Bridging these two models is the core design problem. The adapter must present connection-scoped transaction semantics on top of a system that does not natively think in connections. Uncommitted writes go into a connection-local buffer. Rollback discards that buffer. Commit deduplicates add/delete pairs and appends the net operations to Rama&apos;s depot, optionally waiting for the microbatch to process before returning.</p><p>That is not just a compatibility detail. It is what makes the adapter usable inside the rest of the RDF4J ecosystem, including future integrations like stackable inferencing layers that depend on <code>NotifyingSailConnection</code> and statement-level change notification.</p>
+        
+        <div style="position:relative;">
+        <div style = "background: linear-gradient(6deg, rgba(255,254,255,1) 0%, rgba(255,254,255,0) 100%); width:100%; height:150px; position:absolute; bottom:35px"></div>
+            <p class="read-more"><a href="rama-sail-graph.html">Read More</a></p>
+        </div>
+        
+       
+        
+        <br>
+        <p><i><span style="font-weight: 600;">Published:</span> 2026-03-30</i></p>
+        <p><i><span style="font-weight: 600;">Approved by:</span> Shtanglitza Team</i></p>
+        
+        
+            <p><i>
+                Tags:
+                
+                    <span class="tag">
+                        <a href="tags/sparql.html" style="margin-bottom:30px;">sparql</a>
+                    </span>
+                
+                    <span class="tag">
+                        <a href="tags/clojure.html" style="margin-bottom:30px;">clojure</a>
+                    </span>
+                
+                    <span class="tag">
+                        <a href="tags/rdf.html" style="margin-bottom:30px;">rdf</a>
+                    </span>
+                
+                    <span class="tag">
+                        <a href="tags/rama.html" style="margin-bottom:30px;">rama</a>
+                    </span>
+                
+                    <span class="tag">
+                        <a href="tags/distributed-systems.html" style="margin-bottom:30px;">distributed systems</a>
+                    </span>
+                
+            </i></p>
+        
+    </div>
+
+    <div class="onLoad-anim" style="border-bottom:1px solid rgba(58, 5, 39, 0.126); padding-bottom:24px; margin-bottom:24px">
         <h1><a href="rama-lsh.html">Diving into Rama: A Clojure LSH Vector Search Experiment</a></h1>
-        <p>Vector search is a common requirement for AI applications, enabling features like recommendation engines and semantic search. However, building a scalable, real-time vector search system often involves integrating multiple distinct technologies: a message queue for ingestion, various databases for indexing and storage, and a compute layer for processing.</p><p>As part of evaluating <a href='https://redplanetlabs.com/'>Rama</a> as a development platform for our product solution, which incorporates several data models to capture different stages in biotech lab experiment design and execution, we decided to try building a vector search system from scratch.</p><p>While modern vector search often relies on complex graph-based algorithms like <a href='https://www.pinecone.io/learn/series/faiss/hnsw/'>HNSW</a>, this post explores a different approach: implementing the classic Locality-Sensitive Hashing (LSH) algorithm. LSH is a great starting point for an experiment like this because its principles - hashing, bucketing, and re-ranking - map clearly to data processing primitives. The goal is to see how Rama's unified model handles the components of this traditionally complex task.</p><h2 id="what_is_locality-sensitive_hashing_%28lsh%29%3F">What is Locality-Sensitive Hashing (LSH)?</h2><p>Locality-Sensitive Hashing is an algorithm for approximate nearest-neighbor search. Instead of comparing a query vector to every other vector in a dataset (which is slow), LSH uses a special hashing technique. 
+        <div><p>Vector search is a common requirement for AI applications, enabling features like recommendation engines and semantic search. However, building a scalable, real-time vector search system often involves integrating multiple distinct technologies: a message queue for ingestion, various databases for indexing and storage, and a compute layer for processing.</p><p>As part of evaluating <a href="https://redplanetlabs.com/">Rama</a> as a development platform for our product solution, which incorporates several data models to capture different stages in biotech lab experiment design and execution, we decided to try building a vector search system from scratch.</p><p>While modern vector search often relies on complex graph-based algorithms like <a href="https://www.pinecone.io/learn/series/faiss/hnsw/">HNSW</a>, this post explores a different approach: implementing the classic Locality-Sensitive Hashing (LSH) algorithm. LSH is a great starting point for an experiment like this because its principles - hashing, bucketing, and re-ranking - map clearly to data processing primitives. The goal is to see how Rama&apos;s unified model handles the components of this traditionally complex task.</p><h2 id="what-is-locality-sensitive-hashing-(lsh)?">What is Locality-Sensitive Hashing (LSH)?</h2><p>Locality-Sensitive Hashing is an algorithm for approximate nearest-neighbor search. Instead of comparing a query vector to every other vector in a dataset (which is slow), LSH uses a special hashing technique.</p>
         
         <div style="position:relative;">
         <div style = "background: linear-gradient(6deg, rgba(255,254,255,1) 0%, rgba(255,254,255,0) 100%); width:100%; height:150px; position:absolute; bottom:35px"></div>
@@ -132,7 +175,7 @@
 
     <div class="onLoad-anim" style="border-bottom:1px solid rgba(58, 5, 39, 0.126); padding-bottom:24px; margin-bottom:24px">
         <h1><a href="sparql-llm.html">Exploring SPARQL-LLM integrations</a></h1>
-        <p>The integration of Large Language Models (LLMs) with knowledge graphs is gaining significant traction, particularly in the context of Retrieval-Augmented Generation (RAGs). In these scenarios, LLMs usually act as interfaces for querying and summarizing information retrieved from a knowledge graph. However, other scenarios are yet to be explored. In this blog post, we explore the innovative application of LLMs for enriching structured data directly through SPARQL queries. Using the SPARQL.anything framework and the GROQ API, we'll demonstrate how to interact with a remote LLM, unlocking new possibilities for knowledge enrichment.</p><h3 id="introduction_to_sparql.anything">Introduction to SPARQL.anything</h3><p>For those who are interested in knowledge graphs and data integration using RDF,  <a href='https://sparql-anything.cc/'>SPARQL.anything</a> is a powerful framework that allows users to query various data sources using the SPARQL query language. It supports querying different types of data sources, including JSON, XML, relational databases, and even remote APIs.</p><p>SPARQL.anything functions as both a CLI and a server (utilizing Apache Fuseki). For a deeper dive, you can refer to the <a href='https://sparql-anything.readthedocs.io/stable/#using-the-server'>documentation</a>. In this experiment, we will run the server using a simple command. 
+        <div><p>The integration of Large Language Models (LLMs) with knowledge graphs is gaining significant traction, particularly in the context of Retrieval-Augmented Generation (RAGs). In these scenarios, LLMs usually act as interfaces for querying and summarizing information retrieved from a knowledge graph. However, other scenarios are yet to be explored. In this blog post, we explore the innovative application of LLMs for enriching structured data directly through SPARQL queries. Using the SPARQL.anything framework and the GROQ API, we&apos;ll demonstrate how to interact with a remote LLM, unlocking new possibilities for knowledge enrichment.</p><h3 id="introduction-to-sparql.anything">Introduction to SPARQL.anything</h3><p>For those who are interested in knowledge graphs and data integration using RDF,  <a href="https://sparql-anything.cc/">SPARQL.anything</a> is a powerful framework that allows users to query various data sources using the SPARQL query language. It supports querying different types of data sources, including JSON, XML, relational databases, and even remote APIs.</p><p>SPARQL.anything functions as both a CLI and a server (utilizing Apache Fuseki). For a deeper dive, you can refer to the <a href="https://sparql-anything.readthedocs.io/stable/#using-the-server">documentation</a>. In this experiment, we will run the server using a simple command.</p>
         
         <div style="position:relative;">
         <div style = "background: linear-gradient(6deg, rgba(255,254,255,1) 0%, rgba(255,254,255,0) 100%); width:100%; height:150px; position:absolute; bottom:35px"></div>
