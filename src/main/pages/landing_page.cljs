@@ -30,7 +30,7 @@
             "bg-emerald-300/80"
             "hover:bg-emerald-300"
             "transition-all ease-in-out duration-700"
-            "text-green-800" "text-sm" "font-medium" "backdrop-blur-sm"
+            "text-green-800" "text-sm" "font-medium" "backdrop-blur-xs"
             "hover:shadow-2xl" "hover:shadow-emerald-400"
             ""]}
    label])

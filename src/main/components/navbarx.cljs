@@ -396,7 +396,7 @@
           :class ["px-3" "py-1" "rounded-md" "bg-[#5253D1]" "text-white"
                   "text-sm" "font-semibold" "hover:bg-[#4A435F]"
                   "transition-colors" "duration-300"
-                  "shadow-sm" "shadow-indigo-500/20"]}
+                  "shadow-xs" "shadow-indigo-500/20"]}
       "BatchIQ"]
      [:div
       {:class (into ["group" "flex" "flex-row" "inline" "space-x-4" "py-1" "px-2"
