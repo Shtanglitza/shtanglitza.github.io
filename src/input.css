@@ -1,7 +1,13 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
+@theme {
+  --font-family-sans: "Source Sans 3", serif;
+  --color-custom-darkest-violet: #2D243A;
+  --color-indigo-50: #F4F7FF;
+}
+
+/* Source scanning (replaces content array) */
+@source "./src/**/*.{html,js,css,cljs}";
 
 html,
 body,
