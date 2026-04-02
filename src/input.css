@@ -4,16 +4,21 @@
   --font-family-sans: "Source Sans 3", serif;
   --color-custom-darkest-violet: #2D243A;
   --color-indigo-50: #F4F7FF;
+  --color-dark-base: #030308;
+  --breakpoint-lg2: 1000px;
 }
 
 /* Source scanning (replaces content array) */
-@source "./src/**/*.{html,js,css,cljs}";
+@source "./**/*.cljs";
+@source "./**/*.html";
+@source "./**/*.js";
 
-html,
-body,
-div,
-span,
-a {
+ @layer base {
+  html,
+  body,
+  div,
+  span,
+  a {
 
   padding: 0;
   margin: 0;
@@ -29,7 +34,7 @@ a {
     box-sizing: border-box !important;
 
   }
-
+}
 }
 
 html body {

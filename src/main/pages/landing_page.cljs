@@ -30,12 +30,12 @@
             "bg-emerald-300/80"
             "hover:bg-emerald-300"
             "transition-all ease-in-out duration-700"
-            "text-green-800" "text-sm" "font-medium" "backdrop-blur-xs"
+            "text-green-800" "text-sm" "font-medium" "backdrop-blur-[1px]"
             "hover:shadow-2xl" "hover:shadow-emerald-400"
             ""]}
    label])
 
-(def header [:div
+(defn header [] [:div
              {:id "home"
               :class ["flex"
                       "flex-wrap"
@@ -45,29 +45,23 @@
                       "items-center"
                       "bg-gradient-to-r"
                       "from-white/90"
-                      "from-15%"
-                      "via-bg-white/30"
-                      "via-40%"
+                      "from-[15%]"
+                      "via-white/30"
+                      "via-[40%]"
                       "to-white/0"
-                      "to-90%"
+                      "to-[90%]"
                       "relative"]}
 
              [:div
               {:class ["w-full"
                        "h-full"
-                       "bg-gradient-to-tr"
-                       "from-white/90"
-                       "from-1%"
-                       "via-violet-300/30"
-                       "via-42%"
-                       "to-cyan-300/80"
-                       "to-33%"
+                       "bg-[linear-gradient(to_top_right,_rgb(255_255_255/0.9)_1%,_rgb(196_181_253/0.3)_42%,_rgb(103_232_249/0.8)_100%)]"
                        "absolute"
                        "bottom-0"
                        "left-0"
                        "z-20"
                        "mix-blend-multiply"
-                       "lg:from-15%"]}]
+                       "lg:from-[15%]"]}]
 
              [:div
               {:class ["flex"
@@ -116,21 +110,62 @@
                "Revolutionizing ontologies, data integration,
                 and knowledge graphs to fuel innovation and drive informed decision-making."]
 
-              [:a
-               {:href "/batch-iq"
-                :class ["inline-flex" "items-center" "gap-2"
-                        "mt-2" "px-7" "py-3"
-                        "rounded-lg" "bg-[#5253D1]" "text-white"
-                        "font-semibold" "text-lg"
-                        "shadow-lg" "shadow-indigo-500/25"
-                        "hover:bg-[#4A435F]"
-                        "transition-colors" "duration-300"]}
-               "Discover BatchIQ"
-               [:span {:class ["text-[#71D5D6]"]} "\u2192"]]]])
+              [:div {:class ["group" "inline-flex" "relative" "rounded-xl" "p-[2.5px]" "mt-2" "overflow-hidden"
+                             "bg-[linear-gradient(to_right,_rgba(216,194,255,0.4),_rgba(255,255,255,0.15)_50%,_rgba(32,255,251,0.0.8))]"
+                             "hover:bg-[linear-gradient(to_right,_rgba(216,194,255,0.8),_rgba(255,255,255,0.4)_50%,_rgba(32,255,251,0.04))]"
+                             "shadow-[-8px_0_20px_rgba(216,194,255,0.3),_8px_0_20px_rgba(32,255,251,0.3)]"
+                             "hover:shadow-[-12px_0_30px_rgba(216,194,255,0.3),_12px_0_30px_rgba(32,255,251,0.1)]"
+                             "transition-all" "duration-500"]}
+               [:span {:class ["absolute" "-left-4" "top-0" "bottom-0" "w-20" "rounded-l-xl"
+                               "bg-[radial-gradient(circle_at_left,_rgba(216,194,255,0.7),_transparent_70%)]"
+                               "mix-blend-screen"
+                               "opacity-50" "group-hover:opacity-100"
+                               "transition-opacity" "duration-500"
+                               "pointer-events-none"]}]
+               [:span {:class ["absolute" "-right-4" "top-0" "bottom-0" "w-20" "rounded-r-xl"
+                               "bg-[radial-gradient(circle_at_right,_rgba(32,255,251,0.7),_transparent_70%)]"
+                               "mix-blend-screen"
+                               "opacity-50" "group-hover:opacity-100"
+                               "transition-opacity" "duration-500"
+                               "pointer-events-none"]}]
+               [:a
+                {:href "/batch-iq"
+                 :class ["relative" "inline-flex" "items-center" "gap-2"
+                         "px-7" "py-3"
+                         "rounded-[10.5px]" "overflow-hidden"
+                         "bg-[linear-gradient(to_right,_#100E24,_#362F6A)]"
+                         "text-white" "font-semibold" "text-lg"]}
+                [:span {:class ["absolute" "left-0" "-top-4" "-bottom-4" "w-36"
+                                "group-hover:w-44"
+                                "bg-[radial-gradient(circle_at_-20%_50%,_#D8C2FF,_transparent_50%)]"
+                                "mix-blend-screen"
+                                "opacity-50" "group-hover:opacity-100"
+                                "transition-all" "duration-500"
+                                "pointer-events-none"]}]
+                [:span {:class ["absolute" "right-0" "-top-4" "-bottom-4" "w-36"
+                                "group-hover:w-44"
+                                "bg-[radial-gradient(circle_at_120%_50%,_#20FFFB,_transparent_50%)]"
+                                "mix-blend-screen"
+                                "opacity-50" "group-hover:opacity-100"
+                                "transition-all" "duration-500"
+                                "pointer-events-none"]}]
+                [:span {:class ["absolute" "inset-x-0" "top-0" "h-[1px]"
+                                "bg-[linear-gradient(to_right,_rgba(216,194,255,0.6),_rgba(255,255,255,0.3)_50%,_rgba(32,255,251,0.6))]"]}]
+                [:span {:class ["absolute" "inset-x-0" "bottom-0" "h-[1px]"
+                                "bg-[linear-gradient(to_right,_rgba(216,194,255,0.3),_rgba(255,255,255,0.15)_50%,_rgba(32,255,251,0.3))]"]}]
+                [:span {:class ["relative" "z-10" "text-white"]} "Discover BatchIQ"]
+                [:span {:class ["relative" "z-10" "text-[#77F7E8]"
+                                "group-hover:scale-110" "group-hover:rotate-12"
+                                "transition-transform" "duration-500"]}
+                 [:svg {:xmlns "http://www.w3.org/2000/svg"
+                        :viewBox "0 0 24 24"
+                        :fill "currentColor"
+                        :class ["w-5" "h-5"]}
+                  [:path {:d "M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"}]]]]]]])
 
-; Defining About section
+; defnining About section
 
-(def about-sec [:div
+(defn about-sec [] [:div
                 {:id "about"
                  :class ["bg-white"
                          "flex"
@@ -161,7 +196,7 @@
                            "justify-center"
                            "items-center"
                            "text-custom-darkest-violet"
-                           "lg:w-50"
+                           "lg:w-1/2"
                            "order-last"
                            "lg:order-first"]}
 
@@ -198,13 +233,13 @@
                             "md:text-center"]}
                    "\u2003 We are a dedicated team of experts focused on empowering the biomedical domain through ontologies,
                    data integration, harmonization, analysis, and knowledge graphs. With our small but highly skilled
-                   engineering team, we offer tailored solutions to enhance data organization, uncover hidden insights, 
+                   engineering team, we offer tailored solutions to enhance data organization, uncover hidden insights,
                    and drive informed decision-making."]]
 
                  [:div
                   {:class ["flex"
                            "w-full"
-                           "lg:w-50"
+                           "lg:w-1/2"
                            "order-first"
                            "lg:order-last"]}
                   [:img
@@ -215,7 +250,7 @@
 
 ; Defining Capabilities section
 
-(def capabilities-sec [:div
+(defn capabilities-sec [] [:div
                        {:id "capabilities"
                         :class ["relative"
                                 "h-auto"
@@ -227,13 +262,8 @@
                        [:div
                         {:class ["w-full"
                                  "h-full"
-                                 "bg-gradient-to-br"
-                                 "from-white/0"
-                                 "from-25%"
-                                 "via-violet-300/50"
-                                 "via-42%"
-                                 "to-cyan-300/80"
-                                 "to-33% absolute"
+                                 "bg-[linear-gradient(to_bottom_right,_rgb(255_255_255/0)_25%,_rgb(196_181_253/0.5)_42%,_rgb(103_232_249/0.8)_100%)]"
+                                 "absolute"
                                  "bottom-0"
                                  "right-0"
                                  "z-20"
@@ -307,7 +337,7 @@
 
 ; Defining Expertise section
 
-(def expertise-sec [:div
+(defn expertise-sec [] [:div
                     {:id "expertise"
                      :class ["flex"
                              "h-auto"
@@ -373,7 +403,7 @@
                         software and database solutions tailored to the unique needs of life science organizations."]]
 
                      [:div {:class ["grid"
-                                    "grid-cols"
+                                    "grid-cols-1"
                                     "gap-4" "py-12"
                                     "sm:grid-cols-1"
                                     "lg:grid-cols-2"
@@ -381,7 +411,7 @@
                                     "2xl:grid-cols-2"]}
                       ui-cards/expertise-ui-cards]]])
 
-(def security-sec
+(defn security-sec []
   (let [bg-url (str constants/assets-url "img/security_bck.webp")]
     [:div
      {:id "security"
@@ -545,11 +575,11 @@
              "relative"
              "z-30"
              "fade-in"]}
-    header
-    about-sec
-    capabilities-sec
-    expertise-sec
-    security-sec]])
+    [header]
+    [about-sec]
+    [capabilities-sec]
+    [expertise-sec]
+    [security-sec]]])
 
 
 

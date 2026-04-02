@@ -12,6 +12,7 @@
         :asset-path "public/assets"
         :modules {:main {:entries [main.core]
                          :init-fn main.core/init}}
+        :devtools {:watch-dir "public/assets/css"}
         :closure-defines {main.constants/assets-url "assets/"
                           main.constants/blog-address "./public/blog/index.html"}}
 

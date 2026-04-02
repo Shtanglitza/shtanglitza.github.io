@@ -101,16 +101,15 @@
 
 ; CSS constants
 
-(def menu-css-footer (concatenate-css-definitions ["font-light"
-                                                   "text-sm"
-                                                   "ease-in-out"
-                                                   "duration-700"
-                                                   "hover:text-indigo-200"]))
-(def menu-css-navbar (concatenate-css-definitions ["flex-auto"
-                                                   "justify-start"
-                                                   "font-medium"
-                                                   "hover:text-violet-600"
-                                                   "nav-link"]))
+(defn menu-css-footer [dark?]
+  (concatenate-css-definitions
+    ["font-light" "text-sm" "ease-in-out" "duration-700"
+     (if dark? "text-white/70 hover:text-white" "hover:text-indigo-200")]))
+
+(defn menu-css-navbar [dark?]
+  (concatenate-css-definitions
+    ["flex-auto" "justify-start" "font-medium" "nav-link"
+     (if dark? "text-white/80 hover:text-white" "hover:text-violet-600")]))
 
 (def security-sections
   [{:id "asset-management"
