@@ -333,7 +333,7 @@
             ;; Glow between text and images
             [:div {:class ["absolute" "-bottom-48" "left-1/2" "-translate-x-1/2"
                            "w-[500px]" "h-48"
-                           "bg-[radial-gradient(ellipse_at_50%_50%,_rgba(114,235,222,0.14),_transparent_70%)]"
+                           "bg-[radial-gradient(ellipse_at_50%_50%,_rgba(115,104,234,0.14),_transparent_70%)]"
                            "pointer-events-none"]}]]
            ;; Image composition — cinematic floating screenshots
 
