@@ -49,3 +49,11 @@
 
 (defn blogIcn []
   (make-icon :blog))
+
+(defn hamburg-menu-colored [color]
+  [:div
+   [:> Icon {:path mdiMenu :size 1.5 :color color}]])
+
+(defn close-menu-colored [color]
+  [:div
+   [:> Icon {:path mdiWindowClose :size 1.5 :color color}]])

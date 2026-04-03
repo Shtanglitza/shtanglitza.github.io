@@ -75,7 +75,7 @@
             {:href     href
              :class    (if is-footer?
                          (constants/menu-css-footer (on-batch-iq?))
-                         (str (constants/menu-css-navbar (on-batch-iq?)) " " (when (= i @active-index) "active")))
+                         (str (constants/menu-css-navbar (on-batch-iq?)) " " (when (= i @active-index) (if (on-batch-iq?) "active-dark" "active"))))
              :on-click (fn [e]
                          (.preventDefault e)
                          (nav-click! section-id {:close-mobile? (and is-small? @menu-open?)}))}
@@ -165,7 +165,7 @@
         [:a {:href  (rfe/href :batch-iq)
              :class ["inline-flex" "items-center" "gap-1.5"
                      "px-3" "py-1" "rounded-lg"
-                     "bg-[linear-gradient(to_right,_#100E24,_#362F6A)]"
+                     "bg-[linear-gradient(to_right,_#0E1320,_#1A1F32)]"
                      "text-white" "text-sm" "font-semibold"]}
          [:span {:class ["w-1.5" "h-1.5" "rounded-lg" "bg-[#77F7E8]"
                          "shadow-[0_0_6px_2px_rgba(119,247,232,0.5)]"
@@ -184,9 +184,10 @@
                            "lg2:hidden" "hover:bg-transparent" "w-fit"
                            (str "menu-icon" (when @menu-open? " openly"))]
                 :type     "button"}
-       (if @menu-open?
-         (icons/close-menu)
-         (icons/hamburg-menu))
+       (let [icon-color (if (on-batch-iq?) "#77F7E8" "#4c1d95")]
+         (if @menu-open?
+           [icons/close-menu-colored icon-color]
+           [icons/hamburg-menu-colored icon-color]))
        (if @menu-open?
          (do
            (remove-classes "small-menu-list" "close")
@@ -200,7 +201,7 @@
        {:id    "small-menu-list"
         :class ["fixed" "top-0" "right-0" "left-0" "flex" "flex-col"
                 "justify-start" "items-start" "w-screen" "h-screen"
-                "small-menu" "close" "backdrop-blur-xl" "bg-white/75"]}
+                "small-menu" "close" "backdrop-blur-xl" (if (on-batch-iq?) "bg-[#0E1320]/95" "bg-white/75")]}
        [:ul
         {:id    "small-navbar"
          :class [(if (on-batch-iq?) "text-white/80" "text-custom-darkest-violet") "space-y-5" "text-2xl"
@@ -215,18 +216,22 @@
             :class ["h-16" "my-1" "w-auto"]}]]]
         (make-regular-menu content-names)
         [:li
-         [:a {:href     (rfe/href :batch-iq)
-              :on-click (fn [_] (toggle-menu))
-              :class    ["inline-flex" "items-center" "gap-1.5"
-                         "px-4.5" "py-1.5" "rounded-full"
-                         "bg-[linear-gradient(to_right,_#100E24,_#362F6A)]"
-                         "text-white" "text-[22px]" "font-semibold"]}
-          [:span {:class ["w-1.5" "h-1.5" "rounded-full" "bg-[#77F7E8]"
-                          "shadow-[0_0_6px_2px_rgba(119,247,232,0.5)]"
-                          "animate-pulse"]}]
-          "BatchIQ"]]
+         [:div {:class ["inline-flex" "rounded-full" "p-[2px]"
+                        "bg-[linear-gradient(to_right,_rgba(174,145,255,0.5),_rgba(255,255,255,0.3)_50%,_rgba(103,232,249,0.5))]"]}
+          [:a {:href     (rfe/href :batch-iq)
+               :on-click (fn [_] (toggle-menu))
+               :class    ["inline-flex" "items-center" "gap-1.5"
+                          "px-4.5" "py-1.5" "rounded-full"
+                          "bg-[linear-gradient(to_right,_#0E1320,_#1A1F32)]"
+                          "text-white" "text-[22px]" "font-semibold"]}
+           [:span {:class ["w-1.5" "h-1.5" "rounded-full" "bg-[#77F7E8]"
+                           "shadow-[0_0_6px_2px_rgba(119,247,232,0.5)]"
+                           "animate-pulse"]}]
+           "BatchIQ"]]]
         [:div
          {:class ["group" "flex" "flex-row" "inline-flex" "w-fit" "space-x-4"
                   "translate-y-4" "py-1" "px-2" "bg-indigo-500/80"
-                  "shadow-md" "shadow-indigo-500/30" "rounded-md"]}
+                  (when-not (on-batch-iq?) "shadow-md")
+                  (when-not (on-batch-iq?) "shadow-indigo-500/30")
+                  "rounded-md"]}
          constants/contact-links]]]]]))

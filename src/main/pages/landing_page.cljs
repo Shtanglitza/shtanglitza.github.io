@@ -133,7 +133,7 @@
                  :class ["relative" "inline-flex" "items-center" "gap-2"
                          "px-7" "py-3"
                          "rounded-[10.5px]" "overflow-hidden"
-                         "bg-[linear-gradient(to_right,_#100E24,_#362F6A)]"
+                         "bg-[linear-gradient(to_right,_#0E1320,_#1A1F32)]"
                          "text-white" "font-semibold" "text-lg"]}
                 [:span {:class ["absolute" "left-0" "-top-4" "-bottom-4" "w-36"
                                 "group-hover:w-44"

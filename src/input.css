@@ -157,9 +157,15 @@ html body {
   transition-property: all;
   transition-timing-function: ease-in-out;
   transition-duration: 150ms;
-  /* font-weight: 600; */
 }
 
+.active-dark {
+  color: rgb(119, 247, 232) !important;
+  text-shadow: none;
+  transition-property: all;
+  transition-timing-function: ease-in-out;
+  transition-duration: 150ms;
+}
 .nav-link {
   /* text-shadow: 1px 0.5px 3px rgba(255, 255, 255, 0.3); */
 
@@ -246,4 +252,16 @@ html body {
 
 .animate-subtle-move {
   animation: subtle-move 45s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 6px 6px 16px rgba(0,0,0,0.5), -6px -6px 16px rgba(50,45,90,0.2),
+                -20px 0 40px rgba(159,141,226,0.06), 20px 0 40px rgba(114,235,222,0.06);
+  }
+  50% {
+    box-shadow: 6px 6px 16px rgba(0,0,0,0.5), -6px -6px 16px rgba(50,45,90,0.2),
+                -30px 0 60px rgba(159,141,226,0.15), 30px 0 60px rgba(114,235,222,0.15),
+                0 0 80px rgba(159,141,226,0.08), 0 0 80px rgba(114,235,222,0.08);
+  }
 }
