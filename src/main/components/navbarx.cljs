@@ -131,7 +131,7 @@
      {:id    "my-navbar"
       :class ["z-50" "fixed" "top-0" "left-0" "text-white" "w-full" "h-auto"
               "transition-colors" "duration-300" (if (on-batch-iq?)
-                                                   (when @show-bg? "bg-dark-base/80 backdrop-blur-sm")
+                                                   (when @show-bg? "backdrop-brightness-80 backdrop-blur-sm")
                                                    (when @show-bg? "bg-white/95"))]}
      [:div
       {:class ["container" "flex" "items-center" "justify-between" "mx-auto"
@@ -158,16 +158,16 @@
         :class ["hidden" "lg2:grid" "grid-flow-col" "auto-cols-max"
                 "gap-5" (if (on-batch-iq?) "text-white/80" "text-custom-darkest-violet") "items-center" "text-lg"]}
        (make-regular-menu content-names)
-       [:div {:class ["inline-flex" "rounded-full" "p-[2px]"
+       [:div {:class ["inline-flex" "rounded-lg" "p-[2px]"
                       "bg-[linear-gradient(to_right,_rgba(174,145,255,0.5),_rgba(255,255,255,0.3)_50%,_rgba(103,232,249,0.5))]"
                       "hover:bg-[linear-gradient(to_right,_rgba(174,145,255,0.7),_rgba(255,255,255,0.5)_50%,_rgba(103,232,249,0.7))]"
                       "transition-all" "duration-300"]}
         [:a {:href  (rfe/href :batch-iq)
              :class ["inline-flex" "items-center" "gap-1.5"
-                     "px-3" "py-1" "rounded-full"
+                     "px-3" "py-1" "rounded-lg"
                      "bg-[linear-gradient(to_right,_#100E24,_#362F6A)]"
                      "text-white" "text-sm" "font-semibold"]}
-         [:span {:class ["w-1.5" "h-1.5" "rounded-full" "bg-[#77F7E8]"
+         [:span {:class ["w-1.5" "h-1.5" "rounded-lg" "bg-[#77F7E8]"
                          "shadow-[0_0_6px_2px_rgba(119,247,232,0.5)]"
                          "animate-pulse"]}]
          "BatchIQ"]]

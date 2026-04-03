@@ -3,7 +3,7 @@
    [reagent.dom :as rdom]
    [main.components.navbarx :as navbar-menu]
    [main.components.footer :as footer-section]
-   ;[main.pages.landing-page :as landing-page]
+   [main.pages.batch-iq-page :as batch-iq]
    [main.router :as router]))
 
 (defn main []
@@ -32,7 +32,9 @@
             ]}
    [navbar-menu/navbar]
    [main]
-   [footer-section/footer]])
+   [footer-section/footer]
+   (when (= (-> @router/current-route :data :name) :batch-iq)
+     [batch-iq/video-modal])])
 
 (defn ^:dev/after-load start []
   (js/console.log "start")

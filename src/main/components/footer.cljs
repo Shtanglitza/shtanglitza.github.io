@@ -11,8 +11,9 @@
    {:class ["w-full"
             "pt-36"
             "bg-gradient-to-r"
-            (if (navbar-menu/on-batch-iq?) "from-[#0f0f1a]" "from-slate-950")
-            (if (navbar-menu/on-batch-iq?) "to-[#1D1B48]" "to-indigo-950")
+            (if (navbar-menu/on-batch-iq?) "bg-[#0D0E18]" "bg-linear-to-r")
+            (when-not (navbar-menu/on-batch-iq?) "from-slate-950")
+            (when-not (navbar-menu/on-batch-iq?) "to-indigo-950")
             "inset-x-0"
             "bottom-0"
             "z-30"]}
@@ -94,7 +95,7 @@
                          "opacity-30" "group-hover:opacity-70"
                          "transition-opacity" "duration-500"
                          "pointer-events-none"]}]
-         [:a {:href (rfe/href :batch-iq)
+         [:a {:href  (rfe/href :batch-iq)
               :class ["relative" "inline-flex" "items-center" "gap-2"
                       "px-4" "py-1.5"
                       "rounded-[6px]" "overflow-hidden"
@@ -124,50 +125,50 @@
                            "animate-pulse"]}]
            "BatchIQ"
            [:span {:class ["text-[#5253D1]" "text-xs" "font-light" "tracking-wider" "uppercase"]} "Early Pilot"]]]]
-       ]]]
-    [:div
-     {:class ["mx-6"
-              "my-6"]}
-     [:ul
-      [:p
-       {:class ["font-bold"
-                "text-indigo-400"
-                "tracking-widest"
-                "mb-2"]}
-       "Expertise"]
+        ]]]
+     [:div
+      {:class ["mx-6"
+               "my-6"]}
+      [:ul
+       [:p
+        {:class ["font-bold"
+                 "text-indigo-400"
+                 "tracking-widest"
+                 "mb-2"]}
+        "Expertise"]
 
-      (for [link [(-> ui-cards/expertise-card-data :OntologyDaM :sec-name)
-                  (-> ui-cards/expertise-card-data :DataIaH :sec-name)
-                  (-> ui-cards/expertise-card-data :KnowledgeGCaV :sec-name)
-                  (-> ui-cards/expertise-card-data :DataAaI :sec-name)
-                  (-> ui-cards/expertise-card-data :SemanticDQaR :sec-name)
-                  (-> ui-cards/expertise-card-data :DataSaC :sec-name)
-                  (-> ui-cards/expertise-card-data :CustomBAD :sec-name)
-                  (-> ui-cards/expertise-card-data :PersonalizedTaS :sec-name)]]
+       (for [link [(-> ui-cards/expertise-card-data :OntologyDaM :sec-name)
+                   (-> ui-cards/expertise-card-data :DataIaH :sec-name)
+                   (-> ui-cards/expertise-card-data :KnowledgeGCaV :sec-name)
+                   (-> ui-cards/expertise-card-data :DataAaI :sec-name)
+                   (-> ui-cards/expertise-card-data :SemanticDQaR :sec-name)
+                   (-> ui-cards/expertise-card-data :DataSaC :sec-name)
+                   (-> ui-cards/expertise-card-data :CustomBAD :sec-name)
+                   (-> ui-cards/expertise-card-data :PersonalizedTaS :sec-name)]]
 
-        (let [href (constants/href-maker link)
-              section-id (subs href 1)]
-          [:li {:key link}
-           [:a
-            {:href     href
-             :class    ["font-light" "text-sm" "ease-in-out" "duration-700" "hover:text-indigo-200"]
-             :on-click (fn [e]
-                         (.preventDefault e)
-                         (navbar-menu/nav-click! section-id {:close-mobile? false}))}
-            constants/fSlash link]]))]]]]
+         (let [href (constants/href-maker link)
+               section-id (subs href 1)]
+           [:li {:key link}
+            [:a
+             {:href     href
+              :class    ["font-light" "text-sm" "ease-in-out" "duration-700" "hover:text-indigo-200"]
+              :on-click (fn [e]
+                          (.preventDefault e)
+                          (navbar-menu/nav-click! section-id {:close-mobile? false}))}
+             constants/fSlash link]]))]]]]
 
-  [:div
-   {:class ["w-full"
-            "h-full"
-            "flex"
-            "flex-row"
-            "m-0"
-            "py-14 "
-            "justify-center"
-            "align-middle"]}
-   [:p
-    {:class ["text-white"
-             "text-sm"
-             "font-light"
-             "tracking-widest"]}
-    "All rights reserved (c) " (.getFullYear (js/Date.)) " Shtangltza.ai"]] ] )
+   [:div
+    {:class ["w-full"
+             "h-full"
+             "flex"
+             "flex-row"
+             "m-0"
+             "py-14 "
+             "justify-center"
+             "align-middle"]}
+    [:p
+     {:class ["text-white"
+              "text-sm"
+              "font-light"
+              "tracking-widest"]}
+     "All rights reserved (c) " (.getFullYear (js/Date.)) " Shtangltza.ai"]]])
