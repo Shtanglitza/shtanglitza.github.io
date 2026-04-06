@@ -1,252 +1,3 @@
-;(ns main.components.navbarx
-;  (:require
-;   [applied-science.js-interop :as j]
-;   [reagent.core :as r]
-;   [main.components.icons :as icons]
-;   [clojure.string :as string]
-;   [main.constants :as constants]))
-;
-;
-;; Navbar-menu Utility functions
-;
-;(def active-index (r/atom 0)) ; Use an atom to store the index of the active link
-;
-;(def menu-open? (r/atom false))
-;
-;(def show-bg? (r/atom false))
-;
-;(defn add-classes [element & class-names]
-;  (let [el (.getElementById js/document element)]
-;    (when el
-;      (doseq [class-name class-names]
-;        (.add (.-classList el) class-name)))))
-;
-;(defn remove-classes [element & class-names]
-;  (let [el (.getElementById js/document element)]
-;    (when el
-;      (doseq [class-name class-names]
-;        (.remove (.-classList el) class-name)))))
-;
-;(defn toggle-menu []
-;  (swap! menu-open? not))
-;
-;(def content-names ["Home" "About" "Capabilities" "Expertise" "Security"])
-;
-;(defn- make-menu
-;  "Creates menu. is-footer? indicates the use of a list inside footer element
-;   and in that way apply different conditions ...."
-;  [cnt-names is-footer?]
-;  (let [is-small? (< (.-innerWidth js/window) 769)]
-;    (doall
-;     (for [[i link] (map-indexed vector cnt-names)]
-;       (let [href (str "#" (clojure.string/lower-case link))]
-;         [:li {:key i}
-;          [:a
-;           (cond-> {:href href
-;                    :class (if is-footer?
-;                             constants/menu-css-footer
-;                             (str constants/menu-css-navbar " " (when (= i @active-index) "active")))}
-;             is-small? (merge {:on-click toggle-menu}))
-;           (when is-footer? constants/listDots)
-;           link]])))))
-;
-;(defn make-regular-menu [cnt-names]
-;  (make-menu cnt-names false)
-;  )
-;
-;(defn make-footer-menu [cnt-names]
-;  (make-menu cnt-names true))
-;
-;(defn nav-scroll []
-;  (j/call js/document :addEventListener "click"
-;          (fn [event]
-;            (let [clicked-toggle-button? (j/call (j/get event :target) :closest "#toggle-menu-button")]
-;              (when (and @menu-open?
-;                         (not clicked-toggle-button?))
-;                (toggle-menu)))))
-;
-;  (letfn [(handle-scroll []
-;            (if (>= (.-pageYOffset js/window) 100) ; Check if scrolled 100px or more
-;              (do (println "Setting show-bg? to true") (reset! show-bg? true))
-;              (do (println "Setting show-bg? to false") (reset! show-bg? false))))]
-;    (js/window.addEventListener "scroll" handle-scroll) ; Add scroll listener
-;    (handle-scroll))) ; Check initial scroll position on mount
-;
-;
-; (defn active-link-on-scroll []
-;   (let [links (array-seq (.querySelectorAll js/document ".nav-link"))] ; Get the links as a sequence
-;     (js/window.addEventListener "scroll"
-;      (fn []
-;        (let [scroll-y (.-pageYOffset js/window)
-;              new-index (->> links
-;                             (map-indexed vector) ; Pair each link with its index
-;                             (filter #(let [href (j/call (second %) :getAttribute "href")
-;                                            target (j/call js/document :querySelector href)]
-;                                        (and target
-;                                             (<= (j/get target :offsetTop) scroll-y)
-;                                             (> (+ (j/get target :offsetTop) (j/get target :offsetHeight)) scroll-y))))
-;                             ffirst)] ; Get the index of the first active link
-;          (reset! active-index new-index))))))
-;
-;; Defining navbar-menu component
-;
-;(defn navbar []
-;  [:nav
-;   {:id "my-navbar"
-;    :class ["z-50"
-;            "fixed"
-;            "top-0"
-;            "left-0"
-;            "text-white"
-;            "w-full"
-;            "h-auto"
-;            "transition-colors"
-;            "duration-300"
-;            (when @show-bg? "bg-white/95 ")]}
-;   [:div
-;    {:class ["container"
-;             "flex"
-;             "items-center"
-;             "justify-between"
-;             "mx-auto"
-;             "px-6"
-;             "max-w-screen-md"
-;             "md:max-w-screen-lg"
-;             "md:px-8"
-;             "lg:max-w-screen-2xl"
-;             "lg:px-20"
-;             "transition-all"
-;             "duration-500"
-;             "ease-in-out"
-;             (if @show-bg? "py-3" "py-6")]}
-;    [:a
-;     {:href constants/website-url
-;      :class ["font-bold"
-;              "text-lg"
-;              "space-x-3"
-;              "rtl:space-x-reverse"]}
-;     [:img
-;      {:id "S_logo"
-;       :src (str constants/assets-url "img/shtanglitza_logo_d.svg")
-;       :class ["h-8"
-;               "my-1"
-;               "self-center"
-;               "text-2xl"
-;               "font-semibold"
-;               "whitespace-nowrap"
-;               "mix-blend-color-darken"]}]]
-;    [:ul
-;     {:id "lg-navbar"
-;      :class ["hidden"
-;              "sm:hidden"
-;              "md:grid"
-;              "grid-flow-col"
-;              "auto-cols-max"
-;              "gap-5"
-;              "text-custom-darkest-violet"
-;              "items-center"
-;              "text-lg"]}
-;
-;     (make-regular-menu content-names)
-;
-;     [:div
-;      {:class (into ["group"
-;                     "flex"
-;                     "flex-row"
-;                     "inline"
-;                     "space-x-4"
-;                     "py-1"
-;                     "px-2"
-;                     "bg-indigo-500/80"
-;                     "rounded-md"]
-;                    (when @show-bg? ["shadow-md"
-;                                     "shadow-indigo-500/20"]))}
-;      constants/contact-links]]
-;
-;    [:button {:id "toggle-menu-button"
-;              :on-click toggle-menu
-;              :class ["z-50"
-;                      "inline-flex"
-;                      "items-center"
-;                      "p-2"
-;                      "text-white"
-;                      "md:hidden"
-;                      "hover: bg-transparent w-fit"
-;                      (str "menu-icon" (when  @menu-open? " openly"))]
-;              :type "button"}
-;
-;    ;; ... (Hamburger icon transform) ...
-;
-;     (if (= @menu-open? true)
-;       (icons/close-menu)
-;       (icons/hamburg-menu))
-;     (if @menu-open?
-;       (do
-;         (remove-classes "small-menu-list" "close")
-;         (add-classes "small-menu-list" "open"))
-;       (do
-;         (remove-classes "small-menu-list" "open")
-;         (add-classes "small-menu-list" "close")))]
-;
-;   ;; Navigation links
-;
-;    [:div
-;     {:id "small-menu-list"
-;      :class ["fixed"
-;              "top-0"
-;              "righ-0"
-;              "left-0"
-;              "flex"
-;              "flex-col"
-;              "justify-start"
-;              "items-start"
-;              "w-screen"
-;              "h-screen"
-;              "small-menu"
-;              "close"
-;              "backdrop-blur-xl"
-;              "bg-white/75"]}
-;
-;     [:ul
-;      {:id "small-navbar"
-;       :class ["text-custom-darkest-violet"
-;               "space-y-5"
-;               "text-2xl"
-;               "pt-32"
-;               "pl-12"
-;               "tracking-widest"
-;               "w-fit"
-;               "h-fit"]}
-;      [:div
-;       {:class "mb-10"}
-;       [:a
-;        {:class ["flex-auto"
-;                 "justify-start"]
-;         :href constants/website-url}
-;        [:img
-;         {:src (str constants/assets-url "img/f_icn.svg")
-;          :class ["h-16"
-;                  "my-1"
-;                  "w-auto"]}]]]
-;      (make-regular-menu content-names)
-;
-;      [:div
-;       {:class ["group"
-;                "flex"
-;                "flex-row"
-;                "inline"
-;                "w-fit"
-;                "space-x-4"
-;                "translate-y-4"
-;                "py-1"
-;                "px-2"
-;                "bg-indigo-500/80"
-;                "shadow-md"
-;                "shadow-indigo-500/30"
-;                "rounded-md"]}
-;       constants/contact-links]]]]])
-;
-;
 (ns main.components.navbarx
   (:require
     [applied-science.js-interop :as j]
@@ -255,7 +6,7 @@
     [clojure.string :as string]
     [main.constants :as constants]
     [reitit.frontend.easy :as rfe]
-    [main.router :as router]))  ;; Keep this import for route detection
+    [main.router :as router]))                              ;; Keep this import for route detection
 
 ;; States -------
 (def active-index (r/atom 0))
@@ -285,6 +36,10 @@
   ;; Simple check - if we're on home route
   (= (-> @router/current-route :data :name) :home))
 
+;;new helper to recognise when land on batch-iq
+(defn on-batch-iq? []
+  (= (-> @router/current-route :data :name) :batch-iq))
+
 (defn scroll-to! [id]
   (js/console.log "📍 NAVBAR: Scrolling to:" id)
   (when-let [el (.getElementById js/document id)]
@@ -309,17 +64,18 @@
 (defn- make-menu
   "Creates menu. is-footer? indicates the use of a list inside footer element"
   [cnt-names is-footer?]
-  (let [is-small? (< (.-innerWidth js/window) 769)]
+  (let [_ @router/current-route                             ;; forces re-render on route change
+        is-small? (< (.-innerWidth js/window) 1000)]
     (doall
       (for [[i link] (map-indexed vector cnt-names)]
         (let [section-id (-> link string/lower-case)
               href (str "#" section-id)]
           [:li {:key i}
            [:a
-            {:href href
-             :class (if is-footer?
-                      constants/menu-css-footer
-                      (str constants/menu-css-navbar " nav-link " (when (= i @active-index) "active")))
+            {:href     href
+             :class    (if is-footer?
+                         (constants/menu-css-footer (on-batch-iq?))
+                         (str (constants/menu-css-navbar (on-batch-iq?)) " " (when (= i @active-index) (if (on-batch-iq?) "active-dark" "active"))))
              :on-click (fn [e]
                          (.preventDefault e)
                          (nav-click! section-id {:close-mobile? (and is-small? @menu-open?)}))}
@@ -352,7 +108,7 @@
   (let [links (array-seq (.querySelectorAll js/document ".nav-link"))]
     (js/window.addEventListener "scroll"
                                 (fn []
-                                  (if (on-landing?) ; ONLY this line added
+                                  (if (on-landing?)         ; ONLY this line added
                                     (let [scroll-y (.-pageYOffset js/window)
                                           new-index (->> links
                                                          (map-indexed vector)
@@ -365,79 +121,117 @@
                                       (reset! active-index new-index))
                                     (reset! active-index nil))))))
 
-
 (defn navbar []
-  [:nav
-   {:id "my-navbar"
-    :class ["z-50" "fixed" "top-0" "left-0" "text-white" "w-full" "h-auto"
-            "transition-colors" "duration-300" (when @show-bg? "bg-white/95 ")]}
-   [:div
-    {:class ["container" "flex" "items-center" "justify-between" "mx-auto"
-             "px-6" "max-w-screen-md" "md:max-w-screen-lg" "md:px-8"
-             "lg:max-w-screen-2xl" "lg:px-20" "transition-all" "duration-500"
-             "ease-in-out" (if @show-bg? "py-3" "py-6")]}
+  (let [_ @router/current-route
+        batch? (on-batch-iq?)
+        bg? @show-bg?]
+    (js/console.log "navbar render | batch-iq?" batch? "| show-bg?" bg?)
 
-    ;; Logo
-    [:a
-     {:href constants/website-url
-      :class ["font-bold" "text-lg" "space-x-3" "rtl:space-x-reverse"]}
-     [:img
-      {:id "S_logo"
-       :src (str constants/assets-url "img/shtanglitza_logo_d.svg")
-       :class ["h-8" "my-1" "self-center" "text-2xl" "font-semibold"
-               "whitespace-nowrap" "mix-blend-color-darken"]}]]
-
-    ;; Desktop menu
-    [:ul
-     {:id "lg-navbar"
-      :class ["hidden" "sm:hidden" "md:grid" "grid-flow-col" "auto-cols-max"
-              "gap-5" "text-custom-darkest-violet" "items-center" "text-lg"]}
-     (make-regular-menu content-names)
+    [:nav
+     {:id    "my-navbar"
+      :class ["z-50" "fixed" "top-0" "left-0" "text-white" "w-full" "h-auto"
+              "transition-colors" "duration-300" (if (on-batch-iq?)
+                                                   (when @show-bg? "backdrop-brightness-80 backdrop-blur-sm")
+                                                   (when @show-bg? "bg-white/95"))]}
      [:div
-      {:class (into ["group" "flex" "flex-row" "inline" "space-x-4" "py-1" "px-2"
-                     "bg-indigo-500/80" "rounded-md"]
-                    (when @show-bg? ["shadow-md" "shadow-indigo-500/20"]))}
-      constants/contact-links]]
+      {:class ["container" "flex" "items-center" "justify-between" "mx-auto"
+               "px-6" "max-w-screen-md" "md:max-w-screen-lg" "md:px-8"
+               "lg:max-w-screen-2xl" "lg:px-20" "transition-all" "duration-500"
+               "ease-in-out" (if @show-bg? "py-3" "py-6")]}
 
-    ;; Mobile menu button
-    [:button {:id "toggle-menu-button"
-              :on-click toggle-menu
-              :class ["z-50" "inline-flex" "items-center" "p-2" "text-white"
-                      "md:hidden" "hover:bg-transparent" "w-fit"
-                      (str "menu-icon" (when @menu-open? " openly"))]
-              :type "button"}
-     (if @menu-open?
-       (icons/close-menu)
-       (icons/hamburg-menu))
-     (if @menu-open?
-       (do
-         (remove-classes "small-menu-list" "close")
-         (add-classes "small-menu-list" "open"))
-       (do
-         (remove-classes "small-menu-list" "open")
-         (add-classes "small-menu-list" "close")))]
+      ;; Logo
+      [:a
+       {:href  constants/website-url
+        :class ["font-bold" "text-lg" "space-x-3" "rtl:space-x-reverse"]}
+       [:img
+        {:id    "S_logo"
+         :src   (str constants/assets-url
+                     (if (on-batch-iq?)
+                       "img/shtanglitza_logo_w.svg"
+                       "img/shtanglitza_logo_d.svg"))
+         :class ["h-8" "my-1" "self-center" "text-2xl" "font-semibold"
+                 "whitespace-nowrap" "mix-blend-color-darken"]}]]
 
-    ;; Mobile menu
-    [:div
-     {:id "small-menu-list"
-      :class ["fixed" "top-0" "right-0" "left-0" "flex" "flex-col"
-              "justify-start" "items-start" "w-screen" "h-screen"
-              "small-menu" "close" "backdrop-blur-xl" "bg-white/75"]}
-     [:ul
-      {:id "small-navbar"
-       :class ["text-custom-darkest-violet" "space-y-5" "text-2xl"
-               "pt-32" "pl-12" "tracking-widest" "w-fit" "h-fit"]}
+      ;; Desktop menu
+      [:ul
+       {:id    "lg-navbar"
+        :class ["hidden" "lg2:grid" "grid-flow-col" "auto-cols-max"
+                "gap-5" (if (on-batch-iq?) "text-white/80" "text-custom-darkest-violet") "items-center" "text-lg"]}
+       (make-regular-menu content-names)
+       [:div {:class ["inline-flex" "rounded-lg" "p-[2px]"
+                      "bg-[linear-gradient(to_right,_rgba(174,145,255,0.5),_rgba(255,255,255,0.3)_50%,_rgba(103,232,249,0.5))]"
+                      "hover:bg-[linear-gradient(to_right,_rgba(174,145,255,0.7),_rgba(255,255,255,0.5)_50%,_rgba(103,232,249,0.7))]"
+                      "transition-all" "duration-300"]}
+        [:a {:href  (rfe/href :batch-iq)
+             :class ["inline-flex" "items-center" "gap-1.5"
+                     "px-3" "py-1" "rounded-lg"
+                     "bg-[linear-gradient(to_right,_#0E1320,_#1A1F32)]"
+                     "text-white" "text-sm" "font-semibold"]}
+         [:span {:class ["w-1.5" "h-1.5" "rounded-lg" "bg-[#77F7E8]"
+                         "shadow-[0_0_6px_2px_rgba(119,247,232,0.5)]"
+                         "animate-pulse"]}]
+         "BatchIQ"]]
+       [:div
+        {:class (into ["group" "flex" "flex-row" "inline-flex" "space-x-4" "py-1" "px-2"
+                       "bg-indigo-500/80" "rounded-md"]
+                      (when @show-bg? ["shadow-md" "shadow-indigo-500/20"]))}
+        constants/contact-links]]
+
+      ;; Mobile menu button
+      [:button {:id       "toggle-menu-button"
+                :on-click toggle-menu
+                :class    ["z-50" "inline-flex" "items-center" "p-2" "text-white"
+                           "lg2:hidden" "hover:bg-transparent" "w-fit"
+                           (str "menu-icon" (when @menu-open? " openly"))]
+                :type     "button"}
+       (let [icon-color (if (on-batch-iq?) "#77F7E8" "#4c1d95")]
+         (if @menu-open?
+           [icons/close-menu-colored icon-color]
+           [icons/hamburg-menu-colored icon-color]))
+       (if @menu-open?
+         (do
+           (remove-classes "small-menu-list" "close")
+           (add-classes "small-menu-list" "open"))
+         (do
+           (remove-classes "small-menu-list" "open")
+           (add-classes "small-menu-list" "close")))]
+
+      ;; Mobile menu
       [:div
-       {:class "mb-10"}
-       [:a
-        {:class ["flex-auto" "justify-start"]
-         :href constants/website-url}
-        [:img
-         {:src (str constants/assets-url "img/f_icn.svg")
-          :class ["h-16" "my-1" "w-auto"]}]]]
-      (make-regular-menu content-names)
-      [:div
-       {:class ["group" "flex" "flex-row" "inline" "w-fit" "space-x-4"
-                "translate-y-4" "py-1" "px-2" "bg-indigo-500/80"
-                "shadow-md" "shadow-indigo-500/30" "rounded-md"]}
-       constants/contact-links]]]]])
+       {:id    "small-menu-list"
+        :class ["fixed" "top-0" "right-0" "left-0" "flex" "flex-col"
+                "justify-start" "items-start" "w-screen" "h-screen"
+                "small-menu" "close" "backdrop-blur-xl" (if (on-batch-iq?) "bg-[#0E1320]/95" "bg-white/75")]}
+       [:ul
+        {:id    "small-navbar"
+         :class [(if (on-batch-iq?) "text-white/80" "text-custom-darkest-violet") "space-y-5" "text-2xl"
+                 "pt-32" "pl-12" "tracking-widest" "w-fit" "h-fit"]}
+        [:div
+         {:class "mb-10"}
+         [:a
+          {:class ["flex-auto" "justify-start"]
+           :href  constants/website-url}
+          [:img
+           {:src   (str constants/assets-url "img/f_icn.svg")
+            :class ["h-16" "my-1" "w-auto"]}]]]
+        (make-regular-menu content-names)
+        [:li
+         [:div {:class ["inline-flex" "rounded-full" "p-[2px]"
+                        "bg-[linear-gradient(to_right,_rgba(174,145,255,0.5),_rgba(255,255,255,0.3)_50%,_rgba(103,232,249,0.5))]"]}
+          [:a {:href     (rfe/href :batch-iq)
+               :on-click (fn [_] (toggle-menu))
+               :class    ["inline-flex" "items-center" "gap-1.5"
+                          "px-4.5" "py-1.5" "rounded-full"
+                          "bg-[linear-gradient(to_right,_#0E1320,_#1A1F32)]"
+                          "text-white" "text-[22px]" "font-semibold"]}
+           [:span {:class ["w-1.5" "h-1.5" "rounded-full" "bg-[#77F7E8]"
+                           "shadow-[0_0_6px_2px_rgba(119,247,232,0.5)]"
+                           "animate-pulse"]}]
+           "BatchIQ"]]]
+        [:div
+         {:class ["group" "flex" "flex-row" "inline-flex" "w-fit" "space-x-4"
+                  "translate-y-4" "py-1" "px-2" "bg-indigo-500/80"
+                  (when-not (on-batch-iq?) "shadow-md")
+                  (when-not (on-batch-iq?) "shadow-indigo-500/30")
+                  "rounded-md"]}
+         constants/contact-links]]]]]))
