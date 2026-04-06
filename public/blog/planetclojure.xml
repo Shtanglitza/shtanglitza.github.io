@@ -3,269 +3,289 @@
   <title>hlog / index-page</title>
   <link href="https://www.shtanglitza.ai/public/blog/atom.xml" rel="self"/>
   <link href="https://www.shtanglitza.ai/public/blog/"/>
-  <updated>2025-11-08T17:06:19+00:00</updated>
+  <updated>2026-03-31T11:40:36+00:00</updated>
   <id>https://www.shtanglitza.ai/public/blog/</id>
   <author>
     <name>Shtanglitza Team</name>
   </author>
   <entry>
+    <id>https://www.shtanglitza.ai/public/blog/rama-sail-graph.html</id>
+    <link href="https://www.shtanglitza.ai/public/blog/rama-sail-graph.html"/>
+    <title>Building a Distributed RDF Store on Rama</title>
+    <updated>2026-03-30T23:59:59+00:00</updated>
+    <content type="html"><![CDATA[<div><p>How much of an RDF database can you push into a distributed execution model before the abstractions stop fitting?</p><p><a href="https://github.com/Shtanglitza/rama-sail-graph">rama-sail-graph</a> is an attempt to find out. It is a Rama-backed RDF quad store where SPARQL queries compile into distributed execution plans that run across Rama partitions, and the whole thing sits behind RDF4J&apos;s SAIL API so that existing Java tooling can query it through familiar interfaces, within the bounds of what the engine currently supports.</p><h2 id="the-design-tension:-sail-meets-distributed-dataflow">The Design Tension: SAIL Meets Distributed Dataflow</h2><p>For this project, the interesting problem is not storage. It is the mismatch between two execution models.</p><p>On one side is <a href="https://rdf4j.org/documentation/reference/sail/">RDF4J&apos;s SAIL API</a>: a connection-oriented, transaction-aware storage contract. A <code>SailConnection</code> exposes <code>begin</code>, <code>commit</code>, <code>rollback</code>. Clients expect to buffer writes, read their own uncommitted changes, and roll back cleanly. RDF4J&apos;s entire ecosystem (repositories, query preparation, SPARQL evaluation) layers on top of this contract. If the goal is compatibility with the existing RDF4J world, SAIL is the right boundary to implement.</p><p>On the other side is <a href="https://redplanetlabs.com/">Rama</a>: a distributed runtime where data flows through depots, gets indexed in partitioned PStates, and queries run as topologies across the cluster. There are no connections in the traditional sense. There is no local transaction buffer.</p><p>Bridging these two models is the core design problem. The adapter must present connection-scoped transaction semantics on top of a system that does not natively think in connections. Uncommitted writes go into a connection-local buffer. Rollback discards that buffer. Commit deduplicates add/delete pairs and appends the net operations to Rama&apos;s depot, optionally waiting for the microbatch to process before returning.</p><p>That is not just a compatibility detail. It is what makes the adapter usable inside the rest of the RDF4J ecosystem, including future integrations like stackable inferencing layers that depend on <code>NotifyingSailConnection</code> and statement-level change notification.</p><!-- end-of-preview --><h2 id="the-storage-model:-four-quad-indices">The Storage Model: Four Quad Indices</h2><p>Each quad is indexed four ways, each PState hash-partitioned by its leading key:</p><ul><li><code>$$spoc</code> (subject-first): when you know the entity, scan its predicates. The default for entity lookups.</li><li><code>$$posc</code> (predicate-first): when you know the predicate, find all subjects and objects. Common for <code>rdf:type</code> queries.</li><li><code>$$ospc</code> (object-first): reverse lookups. &quot;Who knows Alice?&quot; requires scanning from the object.</li><li><code>$$cspo</code> (context-first): named graph queries. &quot;Everything in graph G.&quot;</li></ul><p>At query time, the <code>find-triples</code> topology selects the index automatically based on which variables are bound. If the subject is known, it hashes to the subject&apos;s partition and uses <code>$$spoc</code>. If only the predicate is bound, it uses <code>$$posc</code>. If nothing is bound, it falls back to a full scan. This dispatch happens at the Rama level, inside a <code>&lt;&lt;cond</code>, so index selection is a runtime decision made where the data lives.</p><p>Writes are append-driven through a depot. Deletes are physical: quads are removed from all four indices, and empty branches are cleaned up. Both adds and deletes are idempotent, which matters once you care about retries and distributed execution.</p><h2 id="what-a-query-actually-does">What a Query Actually Does</h2><p>The easiest way to understand the system is to follow a query through it.</p><p>Take a two-hop SPARQL join:</p><pre><code class="language-sparql">SELECT ?name WHERE {
+  &lt;http://ex/alice&gt; &lt;http://ex/knows&gt; ?friend .
+  ?friend &lt;http://ex/name&gt; ?name .
+}
+</code></pre><p><strong>Step 1: Compile.</strong> RDF4J parses this into an algebra tree (two <code>StatementPattern</code> nodes inside a <code>Join</code>). The adapter&apos;s <code>tuple-expr-&gt;plan</code> multimethod walks that tree and produces an internal plan:</p><pre><code class="language-clojure">{:op :join
+ :left  {:op :bgp :pattern {:s &quot;&lt;http://ex/alice&gt;&quot; :p &quot;&lt;http://ex/knows&gt;&quot; :o &quot;?friend&quot;}}
+ :right {:op :bgp :pattern {:s &quot;?friend&quot; :p &quot;&lt;http://ex/name&gt;&quot; :o &quot;?name&quot;}}
+ :join-vars [&quot;?friend&quot;]}
+</code></pre><p>Each triple pattern becomes a <code>:bgp</code> node. The join records which variables bind the two sides together. Cardinality estimates from stored statistics determine which side goes left (probe) and which goes right (build).</p><p><strong>Step 2: Optimize.</strong> The plan passes through a pipeline of rewrites:</p><ol start="1"><li>Push filters down into joins</li><li>Flatten left-join chains</li><li>Reorder join chains using statistics (Selinger-style dynamic programming)</li><li>Detect and transform self-join patterns</li><li>Rewrite <code>rdf:type</code> lookups to use materialized views</li><li>Batch property lookups for the same subject</li><li>Push limits down to enable early termination</li></ol><p>For this simple query, most passes are no-ops. But add a <code>FILTER</code>, and filter pushdown will decompose it into conjuncts and push each one into the join side whose variables it references, avoiding shipping unfiltered rows across partitions.</p><p><strong>Step 3: Execute.</strong> The optimized plan is sent to Rama&apos;s <code>execute-plan</code> query topology, which dispatches on the <code>:op</code> field. For <code>:join</code>, it runs a distributed hash join:</p><ol start="1"><li><strong>Build phase</strong>: execute the right sub-plan (<code>?friend &lt;name&gt; ?name</code>), collect results, build a hash index keyed by <code>?friend</code>.</li><li><strong>Probe phase</strong>: execute the left sub-plan (<code>alice &lt;knows&gt; ?friend</code>), and for each result, probe the hash index.</li><li><strong>Aggregate</strong>: matched rows are shuffled back to the origin and collected into the result set.</li></ol><p>The left sub-plan hashes to Alice&apos;s partition via <code>$$spoc</code> and returns her friends. The right sub-plan uses <code>$$posc</code> to find name triples. The join happens server-side. The calling code gets back a <code>CloseableIteration</code> of <code>BindingSet</code> objects and never knows it left the SAIL API.</p><h2 id="two-optimizations-worth-understanding">Two Optimizations Worth Understanding</h2><p>The optimization pipeline already handles seven distinct passes. Two are worth explaining because they illustrate problems specific to distributed SPARQL execution.</p><p><strong>Filter pushdown.</strong> A <code>FILTER</code> sitting above a <code>JOIN</code> applies after both sides have already been evaluated and merged. In a distributed system, that means shipping potentially large intermediate results across partitions before discarding most of them. The filter pushdown pass decomposes <code>AND</code> expressions into independent conjuncts, checks which variables each conjunct references, and pushes it into whichever join side contains those variables. After pushdown, cardinality is re-estimated and join ordering may change.</p><p><strong>Self-join optimization.</strong> Consider a BSBM-style query that finds pairs of products from the same producer:</p><pre><code class="language-sparql">SELECT ?p1 ?p2 ?producer WHERE {
+  ?p1 bsbm:producer ?producer .
+  ?p2 bsbm:producer ?producer .
+  FILTER (?p1 &lt; ?p2)
+}
+</code></pre><p>A naive execution fetches all producer triples twice and computes the Cartesian product. The self-join pass detects that both patterns share the same predicate and join variable, transforms them into a single BGP fetch, groups results by the join key, and generates pairs within each group while applying the inequality filter during generation. This avoids fetching the same predicate twice and can reduce output significantly when filters are selective, though pair generation within each group is still combinatorial in the general case.</p><h2 id="what-runs-server-side">What Runs Server-Side</h2><p>Beyond the query walkthrough above, the engine pushes a substantial subset of SPARQL algebra into Rama query topologies:</p><ul><li>basic graph pattern evaluation</li><li>joins and left joins</li><li>filters, unions, bind, and values</li><li>order, distinct, limit, and offset</li><li>group by and aggregates</li><li>ask queries</li></ul><p>When an operator is not yet supported, the adapter can fall back to RDF4J&apos;s local evaluation strategy for some cases. That preserves correctness but gives up the scaling benefits of server-side execution. Not everything falls back cleanly, though: <code>SERVICE</code> is explicitly rejected, and property paths (<code>+</code>, <code>*</code>) are not yet a reliable fallback path either.</p><h2 id="compatibility">Compatibility</h2><p>The repository includes compatibility coverage based on RDF4J&apos;s <code>RDFStoreTest</code> suite, alongside targeted tests for query execution, transactions, metrics, and the SPARQL endpoint. The test suite exercises semantics that client code actually depends on: transaction handling, namespace operations, statement pattern matching, named graph management, blank node and literal round-trips, duplicate behavior, and concurrent access patterns.</p><h2 id="not-just-a-library">Not Just a Library</h2><p>The project ships a SPARQL HTTP endpoint built on Ring and Jetty, with content negotiation for tuple, boolean, and graph responses. It exposes a <code>/metrics</code> endpoint for Prometheus scraping, a <code>/health</code> endpoint for liveness checks, and tracks query latency histograms, query counters by outcome, active connections, and transaction metrics.</p><h2 id="current-limits">Current Limits</h2><p><code>rama-sail-graph</code> is still in public preview:</p><ul><li>functional and tested, but not yet production-hardened</li><li>operator coverage is incomplete; <code>SERVICE</code> is explicitly unsupported</li><li>some unsupported operators (such as <code>MINUS</code>) fall back to RDF4J&apos;s local evaluation</li><li>property paths (<code>+</code>, <code>*</code>) are not yet a reliable execution path</li><li>subquery support is partial</li><li>query timeout is best-effort: a cluster query may continue after the client times out</li><li>the SPARQL HTTP endpoint has no authentication, rate limiting, or TLS</li></ul><h2 id="why-this-repo-is-worth-watching">Why This Repo Is Worth Watching</h2><p>A two-hop SPARQL join compiles to a distributed hash join that executes across Rama partitions, returns results through a standard RDF4J <code>CloseableIteration</code>, and the calling code never knows it left the SAIL API. That is the design bet: you can push a meaningful amount of RDF database behavior into a distributed execution model without breaking the interface contract that existing tooling depends on.</p><p>The hard question is still open. How far can you take this before the abstractions stop fitting? The planning layer is still evolving. Cost modeling, statistics quality, and operator coverage all have room to improve. But the foundation (distributed indices, server-side plan execution, SAIL compatibility, a working optimization pipeline) is already in place and running.</p><p>If you care about graph databases, SPARQL engines, or the problem of making standards-based interfaces work on top of distributed runtimes, <a href="https://github.com/Shtanglitza/rama-sail-graph">the code is here</a>.</p></div>]]></content>
+  </entry>
+  <entry>
     <id>https://www.shtanglitza.ai/public/blog/rama-lsh.html</id>
     <link href="https://www.shtanglitza.ai/public/blog/rama-lsh.html"/>
     <title>Diving into Rama: A Clojure LSH Vector Search Experiment</title>
     <updated>2025-11-07T23:59:59+00:00</updated>
-    <content type="html"><![CDATA[<p>Vector search is a common requirement for AI applications, enabling features like recommendation engines and semantic search. However, building a scalable, real-time vector search system often involves integrating multiple distinct technologies: a message queue for ingestion, various databases for indexing and storage, and a compute layer for processing.</p><p>As part of evaluating <a href='https://redplanetlabs.com/'>Rama</a> as a development platform for our product solution, which incorporates several data models to capture different stages in biotech lab experiment design and execution, we decided to try building a vector search system from scratch.</p><p>While modern vector search often relies on complex graph-based algorithms like <a href='https://www.pinecone.io/learn/series/faiss/hnsw/'>HNSW</a>, this post explores a different approach: implementing the classic Locality-Sensitive Hashing (LSH) algorithm. LSH is a great starting point for an experiment like this because its principles - hashing, bucketing, and re-ranking - map clearly to data processing primitives. The goal is to see how Rama's unified model handles the components of this traditionally complex task.</p><h2 id="what_is_locality-sensitive_hashing_%28lsh%29%3F">What is Locality-Sensitive Hashing (LSH)?</h2><p>Locality-Sensitive Hashing is an algorithm for approximate nearest-neighbor search. Instead of comparing a query vector to every other vector in a dataset (which is slow), LSH uses a special hashing technique. <!-- end-of-preview --> The core idea is that similar vectors are "hashed" into the same "bucket" with high probability. A query then only needs to be compared against the vectors in its own bucket and a few nearby ones, drastically reducing the search space. This is typically followed by a re-ranking step that computes the exact distance for this smaller set of candidates.</p><p><em>(For a deeper dive, see: <a href='https://www.pinecone.io/learn/series/faiss/locality-sensitive-hashing/'>Pinecone article</a>)</em></p><h2 id="what_is_rama%3F">What is Rama?</h2><p>Rama is a platform for building distributed backends. It integrates data storage and computation into a single system, aiming to reduce the "glue code" connecting separate services.</p><p>Its core components are:</p><ul><li><strong>Depots:</strong> Durable, partitioned, append-only logs for data ingestion.</li><li><strong>PStates:</strong> Durable, replicated, and arbitrarily structured data structures for storing indexed views.</li><li><strong>Topologies:</strong> Distributed, fault-tolerant dataflow programs that define all data processing, from real-time ETLs to on-demand queries.</li></ul><p><em>(For more information, see the <a href='https://redplanetlabs.com/docs/~/index.html'>Rama Documentation</a>)</em></p><h2 id="the_lsh_module_implementation">The LSH Module Implementation</h2><p><strong>A Quick Note:</strong> Before diving in, a disclaimer. This code comes from a developer with very little Rama experience. It's an experiment, not a production-ready, heavily-optimized solution. The code is probably very far from perfect, but it's a way to learn the platform.</p><p>The implementation consists of one Rama module that handles ingestion, indexing, and querying.</p><h3 id="1._pstate_schemas%3A_defining_the_data">1. PState Schemas: Defining the Data</h3><p>The module relies on two PStates, Rama's durable data stores, to hold the data.</p><ul><li><strong>$$embeddings:</strong> This is the "source of truth." It maps a vector's unique ID (<code>String</code>) to its full data. It's defined as a <code>fixed-keys-schema</code>, which is ideal for object-like structures where the keys (<code>:vec</code>, <code>:norm</code>, <code>:body</code>) are known in advance.</li><li><strong>$$lsh-tables:</strong> This is the LSH index itself. It maps a bucket ID (a string) to a <code>set-schema</code> of vector IDs. This set is declared with <code>{:subindex? true}</code>, a key Rama feature. It tells Rama to index the elements of the set individually, which is critical for performance when a single bucket grows to contain thousands or millions of IDs.<pre class="language-clojure"><code class="lang-clojure language-clojure">   &#40;declare-pstate etl
+    <content type="html"><![CDATA[<div><p>Vector search is a common requirement for AI applications, enabling features like recommendation engines and semantic search. However, building a scalable, real-time vector search system often involves integrating multiple distinct technologies: a message queue for ingestion, various databases for indexing and storage, and a compute layer for processing.</p><p>As part of evaluating <a href="https://redplanetlabs.com/">Rama</a> as a development platform for our product solution, which incorporates several data models to capture different stages in biotech lab experiment design and execution, we decided to try building a vector search system from scratch.</p><p>While modern vector search often relies on complex graph-based algorithms like <a href="https://www.pinecone.io/learn/series/faiss/hnsw/">HNSW</a>, this post explores a different approach: implementing the classic Locality-Sensitive Hashing (LSH) algorithm. LSH is a great starting point for an experiment like this because its principles - hashing, bucketing, and re-ranking - map clearly to data processing primitives. The goal is to see how Rama&apos;s unified model handles the components of this traditionally complex task.</p><h2 id="what-is-locality-sensitive-hashing-(lsh)?">What is Locality-Sensitive Hashing (LSH)?</h2><p>Locality-Sensitive Hashing is an algorithm for approximate nearest-neighbor search. Instead of comparing a query vector to every other vector in a dataset (which is slow), LSH uses a special hashing technique.</p><!-- end-of-preview --><p>The core idea is that similar vectors are &quot;hashed&quot; into the same &quot;bucket&quot; with high probability. A query then only needs to be compared against the vectors in its own bucket and a few nearby ones, drastically reducing the search space. This is typically followed by a re-ranking step that computes the exact distance for this smaller set of candidates.</p><p><em>(For a deeper dive, see: <a href="https://www.pinecone.io/learn/series/faiss/locality-sensitive-hashing/">Pinecone article</a>)</em></p><h2 id="what-is-rama?">What is Rama?</h2><p>Rama is a platform for building distributed backends. It integrates data storage and computation into a single system, aiming to reduce the &quot;glue code&quot; connecting separate services.</p><p>Its core components are:</p><ul><li><strong>Depots:</strong> Durable, partitioned, append-only logs for data ingestion.</li><li><strong>PStates:</strong> Durable, replicated, and arbitrarily structured data structures for storing indexed views.</li><li><strong>Topologies:</strong> Distributed, fault-tolerant dataflow programs that define all data processing, from real-time ETLs to on-demand queries.</li></ul><p><em>(For more information, see the <a href="https://redplanetlabs.com/docs/~/index.html">Rama Documentation</a>)</em></p><h2 id="the-lsh-module-implementation">The LSH Module Implementation</h2><p><strong>A Quick Note:</strong> Before diving in, a disclaimer. This code comes from a developer with very little Rama experience. It&apos;s an experiment, not a production-ready, heavily-optimized solution. The code is probably very far from perfect, but it&apos;s a way to learn the platform.</p><p>The implementation consists of one Rama module that handles ingestion, indexing, and querying.</p><h3 id="1.-pstate-schemas:-defining-the-data">1. PState Schemas: Defining the Data</h3><p>The module relies on two PStates, Rama&apos;s durable data stores, to hold the data.</p><ul><li><strong><span class="formula"></span>embeddings:</strong> This is the &quot;source of truth.&quot; It maps a vector&apos;s unique ID (<code>String</code>) to its full data. It&apos;s defined as a <code>fixed-keys-schema</code>, which is ideal for object-like structures where the keys (<code>:vec</code>, <code>:norm</code>, <code>:body</code>) are known in advance.</li><li><strong><span class="formula"></span>lsh-tables:</strong> This is the LSH index itself. It maps a bucket ID (a string) to a <code>set-schema</code> of vector IDs. This set is declared with <code>{:subindex? true}</code>, a key Rama feature. It tells Rama to index the elements of the set individually, which is critical for performance when a single bucket grows to contain thousands or millions of IDs.</li></ul><pre><code class="language-clojure">   (declare-pstate etl
                    $$embeddings
-                   {String &#40;fixed-keys-schema
-                             {:vec  &#40;vector-schema Double&#41;
+                   {String (fixed-keys-schema
+                             {:vec  (vector-schema Double)
                               :norm Double
-                              :body String}&#41;}&#41;
+                              :body String})})
 
-    &#40;declare-pstate etl
+    (declare-pstate etl
                     $$lsh-tables
-                    {String &#40;set-schema String {:subindex? true}&#41;}&#41;
-</code></pre></li></ul><h3 id="2._a_note_on_lsh_parameters">2. A Note on LSH Parameters</h3><p>The code uses several hardcoded parameters. Here's a brief explanation of why:</p><ul><li><code>dims = 384</code>: This is dictated by the embedding model. The dataset used in testing is based on <code>all-MiniLM-L6-v2</code>, which produces 384-dimension vectors.</li><li><code>nbits = 8</code> & <code>num-tables = 4</code>: This is the core LSH performance/accuracy trade-off. More tables (<code>num-tables</code>) increase recall (higher chance of finding a true neighbor) at the cost of more lookups. More bits (<code>nbits</code>) create more (and smaller) buckets per table (2<sup>8</sup> = 256). For a dataset in the 10k-100k vector range, this configuration (4 tables, 256 buckets each) is a reasonable starting point to keep buckets from getting too large, while the multiple tables provide a good chance of finding true neighbors.</li><li><code>top-k = 50</code>: This is simply the application requirement—how many results to return.</li></ul><h3 id="3._the_indexing_etl%3A_%3Ccode%3E%26lt%3B%26lt%3Bsources%3C%2Fcode%3E">3. The Indexing ETL: <code>&lt;&lt;sources</code></h3><p>A streaming topology (<code>stream-topology</code>) listens to the <code>&#42;ingest</code> depot for new vectors. Its dataflow defines the real-time indexing logic.</p><pre class="language-clojure"><code class="lang-clojure language-clojure">&#40;defmodule LSHModule
-  &#91;setup topologies&#93;
-  &#40;declare-depot setup &#42;ingest &#40;hash-by :id&#41;&#41;
+                    {String (set-schema String {:subindex? true})})
+</code></pre><h3 id="2.-a-note-on-lsh-parameters">2. A Note on LSH Parameters</h3><p>The code uses several hardcoded parameters. Here&apos;s a brief explanation of why:</p><ul><li><code>dims = 384</code>: This is dictated by the embedding model. The dataset used in testing is based on <code>all-MiniLM-L6-v2</code>, which produces 384-dimension vectors.</li><li><code>nbits = 8</code> &amp; <code>num-tables = 4</code>: This is the core LSH performance/accuracy trade-off. More tables (<code>num-tables</code>) increase recall (higher chance of finding a true neighbor) at the cost of more lookups. More bits (<code>nbits</code>) create more (and smaller) buckets per table (2^8 = 256). For a dataset in the 10k-100k vector range, this configuration (4 tables, 256 buckets each) is a reasonable starting point to keep buckets from getting too large, while the multiple tables provide a good chance of finding true neighbors.</li><li><code>top-k = 50</code>: This is simply the application requirement—how many results to return.</li></ul><h3 id="3.-the-indexing-etl:-&lt;&lt;sources">3. The Indexing ETL: <code>&lt;&lt;sources</code></h3><p>A streaming topology (<code>stream-topology</code>) listens to the <code>*ingest</code> depot for new vectors. Its dataflow defines the real-time indexing logic.</p><pre><code class="language-clojure">(defmodule LSHModule
+  [setup topologies]
+  (declare-depot setup *ingest (hash-by :id))
 
-  &#40;let &#91;etl &#40;stream-topology topologies &quot;load&quot;&#41;&#93;
+  (let [etl (stream-topology topologies &quot;load&quot;)]
     ;; ... PState declarations ...
 
-    &#40;&lt;&lt;sources etl
-      &#40;source&gt; &#42;ingest :&gt; {:keys &#91;&#42;id &#42;vec &#42;body&#93;}&#41;
+    (&lt;&lt;sources etl
+      (source&gt; *ingest :&gt; {:keys [*id *vec *body]})
 
       ;; 1. Save the full vector to the embeddings PState.
-      &#40;vector/norm &#42;vec :&gt; &#42;norm&#41;
-      &#40;local-transform&gt; &#91;&#40;keypath &#42;id&#41;
-                         &#40;termval {:vec  &#42;vec
-                                   :norm &#42;norm
-                                   :body &#42;body}&#41;&#93;
-        $$embeddings&#41;
+      (vector/norm *vec :&gt; *norm)
+      (local-transform&gt; [(keypath *id)
+                         (termval {:vec  *vec
+                                   :norm *norm
+                                   :body *body})]
+        $$embeddings)
 
       ;; 2. Get the deterministic hyperplanes.
-      &#40;get-hyperplane-sets :&gt; &#42;all-planes&#41;
+      (get-hyperplane-sets :&gt; *all-planes)
 
       ;; 3. Hash the vector against all tables to get bucket IDs.
-      &#40;ops/explode &#42;all-planes :&gt; &#42;plane&#41;
-      &#40;vector/vector-&gt;bucket-id &#42;vec &#42;plane :&gt; &#42;bucket-str&#41;
+      (ops/explode *all-planes :&gt; *plane)
+      (vector/vector-&gt;bucket-id *vec *plane :&gt; *bucket-str)
 
       ;; 4. Partition to the task responsible for this bucket.
-      &#40;|hash &#42;bucket-str&#41;
+      (|hash *bucket-str)
 
-      ;; 5. Add the vector's ID to the bucket in the LSH table.
-      &#40;local-transform&gt; &#91;&#40;keypath &#42;bucket-str&#41;
+      ;; 5. Add the vector&apos;s ID to the bucket in the LSH table.
+      (local-transform&gt; [(keypath *bucket-str)
                          NONE-ELEM
-                         &#40;termval &#42;id&#41;&#93;
-        $$lsh-tables&#41;&#41;&#41;&#41;
-</code></pre><h3 id="4._the_query%3A_a_two-phase_scatter-gather">4. The Query: A Two-Phase Scatter-Gather</h3><p>The query is a multi-stage operation. To keep the code efficient, it's split into two phases.</p><h4 id="phase_1%3A_the_generator_%28find_candidates%29">Phase 1: The Generator (Find Candidates)</h4><p>A <code>defgenerator</code> (a reusable sub-batch) is defined to handle the "approximate" search. It scatters the query to all LSH buckets, gathers all potential candidates, and deduplicates them in a scalable, parallel way.</p><pre class="language-clojure"><code class="lang-clojure language-clojure">&#40;defgenerator gather-unique-ids
-              &#91;query-vec&#93;
-              &#40;batch&lt;- &#91;&#42;unique-id&#93;
+                         (termval *id)]
+        $$lsh-tables))))
+</code></pre><h3 id="4.-the-query:-a-two-phase-scatter-gather">4. The Query: A Two-Phase Scatter-Gather</h3><p>The query is a multi-stage operation. To keep the code efficient, it&apos;s split into two phases.</p><h4 id="phase-1:-the-generator-(find-candidates)">Phase 1: The Generator (Find Candidates)</h4><p>A <code>defgenerator</code> (a reusable sub-batch) is defined to handle the &quot;approximate&quot; search. It scatters the query to all LSH buckets, gathers all potential candidates, and deduplicates them in a scalable, parallel way.</p><pre><code class="language-clojure">(defgenerator gather-unique-ids
+              [query-vec]
+              (batch&lt;- [*unique-id]
                        ;; 1. Hash the query vector against all tables and
                        ;;    probe nearby buckets.
-                       &#40;get-hyperplane-sets :&gt; &#42;all-planes&#41;
-                       &#40;ops/explode &#42;all-planes :&gt; &#42;plane&#41;
-                       &#40;vector/vector-&gt;bucket-id query-vec &#42;plane :&gt; &#42;bucket-str&#41;
-                       &#40;vector/nearby-buckets &#42;bucket-str 2 :&gt; &#42;nbr-strs&#41;
-                       &#40;set/union #{&#42;bucket-str} &#42;nbr-strs :&gt; &#42;probe-buckets&#41;
+                       (get-hyperplane-sets :&gt; *all-planes)
+                       (ops/explode *all-planes :&gt; *plane)
+                       (vector/vector-&gt;bucket-id query-vec *plane :&gt; *bucket-str)
+                       (vector/nearby-buckets *bucket-str 2 :&gt; *nbr-strs)
+                       (set/union #{*bucket-str} *nbr-strs :&gt; *probe-buckets)
 
                        ;; 2. Scatter: For every bucket, fetch the set of IDs.
-                       &#40;ops/explode &#42;probe-buckets :&gt; &#42;bucket-str2&#41;
-                       &#40;|hash &#42;bucket-str2&#41;
-                       &#40;local-select&gt; &#40;keypath &#42;bucket-str2&#41; $$lsh-tables :&gt; &#42;ids-in-bucket&#41;
-                       &#40;ops/explode &#42;ids-in-bucket :&gt; &#42;cand-id&#41;
+                       (ops/explode *probe-buckets :&gt; *bucket-str2)
+                       (|hash *bucket-str2)
+                       (local-select&gt; (keypath *bucket-str2) $$lsh-tables :&gt; *ids-in-bucket)
+                       (ops/explode *ids-in-bucket :&gt; *cand-id)
 
-                       ;; 3. Gather &amp; Deduplicate &#40;in parallel&#41;:
+                       ;; 3. Gather &amp; Deduplicate (in parallel):
                        ;;    This partitions all candidate IDs by their own value.
-                       &#40;|hash &#42;cand-id&#41;
-                       &#40;aggs/+set-agg &#42;cand-id :&gt; &#42;all-unique-cands&#41;
+                       (|hash *cand-id)
+                       (aggs/+set-agg *cand-id :&gt; *all-unique-cands)
 
-                       ;; 4. Emit a stream of &#42;unique&#42; IDs &#40;also in parallel&#41;.
-                       &#40;ops/explode &#42;all-unique-cands :&gt; &#42;unique-id&#41;&#41;&#41;
-</code></pre><p>This generator performs a <strong>fully distributed deduplication</strong>. After fetching all <em>non-unique</em> IDs from the LSH tables, it uses <code>&#40;|hash &#42;cand-id&#41;</code> to re-partition the data. This ensures all occurrences of <code>cand-id-123</code> go to one task, and all occurrences of <code>cand-id-456</code> go to another. The <code>aggs/+set-agg</code> then runs <strong>in parallel</strong> on many tasks, each building a small, partial, unique set. This is a highly scalable pattern that avoids a single-task bottleneck.</p><h4 id="phase_2%3A_the_query_topology_%28re-rank%29">Phase 2: The Query Topology (Re-rank)</h4><p>This is the main query API. It calls the generator from Phase 1, then performs the exact distance calculation only on the unique candidates.</p><pre class="language-clojure"><code class="lang-clojure language-clojure"> &#40;&lt;&lt;query-topology topologies &quot;top-vec-search&quot;
-    &#91;&#42;query-vec :&gt; &#42;top-results&#93;
+                       ;; 4. Emit a stream of *unique* IDs (also in parallel).
+                       (ops/explode *all-unique-cands :&gt; *unique-id)))
+</code></pre><p>This generator performs a <strong>fully distributed deduplication</strong>. After fetching all <em>non-unique</em> IDs from the LSH tables, it uses <code>(|hash *cand-id)</code> to re-partition the data. This ensures all occurrences of <code>cand-id-123</code> go to one task, and all occurrences of <code>cand-id-456</code> go to another. The <code>aggs/+set-agg</code> then runs <strong>in parallel</strong> on many tasks, each building a small, partial, unique set. This is a highly scalable pattern that avoids a single-task bottleneck.</p><h4 id="phase-2:-the-query-topology-(re-rank)">Phase 2: The Query Topology (Re-rank)</h4><p>This is the main query API. It calls the generator from Phase 1, then performs the exact distance calculation only on the unique candidates.</p><pre><code class="language-clojure"> (&lt;&lt;query-topology topologies &quot;top-vec-search&quot;
+    [*query-vec :&gt; *top-results]
 
-    ;; 1. Call Phase 1. This emits a stream of &#42;unique&#42; IDs.
-    &#40;gather-unique-ids &#42;query-vec :&gt; &#42;unique-id&#41;
+    ;; 1. Call Phase 1. This emits a stream of *unique* IDs.
+    (gather-unique-ids *query-vec :&gt; *unique-id)
 
     ;; 2. Re-rank: Fetch the full vector for each unique ID.
-    &#40;|hash &#42;unique-id&#41;
-    &#40;local-select&gt; &#40;keypath &#42;unique-id&#41; $$embeddings
-                   :&gt; {:keys &#91;&#42;vec &#42;norm &#42;body&#93;}&#41;
+    (|hash *unique-id)
+    (local-select&gt; (keypath *unique-id) $$embeddings
+                   :&gt; {:keys [*vec *norm *body]})
 
-    ;; 3. Calculate the &#42;true&#42; distance.
-    &#40;vector/norm &#42;query-vec :&gt; &#42;q-norm&#41;
-    &#40;vector/cosine-distance &#42;query-vec &#42;vec &#42;q-norm &#42;norm :&gt; &#42;distance&#41;
-    &#40;vector &#42;unique-id &#42;distance &#42;body :&gt; &#42;tuple&#41;
+    ;; 3. Calculate the *true* distance.
+    (vector/norm *query-vec :&gt; *q-norm)
+    (vector/cosine-distance *query-vec *vec *q-norm *norm :&gt; *distance)
+    (vector *unique-id *distance *body :&gt; *tuple)
 
     ;; 4. Aggregate: Gather tuples and find the true top 50.
-    &#40;|origin&#41;
-    &#40;aggs/+top-monotonic
-      &#91;top-k&#93; ;; Must be a constant
-      &#42;tuple
+    (|origin)
+    (aggs/+top-monotonic
+      [top-k] ;; Must be a constant
+      *tuple
       :+options {:id-fn first
                  :sort-val-fn second
                  :sort-type :ascending}
-      :&gt; &#42;top-results&#41;&#41;
-</code></pre><h3 id="testing_the_module">Testing the Module</h3><p>For local development and unit testing, Rama provides an <code>InProcessCluster</code> (IPC). This simulates a full cluster in-process, making it easy to test the complete dataflow.</p><p>The following REPL test case demonstrates the workflow. The dataset used here is a sample of Wikipedia articles, which can be downloaded <a href='https://huggingface.co/datasets/Supabase/wikipedia-en-embeddings/blob/main/wiki_minilm.ndjson.gz'>here</a>.</p><pre class="language-clojure"><code class="lang-clojure language-clojure">&#40;require '&#91;com.rpl.rama.test :as rtest&#93;&#41;
-&#40;require '&#91;rama-vector-store.utils :as utils&#93;&#41; ;; Assumed helper ns
+      :&gt; *top-results))
+</code></pre><h3 id="testing-the-module">Testing the Module</h3><p>For local development and unit testing, Rama provides an <code>InProcessCluster</code> (IPC). This simulates a full cluster in-process, making it easy to test the complete dataflow.</p><p>The following REPL test case demonstrates the workflow. The dataset used here is a sample of Wikipedia articles, which can be downloaded <a href="https://huggingface.co/datasets/Supabase/wikipedia-en-embeddings/blob/main/wiki_minilm.ndjson.gz">here</a>.</p><pre><code class="language-clojure">(require &apos;[com.rpl.rama.test :as rtest])
+(require &apos;[rama-vector-store.utils :as utils]) ;; Assumed helper ns
 
-&#40;with-open &#91;ipc &#40;rtest/create-ipc&#41;&#93;
+(with-open [ipc (rtest/create-ipc)]
   ;; 1. Launch the module in the local cluster
-  &#40;rtest/launch-module! ipc LSHModule {:tasks 4 :threads 2}&#41;
-  &#40;let &#91;;; 2. Load dataset
-        dataset     &#40;take 100 &#40;utils/wiki-minilm-dataset&#41;&#41;
-        module-name &#40;get-module-name LSHModule&#41;
+  (rtest/launch-module! ipc LSHModule {:tasks 4 :threads 2})
+  (let [;; 2. Load dataset
+        dataset     (take 100 (utils/wiki-minilm-dataset))
+        module-name (get-module-name LSHModule)
         ;; 3. Get clients to interact with the module
-        depot       &#40;foreign-depot ipc module-name &quot;&#42;ingest&quot;&#41;
-        query       &#40;foreign-query ipc module-name &quot;top-vec-search&quot;&#41;
+        depot       (foreign-depot ipc module-name &quot;*ingest&quot;)
+        query       (foreign-query ipc module-name &quot;top-vec-search&quot;)
         ;; 4. Select the first vector as our query
-        query-vec   &#40;:all-MiniLM-L6-v2 &#40;first dataset&#41;&#41;
-        query-text  &#40;:body &#40;first dataset&#41;&#41;&#93;
+        query-vec   (:all-MiniLM-L6-v2 (first dataset))
+        query-text  (:body (first dataset))]
 
     ;; 5. Ingest data by appending to the depot
-    &#40;doseq &#91;{:keys &#91;id all-MiniLM-L6-v2 body&#93;} dataset&#93;
-      &#40;foreign-append! depot &#40;-&gt;Embedding id all-MiniLM-L6-v2 body&#41;&#41;&#41;
+    (doseq [{:keys [id all-MiniLM-L6-v2 body]} dataset]
+      (foreign-append! depot (-&gt;Embedding id all-MiniLM-L6-v2 body)))
 
-    &#40;println &quot;Querying for vector 0:\n&quot; &#40;subs query-text 0 70&#41; &quot;...&quot;&#41;
+    (println &quot;Querying for vector 0:\n&quot; (subs query-text 0 70) &quot;...&quot;)
 
     ;; 6. Invoke the query topology
-    &#40;foreign-invoke-query query query-vec&#41;&#41;&#41;
-</code></pre><p>Running this test queries the system using the first vector from the dataset ("Title: Fresnes, Yonne..."). The query topology returns a list of tuples, each containing <code>&#91;id, distance, body&#93;</code>, sorted by distance.</p><p>A snippet of the results shows the query vector itself as the first result, with a distance of nearly zero, as expected.</p><pre class="language-clojure"><code class="lang-clojure language-clojure">Querying for vector 0:
+    (foreign-invoke-query query query-vec)))
+</code></pre><p>Running this test queries the system using the first vector from the dataset (&quot;Title: Fresnes, Yonne...&quot;). The query topology returns a list of tuples, each containing <code>[id, distance, body]</code>, sorted by distance.</p><p>A snippet of the results shows the query vector itself as the first result, with a distance of nearly zero, as expected.</p><pre><code class="language-clojure">Querying for vector 0:
 Title: Fresnes, Yonne Content: Fresnes is a commune. It is found i...
 =&gt;
-&#91;&#91;&quot;0&quot; -2.22...E-16 &quot;Title: Fresnes, Yonne Content: Fresnes is a commune...&quot;&#93;
- &#91;&quot;19&quot; 0.701... &quot;Title: Saint-Palais, Allier Content: Saint-Palais is a commune...&quot;&#93;
- &#91;&quot;60&quot; 0.708... &quot;Title: Rocles, Ardèche Content: Rocles is a commune...&quot;&#93;
- &#91;&quot;96&quot; 0.753... &quot;Title: Pyrénées-Orientales Content: Pyrénées-Orientales...&quot;&#93;
- &#91;&quot;78&quot; 0.773... &quot;Title: Saint-André-de-Cubzac Content: Saint-André-de-Cubzac...&quot;&#93;
- ...&#93;
-</code></pre><p>The <code>InProcessCluster</code> is ideal for this kind of integration testing. For full-scale performance testing, one would deploy the module to a production cluster. Interaction with a deployed cluster uses the same <code>foreign-</code> client APIs or Rama's built-in REST API. (A two-node cluster is available for free from <a href='https://redplanetlabs.com/'>Red Planet Labs</a>).</p><h3 id="caveats_%26_notes_on_the_process">Caveats & Notes on the Process</h3><p>This code is the result of trial and error. The biggest hurdle was figuring out the correct way to handle the large, static <code>hyperplane-sets</code> vector.</p><p>The first instinct might be to use <code>declare-object</code>, as it's the idiomatic Rama way to make data available to all tasks. An attempt might look like this:</p><pre class="language-clojure"><code class="lang-clojure language-clojure">;; This fails!
-&#40;def hyperplane-sets &#40;vec &#40;repeatedly ...&#41;&#41;&#41;
+[[&quot;0&quot; -2.22...E-16 &quot;Title: Fresnes, Yonne Content: Fresnes is a commune...&quot;]
+ [&quot;19&quot; 0.701... &quot;Title: Saint-Palais, Allier Content: Saint-Palais is a commune...&quot;]
+ [&quot;60&quot; 0.708... &quot;Title: Rocles, Ardèche Content: Rocles is a commune...&quot;]
+ [&quot;96&quot; 0.753... &quot;Title: Pyrénées-Orientales Content: Pyrénées-Orientales...&quot;]
+ [&quot;78&quot; 0.773... &quot;Title: Saint-André-de-Cubzac Content: Saint-André-de-Cubzac...&quot;]
+ ...]
+</code></pre><p>The <code>InProcessCluster</code> is ideal for this kind of integration testing. For full-scale performance testing, one would deploy the module to a production cluster. Interaction with a deployed cluster uses the same <code>foreign-</code> client APIs or Rama&apos;s built-in REST API. (A two-node cluster is available for free from <a href="https://redplanetlabs.com/">Red Planet Labs</a>).</p><h3 id="caveats-&amp;-notes-on-the-process">Caveats &amp; Notes on the Process</h3><p>This code is the result of trial and error. The biggest hurdle was figuring out the correct way to handle the large, static <code>hyperplane-sets</code> vector.</p><p>The first instinct might be to use <code>declare-object</code>, as it&apos;s the idiomatic Rama way to make data available to all tasks. An attempt might look like this:</p><pre><code class="language-clojure">;; This fails!
+(def hyperplane-sets (vec (repeatedly ...)))
 
-&#40;defmodule LSHModule &#91;setup topologies&#93;
-  &#40;declare-object setup &#42;hyperplanes hyperplane-sets&#41;
-  ...&#41;
-</code></pre><p>This fails instantly with a <code>Class file too large!</code> error. It seems that when Rama (or Clojure) compiles the module, it resolves <code>hyperplane-sets</code> to its literal value and tries to inline that <em>entire</em> massive vector (all 12,288 numbers) directly into the module's compiled <code>.class</code> file. This blows past the JVM's 65KB method size limit.</p><p>A similar error occurs if one tries to use the global <code>def</code> directly inside a dataflow <code>ops/explode</code>:</p><pre class="language-clojure"><code class="lang-clojure language-clojure">;; This also fails to compile/load
-&#40;&lt;&lt;sources etl
+(defmodule LSHModule [setup topologies]
+  (declare-object setup *hyperplanes hyperplane-sets)
+  ...)
+</code></pre><p>This fails instantly with a <code>Class file too large!</code> error. It seems that when Rama (or Clojure) compiles the module, it resolves <code>hyperplane-sets</code> to its literal value and tries to inline that <em>entire</em> massive vector (all 12,288 numbers) directly into the module&apos;s compiled <code>.class</code> file. This blows past the JVM&apos;s 65KB method size limit.</p><p>A similar error occurs if one tries to use the global <code>def</code> directly inside a dataflow <code>ops/explode</code>:</p><pre><code class="language-clojure">;; This also fails to compile/load
+(&lt;&lt;sources etl
   ...
-  &#40;ops/explode hyperplane-sets :&gt; &#42;plane&#41; ;; Fails
-  ...&#41;
-</code></pre><p>The dataflow compiler tries to do the same thing: inline the huge vector as a constant, which again breaks the method size limit.</p><p>The solution that <em>did</em> work was to add a layer of indirection. By defining <code>hyperplane-sets</code> in a <code>defonce</code> (which uses a fixed-seed <code>Random</code>) and then accessing it <em>only</em> through a simple getter function, <code>&#40;defn get-hyperplane-sets &#91;&#93;&#41;</code>, the compiler's behavior changes.</p><pre class="language-clojure"><code class="lang-clojure language-clojure">;; This works!
-&#40;defn get-hyperplane-sets &#91;&#93;
-  hyperplane-sets&#41;
+  (ops/explode hyperplane-sets :&gt; *plane) ;; Fails
+  ...)
+</code></pre><p>The dataflow compiler tries to do the same thing: inline the huge vector as a constant, which again breaks the method size limit.</p><p>The solution that <em>did</em> work was to add a layer of indirection. By defining <code>hyperplane-sets</code> in a <code>defonce</code> (which uses a fixed-seed <code>Random</code>) and then accessing it <em>only</em> through a simple getter function, <code>(defn get-hyperplane-sets [])</code>, the compiler&apos;s behavior changes.</p><pre><code class="language-clojure">;; This works!
+(defn get-hyperplane-sets []
+  hyperplane-sets)
 
-&#40;&lt;&lt;sources etl
+(&lt;&lt;sources etl
   ...
-  &#40;get-hyperplane-sets :&gt; &#42;all-planes&#41; ;; Works
-  &#40;ops/explode &#42;all-planes :&gt; &#42;plane&#41;
-  ...&#41;
-</code></pre><p>The dataflow compiler now just embeds a small function call (<code>get-hyperplane-sets</code>). The massive vector is then loaded at runtime via the var, successfully avoiding the compile-time error.</p><h3 id="observations_%26_future_work">Observations & Future Work</h3><p>This experiment showed that Rama's model can express this entire system in a single module.</p><ul><li><strong>Unified System:</strong> The ETL (indexing) and queries (searching) live in the same file and use the same dataflow API. There is no need for external "glue code" to connect a streaming platform to a database.</li><li><strong>Flexible Data Shapes:</strong> PStates handled the two required data models: a key-value "document store" (<code>$$embeddings</code>) and a key-to-set "lookup index" (<code>$$lsh-tables</code>).</li><li><strong>Expressive Dataflow:</strong> The dataflow API was able to define a complex, multi-stage scatter-gather-aggregate query. The <code>defgenerator</code> primitive was useful for optimizing this query by separating candidate generation from re-ranking.</li><li><strong>Built-in Distribution:</strong> Scalability is handled by partitioning. The use of <code>|hash</code> in both the ETL and query topologies defines how the work is distributed.</li></ul><p>The next step in this evaluation will be to run proper performance benchmarks against this implementation to see how it scales under load. We plan to post those results in a future article.</p><h3 id="final_code">Final Code</h3><p>Here is the complete <code>lsh-module.clj</code> file:</p><pre class="language-clojure"><code class="lang-clojure language-clojure">&#40;ns rama-vector-store.lsh-module
-  &#40;:use &#91;com.rpl.rama&#93;
-        &#91;com.rpl.rama.path&#93;&#41;
-  &#40;:require &#91;clojure.set :as set&#93;
-            &#91;com.rpl.rama.aggs :as aggs&#93;
-            &#91;com.rpl.rama.ops :as ops&#93;
-            ;; Namespace with helper functions &#40;dot-product, cosine-distance, ...&#41;
-            &#91;rama-vector-store.vector-utils :as vector&#93;&#41;
-  &#40;:import &#40;java.util Random&#41;&#41;&#41;
+  (get-hyperplane-sets :&gt; *all-planes) ;; Works
+  (ops/explode *all-planes :&gt; *plane)
+  ...)
+</code></pre><p>The dataflow compiler now just embeds a small function call (<code>get-hyperplane-sets</code>). The massive vector is then loaded at runtime via the var, successfully avoiding the compile-time error.</p><h3 id="observations-&amp;-future-work">Observations &amp; Future Work</h3><p>This experiment showed that Rama&apos;s model can express this entire system in a single module.</p><ul><li><strong>Unified System:</strong> The ETL (indexing) and queries (searching) live in the same file and use the same dataflow API. There is no need for external &quot;glue code&quot; to connect a streaming platform to a database.</li><li><strong>Flexible Data Shapes:</strong> PStates handled the two required data models: a key-value &quot;document store&quot; (<code>$$embeddings</code>) and a key-to-set &quot;lookup index&quot; (<code>$$lsh-tables</code>).</li><li><strong>Expressive Dataflow:</strong> The dataflow API was able to define a complex, multi-stage scatter-gather-aggregate query. The <code>defgenerator</code> primitive was useful for optimizing this query by separating candidate generation from re-ranking.</li><li><strong>Built-in Distribution:</strong> Scalability is handled by partitioning. The use of <code>|hash</code> in both the ETL and query topologies defines how the work is distributed.</li></ul><p>The next step in this evaluation will be to run proper performance benchmarks against this implementation to see how it scales under load. We plan to post those results in a future article.</p><h3 id="final-code">Final Code</h3><p>Here is the complete <code>lsh-module.clj</code> file:</p><pre><code class="language-clojure">(ns rama-vector-store.lsh-module
+  (:use [com.rpl.rama]
+        [com.rpl.rama.path])
+  (:require [clojure.set :as set]
+            [com.rpl.rama.aggs :as aggs]
+            [com.rpl.rama.ops :as ops]
+            ;; Namespace with helper functions (dot-product, cosine-distance, ...)
+            [rama-vector-store.vector-utils :as vector])
+  (:import (java.util Random)))
 
-&#40;defrecord Embedding &#91;id vec body&#93;&#41;
-&#40;def nbits 8&#41;
-&#40;def num-tables 4&#41;
-&#40;def dims 384&#41;
-&#40;def top-k 50&#41;
+(defrecord Embedding [id vec body])
+(def nbits 8)
+(def num-tables 4)
+(def dims 384)
+(def top-k 50)
 
-&#40;defonce hyperplane-sets
-  &#40;let &#91;rand &#40;Random. 12345&#41;&#93; ;; Fixed seed for reproducibility
-    &#40;vec &#40;repeatedly num-tables
-                     &#40;fn &#91;&#93;
-                       &#40;vec &#40;repeatedly nbits
-                                        &#40;fn &#91;&#93;
-                                          &#40;vec &#40;repeatedly dims &#40;fn &#91;&#93; &#40;- &#40;.nextDouble rand&#41; 0.5&#41;&#41;&#41;&#41;&#41;&#41;&#41;&#41;&#41;&#41;&#41;&#41;
-&#40;defn get-hyperplane-sets &#91;&#93;
-  hyperplane-sets&#41;
+(defonce hyperplane-sets
+  (let [rand (Random. 12345)] ;; Fixed seed for reproducibility
+    (vec (repeatedly num-tables
+                     (fn []
+                       (vec (repeatedly nbits
+                                        (fn []
+                                          (vec (repeatedly dims (fn [] (- (.nextDouble rand) 0.5))))))))))))
+(defn get-hyperplane-sets []
+  hyperplane-sets)
 
-&#40;defgenerator gather-unique-ids
-  &#91;query-vec&#93;
-  &#40;batch&lt;- &#91;&#42;unique-id&#93; ; This is the output variable of the generator
-    &#40;get-hyperplane-sets :&gt; &#42;all-planes&#41;
-    &#40;ops/explode &#42;all-planes :&gt; &#42;plane&#41;
-    &#40;vector/vector-&gt;bucket-id query-vec &#42;plane :&gt; &#42;bucket-str&#41;
-    &#40;vector/nearby-buckets &#42;bucket-str 2 :&gt; &#42;nbr-strs&#41;
-    &#40;set/union #{&#42;bucket-str} &#42;nbr-strs :&gt; &#42;probe-buckets&#41;
+(defgenerator gather-unique-ids
+  [query-vec]
+  (batch&lt;- [*unique-id] ; This is the output variable of the generator
+    (get-hyperplane-sets :&gt; *all-planes)
+    (ops/explode *all-planes :&gt; *plane)
+    (vector/vector-&gt;bucket-id query-vec *plane :&gt; *bucket-str)
+    (vector/nearby-buckets *bucket-str 2 :&gt; *nbr-strs)
+    (set/union #{*bucket-str} *nbr-strs :&gt; *probe-buckets)
 
-    &#40;ops/explode &#42;probe-buckets :&gt; &#42;bucket-str2&#41;
-    &#40;|hash &#42;bucket-str2&#41;
-    &#40;local-select&gt; &#40;keypath &#42;bucket-str2&#41; $$lsh-tables :&gt; &#42;ids-in-bucket&#41;
-    &#40;ops/explode &#42;ids-in-bucket :&gt; &#42;cand-id&#41;
+    (ops/explode *probe-buckets :&gt; *bucket-str2)
+    (|hash *bucket-str2)
+    (local-select&gt; (keypath *bucket-str2) $$lsh-tables :&gt; *ids-in-bucket)
+    (ops/explode *ids-in-bucket :&gt; *cand-id)
 
-    &#40;|hash &#42;cand-id&#41;
-    &#40;aggs/+set-agg &#42;cand-id :&gt; &#42;all-unique-cands&#41; ; Aggregates all IDs into one unique set
+    (|hash *cand-id)
+    (aggs/+set-agg *cand-id :&gt; *all-unique-cands) ; Aggregates all IDs into one unique set
 
-    &#40;ops/explode &#42;all-unique-cands :&gt; &#42;unique-id&#41; ; Emits each unique ID
-    &#41;&#41;
+    (ops/explode *all-unique-cands :&gt; *unique-id) ; Emits each unique ID
+    ))
 
 
-&#40;defmodule LSHModule
-  &#91;setup topologies&#93;
-  &#40;declare-depot setup &#42;ingest &#40;hash-by :id&#41;&#41;
+(defmodule LSHModule
+  [setup topologies]
+  (declare-depot setup *ingest (hash-by :id))
 
-  &#40;let &#91;etl &#40;stream-topology topologies &quot;load&quot;&#41;&#93;
-    &#40;declare-pstate etl
+  (let [etl (stream-topology topologies &quot;load&quot;)]
+    (declare-pstate etl
                     $$embeddings
-                    {String &#40;fixed-keys-schema
-                              {:vec  &#40;vector-schema Double&#41;
+                    {String (fixed-keys-schema
+                              {:vec  (vector-schema Double)
                                :norm Double
-                               :body String}&#41;}&#41;
+                               :body String})})
 
-    &#40;declare-pstate etl
+    (declare-pstate etl
                     $$lsh-tables
-                    {String &#40;set-schema String {:subindex? true}&#41;}&#41;
+                    {String (set-schema String {:subindex? true})})
 
-    &#40;&lt;&lt;sources etl
-      &#40;source&gt; &#42;ingest :&gt; {:keys &#91;&#42;id &#42;vec &#42;body&#93;}&#41;
-      &#40;vector/norm &#42;vec :&gt; &#42;norm&#41;
-      &#40;local-transform&gt; &#91;&#40;keypath &#42;id&#41;
-                         &#40;termval {:vec  &#42;vec
-                                   :norm &#42;norm
-                                   :body &#42;body}&#41;&#93;
-        $$embeddings&#41;
-      &#40;get-hyperplane-sets :&gt; &#42;all-planes&#41;
-      &#40;ops/explode &#42;all-planes :&gt; &#42;plane&#41;
-      &#40;vector/vector-&gt;bucket-id &#42;vec &#42;plane :&gt; &#42;bucket-str&#41;
-      &#40;|hash &#42;bucket-str&#41;
-      &#40;local-transform&gt; &#91;&#40;keypath &#42;bucket-str&#41;
+    (&lt;&lt;sources etl
+      (source&gt; *ingest :&gt; {:keys [*id *vec *body]})
+      (vector/norm *vec :&gt; *norm)
+      (local-transform&gt; [(keypath *id)
+                         (termval {:vec  *vec
+                                   :norm *norm
+                                   :body *body})]
+        $$embeddings)
+      (get-hyperplane-sets :&gt; *all-planes)
+      (ops/explode *all-planes :&gt; *plane)
+      (vector/vector-&gt;bucket-id *vec *plane :&gt; *bucket-str)
+      (|hash *bucket-str)
+      (local-transform&gt; [(keypath *bucket-str)
                          NONE-ELEM
-                         &#40;termval &#42;id&#41;&#93;
-        $$lsh-tables&#41;&#41;&#41;
+                         (termval *id)]
+        $$lsh-tables)))
 
-  &#40;&lt;&lt;query-topology topologies &quot;top-vec-search&quot;
-    &#91;&#42;query-vec :&gt; &#42;top-results&#93;
+  (&lt;&lt;query-topology topologies &quot;top-vec-search&quot;
+    [*query-vec :&gt; *top-results]
 
-    ;; Call the generator to get a stream of &#42;unique&#42; IDs
-    &#40;gather-unique-ids &#42;query-vec :&gt; &#42;unique-id&#41;
+    ;; Call the generator to get a stream of *unique* IDs
+    (gather-unique-ids *query-vec :&gt; *unique-id)
 
-    ;; Fetch embeddings for each &#42;unique&#42; candidate
-    &#40;|hash &#42;unique-id&#41;
-    &#40;local-select&gt; &#40;keypath &#42;unique-id&#41; $$embeddings
-                   :&gt; {:keys &#91;&#42;vec &#42;norm &#42;body&#93;}&#41;
+    ;; Fetch embeddings for each *unique* candidate
+    (|hash *unique-id)
+    (local-select&gt; (keypath *unique-id) $$embeddings
+                   :&gt; {:keys [*vec *norm *body]})
 
     ;; Distance calculation
-    &#40;vector/norm &#42;query-vec :&gt; &#42;q-norm&#41;
-    &#40;vector/cosine-distance &#42;query-vec &#42;vec &#42;q-norm &#42;norm :&gt; &#42;distance&#41;
+    (vector/norm *query-vec :&gt; *q-norm)
+    (vector/cosine-distance *query-vec *vec *q-norm *norm :&gt; *distance)
 
     ;; Construct tuple
-    &#40;vector &#42;unique-id &#42;distance &#42;body :&gt; &#42;tuple&#41;
+    (vector *unique-id *distance *body :&gt; *tuple)
 
     ;; Aggregate top results by distance
-    &#40;|origin&#41;
-    &#40;aggs/+top-monotonic
-      &#91;top-k&#93;
-      &#42;tuple
+    (|origin)
+    (aggs/+top-monotonic
+      [top-k]
+      *tuple
       :+options {:id-fn first
                  :sort-val-fn second
                  :sort-type :ascending}
-      :&gt; &#42;top-results&#41;&#41;
-  &#41;
-</code></pre>]]></content>
+      :&gt; *top-results))
+  )
+</code></pre></div>]]></content>
   </entry>
 </feed>
