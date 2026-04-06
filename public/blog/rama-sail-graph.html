@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Building a Distributed RDF Store on Rama</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Building a Distributed RDF Store on Rama">
+  <link rel="stylesheet" href="style.css">
+
+  <script type="text/javascript" src="https://livejs.com/live.js"></script>
+
+  <link rel="stylesheet"
+    href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
+  <script type="text/javascript" src="https://livejs.com/live.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+      <!-- See Features > favicon in README.md -->
+    <!-- <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/f_icn.svg"> -->
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/favicon.ico">
+    <link rel="manifest" href="assets/favicon/site.webmanifest">
+    <link rel="mask-icon" href="../assets/img/favicon.ico" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+
+  <!-- Social sharing (Facebook, Twitter, LinkedIn, etc.) -->
+  <meta name="title" content="Building a Distributed RDF Store on Rama">
+  <meta name="twitter:title" content="Building a Distributed RDF Store on Rama">
+  <meta property="og:title" content="Building a Distributed RDF Store on Rama">
+  <meta property="og:type" content="website">
+  
+  
+  <meta name="twitter:url" content="https://www.shtanglitza.ai/public/blog/rama-sail-graph.html">
+  <meta property="og:url" content="https://www.shtanglitza.ai/public/blog/rama-sail-graph.html">
+  
+  
+  <meta name="twitter:card" content="summary">
+  
+  
+  
+</head>
+
+<body>
+
+
+  <div class="site-header">
+    <div class="wrapper nav-flex">
+      <div class="site-nav">
+        <a class="page-link" href="archive.html" title="Posts archive page"><i
+            class="la-lg las la-folder"></i> Archive</a>
+        <a class="page-link" href="tags/index.html" title="Filter posts by Tags"><i
+            class="la-lg las la-tags"></i> Tags</a>
+        
+        
+
+        
+        <a class="page-link" href="atom.xml" title="feed page"><i class="la-lg las la-rss"></i>
+          Feed
+        </a>
+        <a class="page-link" href="https://www.shtanglitza.ai" title="Navigate to shtanglitza.ai"><i
+            class="la-lg las la-sign-out-alt"></i></i>
+        </a>
+
+
+      </div>
+      <div class="nav-placeholder"></div>
+      <div class="parent-header">
+        <h1 class="site-title">
+          <img class="nav-logo" src="https://shtanglitza.ai/public/assets/img/f_icn.svg" />
+          <a class="page-link blog-logo-title" href="index.html">hlog / index-page</a>
+        </h1>
+        <p>A tech &amp; domain blog powered by Shtanglitza</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrapper parentFix">
+
+    <div class="onLoad-anim">
+<h1>
+  
+  Building a Distributed RDF Store on Rama
+  
+</h1>
+<div><p>How much of an RDF database can you push into a distributed execution model before the abstractions stop fitting?</p><p><a href="https://github.com/Shtanglitza/rama-sail-graph">rama-sail-graph</a> is an attempt to find out. It is a Rama-backed RDF quad store where SPARQL queries compile into distributed execution plans that run across Rama partitions, and the whole thing sits behind RDF4J&apos;s SAIL API so that existing Java tooling can query it through familiar interfaces, within the bounds of what the engine currently supports.</p><h2 id="the-design-tension:-sail-meets-distributed-dataflow">The Design Tension: SAIL Meets Distributed Dataflow</h2><p>For this project, the interesting problem is not storage. It is the mismatch between two execution models.</p><p>On one side is <a href="https://rdf4j.org/documentation/reference/sail/">RDF4J&apos;s SAIL API</a>: a connection-oriented, transaction-aware storage contract. A <code>SailConnection</code> exposes <code>begin</code>, <code>commit</code>, <code>rollback</code>. Clients expect to buffer writes, read their own uncommitted changes, and roll back cleanly. RDF4J&apos;s entire ecosystem (repositories, query preparation, SPARQL evaluation) layers on top of this contract. If the goal is compatibility with the existing RDF4J world, SAIL is the right boundary to implement.</p><p>On the other side is <a href="https://redplanetlabs.com/">Rama</a>: a distributed runtime where data flows through depots, gets indexed in partitioned PStates, and queries run as topologies across the cluster. There are no connections in the traditional sense. There is no local transaction buffer.</p><p>Bridging these two models is the core design problem. The adapter must present connection-scoped transaction semantics on top of a system that does not natively think in connections. Uncommitted writes go into a connection-local buffer. Rollback discards that buffer. Commit deduplicates add/delete pairs and appends the net operations to Rama&apos;s depot, optionally waiting for the microbatch to process before returning.</p><p>That is not just a compatibility detail. It is what makes the adapter usable inside the rest of the RDF4J ecosystem, including future integrations like stackable inferencing layers that depend on <code>NotifyingSailConnection</code> and statement-level change notification.</p><!-- end-of-preview --><h2 id="the-storage-model:-four-quad-indices">The Storage Model: Four Quad Indices</h2><p>Each quad is indexed four ways, each PState hash-partitioned by its leading key:</p><ul><li><code>$$spoc</code> (subject-first): when you know the entity, scan its predicates. The default for entity lookups.</li><li><code>$$posc</code> (predicate-first): when you know the predicate, find all subjects and objects. Common for <code>rdf:type</code> queries.</li><li><code>$$ospc</code> (object-first): reverse lookups. &quot;Who knows Alice?&quot; requires scanning from the object.</li><li><code>$$cspo</code> (context-first): named graph queries. &quot;Everything in graph G.&quot;</li></ul><p>At query time, the <code>find-triples</code> topology selects the index automatically based on which variables are bound. If the subject is known, it hashes to the subject&apos;s partition and uses <code>$$spoc</code>. If only the predicate is bound, it uses <code>$$posc</code>. If nothing is bound, it falls back to a full scan. This dispatch happens at the Rama level, inside a <code>&lt;&lt;cond</code>, so index selection is a runtime decision made where the data lives.</p><p>Writes are append-driven through a depot. Deletes are physical: quads are removed from all four indices, and empty branches are cleaned up. Both adds and deletes are idempotent, which matters once you care about retries and distributed execution.</p><h2 id="what-a-query-actually-does">What a Query Actually Does</h2><p>The easiest way to understand the system is to follow a query through it.</p><p>Take a two-hop SPARQL join:</p><pre><code class="language-sparql">SELECT ?name WHERE {
+  &lt;http://ex/alice&gt; &lt;http://ex/knows&gt; ?friend .
+  ?friend &lt;http://ex/name&gt; ?name .
+}
+</code></pre><p><strong>Step 1: Compile.</strong> RDF4J parses this into an algebra tree (two <code>StatementPattern</code> nodes inside a <code>Join</code>). The adapter&apos;s <code>tuple-expr-&gt;plan</code> multimethod walks that tree and produces an internal plan:</p><pre><code class="language-clojure">{:op :join
+ :left  {:op :bgp :pattern {:s &quot;&lt;http://ex/alice&gt;&quot; :p &quot;&lt;http://ex/knows&gt;&quot; :o &quot;?friend&quot;}}
+ :right {:op :bgp :pattern {:s &quot;?friend&quot; :p &quot;&lt;http://ex/name&gt;&quot; :o &quot;?name&quot;}}
+ :join-vars [&quot;?friend&quot;]}
+</code></pre><p>Each triple pattern becomes a <code>:bgp</code> node. The join records which variables bind the two sides together. Cardinality estimates from stored statistics determine which side goes left (probe) and which goes right (build).</p><p><strong>Step 2: Optimize.</strong> The plan passes through a pipeline of rewrites:</p><ol start="1"><li>Push filters down into joins</li><li>Flatten left-join chains</li><li>Reorder join chains using statistics (Selinger-style dynamic programming)</li><li>Detect and transform self-join patterns</li><li>Rewrite <code>rdf:type</code> lookups to use materialized views</li><li>Batch property lookups for the same subject</li><li>Push limits down to enable early termination</li></ol><p>For this simple query, most passes are no-ops. But add a <code>FILTER</code>, and filter pushdown will decompose it into conjuncts and push each one into the join side whose variables it references, avoiding shipping unfiltered rows across partitions.</p><p><strong>Step 3: Execute.</strong> The optimized plan is sent to Rama&apos;s <code>execute-plan</code> query topology, which dispatches on the <code>:op</code> field. For <code>:join</code>, it runs a distributed hash join:</p><ol start="1"><li><strong>Build phase</strong>: execute the right sub-plan (<code>?friend &lt;name&gt; ?name</code>), collect results, build a hash index keyed by <code>?friend</code>.</li><li><strong>Probe phase</strong>: execute the left sub-plan (<code>alice &lt;knows&gt; ?friend</code>), and for each result, probe the hash index.</li><li><strong>Aggregate</strong>: matched rows are shuffled back to the origin and collected into the result set.</li></ol><p>The left sub-plan hashes to Alice&apos;s partition via <code>$$spoc</code> and returns her friends. The right sub-plan uses <code>$$posc</code> to find name triples. The join happens server-side. The calling code gets back a <code>CloseableIteration</code> of <code>BindingSet</code> objects and never knows it left the SAIL API.</p><h2 id="two-optimizations-worth-understanding">Two Optimizations Worth Understanding</h2><p>The optimization pipeline already handles seven distinct passes. Two are worth explaining because they illustrate problems specific to distributed SPARQL execution.</p><p><strong>Filter pushdown.</strong> A <code>FILTER</code> sitting above a <code>JOIN</code> applies after both sides have already been evaluated and merged. In a distributed system, that means shipping potentially large intermediate results across partitions before discarding most of them. The filter pushdown pass decomposes <code>AND</code> expressions into independent conjuncts, checks which variables each conjunct references, and pushes it into whichever join side contains those variables. After pushdown, cardinality is re-estimated and join ordering may change.</p><p><strong>Self-join optimization.</strong> Consider a BSBM-style query that finds pairs of products from the same producer:</p><pre><code class="language-sparql">SELECT ?p1 ?p2 ?producer WHERE {
+  ?p1 bsbm:producer ?producer .
+  ?p2 bsbm:producer ?producer .
+  FILTER (?p1 &lt; ?p2)
+}
+</code></pre><p>A naive execution fetches all producer triples twice and computes the Cartesian product. The self-join pass detects that both patterns share the same predicate and join variable, transforms them into a single BGP fetch, groups results by the join key, and generates pairs within each group while applying the inequality filter during generation. This avoids fetching the same predicate twice and can reduce output significantly when filters are selective, though pair generation within each group is still combinatorial in the general case.</p><h2 id="what-runs-server-side">What Runs Server-Side</h2><p>Beyond the query walkthrough above, the engine pushes a substantial subset of SPARQL algebra into Rama query topologies:</p><ul><li>basic graph pattern evaluation</li><li>joins and left joins</li><li>filters, unions, bind, and values</li><li>order, distinct, limit, and offset</li><li>group by and aggregates</li><li>ask queries</li></ul><p>When an operator is not yet supported, the adapter can fall back to RDF4J&apos;s local evaluation strategy for some cases. That preserves correctness but gives up the scaling benefits of server-side execution. Not everything falls back cleanly, though: <code>SERVICE</code> is explicitly rejected, and property paths (<code>+</code>, <code>*</code>) are not yet a reliable fallback path either.</p><h2 id="compatibility">Compatibility</h2><p>The repository includes compatibility coverage based on RDF4J&apos;s <code>RDFStoreTest</code> suite, alongside targeted tests for query execution, transactions, metrics, and the SPARQL endpoint. The test suite exercises semantics that client code actually depends on: transaction handling, namespace operations, statement pattern matching, named graph management, blank node and literal round-trips, duplicate behavior, and concurrent access patterns.</p><h2 id="not-just-a-library">Not Just a Library</h2><p>The project ships a SPARQL HTTP endpoint built on Ring and Jetty, with content negotiation for tuple, boolean, and graph responses. It exposes a <code>/metrics</code> endpoint for Prometheus scraping, a <code>/health</code> endpoint for liveness checks, and tracks query latency histograms, query counters by outcome, active connections, and transaction metrics.</p><h2 id="current-limits">Current Limits</h2><p><code>rama-sail-graph</code> is still in public preview:</p><ul><li>functional and tested, but not yet production-hardened</li><li>operator coverage is incomplete; <code>SERVICE</code> is explicitly unsupported</li><li>some unsupported operators (such as <code>MINUS</code>) fall back to RDF4J&apos;s local evaluation</li><li>property paths (<code>+</code>, <code>*</code>) are not yet a reliable execution path</li><li>subquery support is partial</li><li>query timeout is best-effort: a cluster query may continue after the client times out</li><li>the SPARQL HTTP endpoint has no authentication, rate limiting, or TLS</li></ul><h2 id="why-this-repo-is-worth-watching">Why This Repo Is Worth Watching</h2><p>A two-hop SPARQL join compiles to a distributed hash join that executes across Rama partitions, returns results through a standard RDF4J <code>CloseableIteration</code>, and the calling code never knows it left the SAIL API. That is the design bet: you can push a meaningful amount of RDF database behavior into a distributed execution model without breaking the interface contract that existing tooling depends on.</p><p>The hard question is still open. How far can you take this before the abstractions stop fitting? The planning layer is still evolving. Cost modeling, statistics quality, and operator coverage all have room to improve. But the foundation (distributed indices, server-side plan execution, SAIL compatibility, a working optimization pipeline) is already in place and running.</p><p>If you care about graph databases, SPARQL engines, or the problem of making standards-based interfaces work on top of distributed runtimes, <a href="https://github.com/Shtanglitza/rama-sail-graph">the code is here</a>.</p></div>
+
+<br>
+<p><i><span style="font-weight: 600;">Published:  </span>2026-03-30</i></p>
+<p><i><span style="font-weight: 600;">Written by: </span> Vladimir Mladenovic</i></p>
+
+
+<p>
+  <i>
+  <!-- Tagged: -->
+  
+  <span class="tag">
+    <a href="tags/sparql.html">sparql</a>
+  </span>
+  
+  <span class="tag">
+    <a href="tags/clojure.html">clojure</a>
+  </span>
+  
+  <span class="tag">
+    <a href="tags/rdf.html">rdf</a>
+  </span>
+  
+  <span class="tag">
+    <a href="tags/rama.html">rama</a>
+  </span>
+  
+  <span class="tag">
+    <a href="tags/distributed-systems.html">distributed systems</a>
+  </span>
+  
+  </i>
+</p>
+
+<!--  -->
+</div>
+
+    
+
+    
+  </div>
+  <div
+    style="position:fixed; bottom:0!important; left:0!important; z-index: 1500; display: flex; justify-content:center; width:100%; background-color:rgba(255, 255, 255, 0.829);">
+    <div class="footer-bar">
+      <a class="page-link" href="index.html"
+        style="margin:0; padding-right: 24px;"><span></span><i
+          class="la-lg las la-chevron-circle-left"></i>&nbspIndex</a>
+      <a class="page-link" href="#top" style="margin:0; padding-right: 24px;"><i
+          class="la-lg las la-chevron-circle-up"></i>&nbspFast Up</a>
+      <a class="page-link" href="archive.html"
+        style="margin:0; padding-right: 4px;"><i class="la-lg las la-folder"></i>&nbspArchive</a>
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('scroll', function () {
+
+      if (window.innerWidth < 700) {
+        const header = document.querySelector('.site-header');
+
+        if (window.scrollY >= 100) {
+          header.classList.add('sticky');
+          document.body.classList.add('sticky-active');
+        } else {
+          header.classList.remove('sticky');
+          document.body.classList.remove('sticky-active');
+        }
+      }
+    });
+  </script>
+  <script src='https://cdn.jsdelivr.net/gh/eddymens/markdown-external-link-script@v2.0.0/main.min.js'></script>
+</body>
+
+</html>
