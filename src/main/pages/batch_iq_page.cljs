@@ -108,7 +108,7 @@
             :fill  "currentColor" :class ["w-5" "h-5" "text-[#77F7E8]" "ml-0.5"]}
       [:path {:d "M8 5.14v14l11-7-11-7z"}]]]
     [:span {:class ["relative" "z-10" "text-white" "font-semibold" "text-sm" "tracking-wide"]}
-     "Watch Demo"]]])
+     "Watch Promo"]]])
 
 
 (def stat-cards-data
