@@ -77,8 +77,8 @@
                 "shadow-[0_0_20px_rgba(82,83,209,0.4),_0_0_60px_rgba(82,83,209,0.15)]"
                 "hover:shadow-[0_0_30px_rgba(82,83,209,0.6),_0_0_80px_rgba(82,83,209,0.25)]"
                 "transition-all" "duration-500"]}
-    [:> MessageCircleMore {:size 20 :stroke-width 1.5 :class "opacity-70"}]
-    "Let\u2019s Talk"]])
+    [:> MessageCircleMore {:size 20 :stroke-width 2 :class "opacity-100 subpixel-antialiased"}]
+    "Let's' Talk"]])
 
 (defn play-button []
   [:div {:class ["group" "relative" "inline-flex" "rounded-full" "p-[2px]" "overflow-hidden"]}
@@ -141,16 +141,16 @@
                    "bg-[radial-gradient(ellipse_at_100%_50%,_#72EBDE,_transparent_70%)]"
                    "mix-blend-screen" "opacity-[0.12]" "group-hover:opacity-[0.35]"
                    "transition-opacity" "duration-700" "pointer-events-none"]}]
-   ;; Edge glossy — top
+   ;; Edge glossy - top
    [:span {:class ["absolute" "inset-x-0" "top-0" "h-[1px]"
                    "bg-[linear-gradient(to_right,_rgba(159,141,226,0.6),_rgba(255,255,255,0.25)_50%,_rgba(114,235,222,0.6))]"]}]
-   ;; Edge glossy — left
+   ;; Edge glossy - left
    [:span {:class ["absolute" "left-0" "inset-y-0" "w-[1px]"
                    "bg-[linear-gradient(to_bottom,_rgba(159,141,226,0.5),_rgba(255,255,255,0.08)_50%,_rgba(114,235,222,0.3))]"]}]
-   ;; Edge glossy — right
+   ;; Edge glossy - right
    [:span {:class ["absolute" "right-0" "inset-y-0" "w-[1px]"
                    "bg-[linear-gradient(to_bottom,_rgba(114,235,222,0.3),_rgba(255,255,255,0.08)_50%,_rgba(159,141,226,0.5))]"]}]
-   ;; Edge glossy — bottom
+   ;; Edge glossy - bottom
    [:span {:class ["absolute" "inset-x-0" "bottom-0" "h-[1px]"
                    "bg-[linear-gradient(to_right,_rgba(159,141,226,0.3),_rgba(255,255,255,0.1)_50%,_rgba(114,235,222,0.3))]"]}]
    ;; Content
@@ -158,7 +158,7 @@
     [:span {:class ["inline-block"]
             :style {:filter "drop-shadow(4px 4px 6px rgba(0,0,0,0.6)) drop-shadow(-4px -4px 6px rgba(80,70,140,0.25)) drop-shadow(0 0 18px rgba(114,235,222,0.25))"}}
      [:span {:class ["text-4xl" "md:text-5xl" "font-bold" "tracking-tight"
-                     "bg-[linear-gradient(135deg,_#9F8DE2,_#72EBDE)]" "bg-clip-text" "text-transparent"]}
+                     "bg-[linear-gradient(135deg,_#9F8DE2,_#72EBDE)]" "bg-clip-text" "text-transparent "]}
       number]]
     [:div {:class ["text-md" "text-white/60" "leading-relaxed" "mt-4 mb-6"]}
      desc]
@@ -176,24 +176,24 @@
        [:main {:class ["w-full" "min-h-screen" "relative" "overflow-hidden"
                        "fade-in"]}
 
-        ;; Gradient overlay 1 — purple blend (matches security section)
+        ;; Gradient overlay 1 - purple blend (matches security section)
         [:div {:class ["fixed" "inset-0" "z-28"
                        "bg-[linear-gradient(to_bottom,_#241E3F_0%,_#241E3F_15%,_#1B1936_70%,_#1B1936_100%)]"
                        "backdrop-blur-[2px]" "mix-blend-multiply" "opacity-[90%]"]}]
 
 
-        ;; Gradient overlay 2 — dark top band so navbar logo/text are visible
+        ;; Gradient overlay 2 - dark top band so navbar logo/text are visible
         [:div {:class ["fixed" "inset-0" "z-28"
                        "bg-[linear-gradient(to_bottom,_#0B0F17_0%,_#0B0F17_10%,_#0E1320_30%,_#0E1320_70%,_#0B0F17_100%)]"
                        "opacity-100"]}]
 
-        ;; Abstract background — hero only
+        ;; Abstract background - hero only
 
         [:div {:class ["absolute" "-top-20" "left-0" "w-full" "h-screen" "z-[29]"
                        "bg-cover" "bg-center" "bg-no-repeat"
                        "opacity-100"
                        "pointer-events-none"]
-               :style {:backgroundImage (str "url('" constants/assets-url "img/abstract_bg.png')")}}]
+               :style {:backgroundImage (str "url('" constants/assets-url "img/abstract_bg.webp')")}}]
 
 
         ;; Content
@@ -204,12 +204,12 @@
                        "md:max-w-screen-lg" "md:px-16"
                        "lg:max-w-screen-2xl" "lg:px-20"]}
 
-         [:div {:class ["max-w-screen-md" "mx-auto" "text-center"]}
+         [:div {:class ["max-w-screen-lg" "mx-auto" "text-center"]}
 
           [:div {:class ["flex" "flex-col" "items-center" "w-full"]
                  :style {:min-height "calc(100vh - 80px)"}}
 
-           ;; Center group — takes remaining space and centers content
+           ;; Center group - takes remaining space and centers content
            [:div {:class ["flex" "flex-col" "items-center" "justify-center" "flex-1" "relative" "z-10"]}
             [:div {:class ["mx-auto" "mb-10" "drop-shadow-sm" "flex" "flex-col" "items-center" "justify-center"]}
              [:span {:class ["w-full" "pt-3 pb-3" "text-center" "text-white/80" "text-sm" "tracking-wider" "uppercase" "font-light"]}
@@ -217,18 +217,16 @@
              [:img {:src   (str constants/assets-url "img/Logo.svg")
                     :class ["h-16" "md:h-20" "w-auto"]}]]
 
-            [:h1 {:class ["text-3xl" "md:text-5xl" "lg:text-6xl" "font-black"
+            [:h1 {:class ["text-3xl" "md:text-5xl" "lg:text-6xl" "font-light"
                           "text-white" "tracking-tight" "leading-none" "mb-8"
                           "drop-shadow-sm" "text-center"]}
              "The semantic memory layer for "
-             [:span {:class ["bg-[linear-gradient(135deg,_#B49FFE,_#77F7E8)]" "bg-clip-text" "text-transparent"]}
+             [:span {:class ["bg-[linear-gradient(135deg,_#B49FFE,_#77F7E8)]" "bg-clip-text" "text-transparent" "font-bold"]}
               "agentic life science workflows"]]
 
            [:div {:class ["flex" "flex-col" "sm:flex-row" "items-center" "gap-4" "pt-8"]}
             [play-button]
-            [lets-talk-button]]
-
-            ]
+            [lets-talk-button]]]
 
            ;; Bottom pinned
            [:p {:class ["text-sm" "md:text-base" "text-white/70" "font-medium"
@@ -240,7 +238,7 @@
           ;; Platform UI
           [:div {:class ["relative" "w-full" "pt-32"]}
 
-           ;; Glow behind image — between bg and image
+           ;; Glow behind image - between bg and image
            [:div {:class ["absolute" "top-[3%]" "left-[50%]" "-translate-x-1/2"
                           "w-[700px]" "h-[400px]"
                           "bg-[radial-gradient(ellipse_at_50%_50%,_rgba(115,104,234,0.2),_transparent_70%)]"
@@ -248,7 +246,7 @@
 
            ;; Image
            [:div {:class ["relative" "w-full" "z-[1]"]}
-            [:img {:src (str constants/assets-url "img/disapearing_ui.png")
+            [:img {:src (str constants/assets-url "img/disapearing_ui.webp")
                    :class ["w-full" "h-auto"]}]
             [:div {:class ["absolute" "inset-x-0" "bottom-0" "h-auto" "z-20"
                            "bg-[linear-gradient(to_top,_#151A2C_0%,_#151A2C_25%,_rgba(21,26,44,0.8)_50%,_transparent_100%)]"
@@ -287,7 +285,7 @@
            [:div {:class ["max-w-screen-md" "lg:max-w-screen-lg" "mx-auto" "px-6"
                           "flex" "flex-col" "items-center" "gap-12"]}
 
-            ;; Text — top
+            ;; Text - top
             [:div {:class ["w-full" "max-w-2xl" "text-center" "flex" "flex-col" "gap-8"]}
              [:div
               [:span {:class ["text-cyan-200" "text-xs" "tracking-wider" "uppercase" "font-medium"]}
@@ -298,7 +296,7 @@
                                "bg-[linear-gradient(135deg,_#9F8DE2,_#72EBDE)]" "bg-clip-text" "text-transparent"]}
                 "for you"]]]
 
-             [:p {:class ["text-white/50" "text-base" "md:text-lg" "leading-relaxed"]}
+             [:p {:class ["text-white/80" "text-base" "md:text-lg" "leading-relaxed"]}
               "BatchIQ ships with three core reference views - "
               [:span {:class ["text-[#72EBDE]" "font-medium"]} "SOP Viewer"] ", "
               [:span {:class ["text-[#72EBDE]" "font-medium"]} "References"] ", and "
@@ -307,13 +305,13 @@
               "From reading and navigating SOPs with full semantic context, to tracing cross-references across regulatory documents, "
               "to visualizing entire document architectures as interconnected graphs."]
 
-             [:p {:class ["text-white/30" "text-sm" "leading-relaxed" "italic"]}
-              "More widgets are in active development — including advanced graph exploration, "
+             [:p {:class ["text-[#989BE2]/100" "text-sm" "leading-relaxed" "italic"]}
+              "More widgets are in active development - including advanced graph exploration, "
               "compliance mapping, and agentic query interfaces. The tool panel grows with every release."]]
 
-            ;; Image — bottom
+            ;; Image - bottom
             [:div {:class ["w-full"]}
-             [:img {:src (str constants/assets-url "img/widgets.png")
+             [:img {:src (str constants/assets-url "img/widgets.webp")
                     :class ["w-full" "h-auto"]}]]]]
 
           ;; Graph layer chnage
@@ -324,58 +322,58 @@
            ;; Section text
            [:div {:class ["text-center" "mb-16" "max-w-2xl" "mx-auto" "relative"]}
             [:h2 {:class ["text-3xl" "md:text-4xl" "text-white" "font-extralight" "tracking-wide" "mb-4"]}
-             "Not a database" [:br]
+             "Not a database. " [:br]
              [:span {:class ["font-bold"
-                             "bg-[linear-gradient(135deg,_#9F8DE2,_#72EBDE)]" "bg-clip-text" "text-transparent"]}
+                             "bg-[linear-gradient(135deg,_#9F8DE2,_#72EBDE)]" "bg-clip-text" "text-transparent" "uppercase"]}
               "A reasoning layer"]]
-            [:p {:class ["text-white/40" "text-base" "md:text-lg" "font-light" "max-w-xl" "mx-auto"]}
-             "Every relationship, every dependency, every procedural link — mapped, queryable, and traceable in real time."]
+            [:p {:class ["text-white/80" "text-base" "md:text-lg" "font-light" "max-w-xl" "mx-auto"]}
+             "Every relationship, every dependency, every procedural link - mapped, queryable, and traceable in real time."]
             ;; Glow between text and images
             [:div {:class ["absolute" "-bottom-48" "left-1/2" "-translate-x-1/2"
                            "w-[500px]" "h-48"
                            "bg-[radial-gradient(ellipse_at_50%_50%,_rgba(115,104,234,0.14),_transparent_70%)]"
                            "pointer-events-none"]}]]
-           ;; Image composition — cinematic floating screenshots
+           ;; Image composition - cinematic floating screenshots
 
-           [:div {:class ["relative" "max-w-screen-md" "mx-auto" "h-[320px]" "sm:h-[380px]" "md:h-[420px]"]}
+           [:div {:class ["relative" "md:w-full" "mx-auto" "h-[320px]" "sm:h-[380px]" "md:h-[420px]"]}
 
             ;; Left image
-            [:div {:class ["absolute" "-left-8" "sm:-left-4" "md:left-0"
+            [:div {:class ["absolute" "left-0" "sm:left-0" "md:left-0"
                            "top-12" "sm:top-16"
-                           "w-[55%]" "sm:w-[50%]" "md:w-[45%]"
+                           "w-[55%]" "sm:w-[50%]" "md:w-[42%]"
                            "z-10"]}
-             [:img {:src (str constants/assets-url "img/kg_view_1.png")
+             [:img {:src (str constants/assets-url "img/kg_view_1.webp")
                     :class ["w-full" "h-auto" "rounded-xl"
-                            "shadow-[0_20px_60px_rgba(0,0,0,0.5),_0_0_30px_rgba(159,141,226,0.08)]"
+                            "shadow-[0_20px_60px_rgba(0,0,0,0.4),_0_0_30px_rgba(159,141,226,0.08)]"
                             "ring-1" "ring-white/[0.06]"]}]]
 
             ;; Center image
             [:div {:class ["absolute" "left-1/2" "-translate-x-1/2"
                            "top-0"
-                           "w-[80%]" "sm:w-[72%]" "md:w-[68%]"
+                           "w-[70%]" "sm:w-[72%]" "md:w-[55%]"
                            "z-30"]}
-             [:img {:src (str constants/assets-url "img/kg_view_2.png")
+             [:img {:src (str constants/assets-url "img/kg_view_2.webp")
                     :class ["w-full" "h-auto" "rounded-xl"
-                            "shadow-[0_30px_80px_rgba(0,0,0,0.6),_0_0_40px_rgba(114,235,222,0.08)]"
+                            "shadow-[0_30px_80px_rgba(0,0,0,0.4),_0_0_40px_rgba(114,235,222,0.08)]"
                             "ring-1" "ring-white/[0.08]"]}]]
 
             ;; Right image
-            [:div {:class ["absolute" "-right-8" "sm:-right-4" "md:right-0"
+            [:div {:class ["absolute" "right-0" "sm:right-0" "md:right-0"
                            "top-12" "sm:top-16"
-                           "w-[55%]" "sm:w-[50%]" "md:w-[45%]"
+                           "w-[55%]" "sm:w-[50%]" "md:w-[42%]"
                            "z-20"]}
-             [:img {:src (str constants/assets-url "img/kg_view_3.png")
+             [:img {:src (str constants/assets-url "img/kg_view_3.webp")
                     :class ["w-full" "h-auto" "rounded-xl"
-                            "shadow-[0_20px_60px_rgba(0,0,0,0.5),_0_0_30px_rgba(114,235,222,0.06)]"
+                            "shadow-[0_20px_60px_rgba(0,0,0,0.4),_0_0_30px_rgba(114,235,222,0.06)]"
                             "ring-1" "ring-white/[0.06]"]}]]]]
 
 
 
 
-          ;; How it fits — architecture stack
+          ;; How it fits - architecture stack
           [:div {:class ["mt-16" "mb-8" "max-w-lg" "mx-auto"]}
            [:h2 {:class ["flex" "items-center" "justify-center" "flex-wrap" "gap-1"
-                         "text-3xl" "md:text-4xl" "mb-12" "text-center"]}
+                         "text-3xl" "md:text-4xl" "mb-18" "text-center"]}
             [:span {:class ["text-white" "font-extralight" "tracking-wide"]} "Where"]
             [:img {:src   (str constants/assets-url "img/Logo.svg")
                    :class ["h-10" "md:h-12" "w-auto" "inline-block"]}]
@@ -393,7 +391,7 @@
              [:span {:class ["absolute" "right-8" "top-16" "bottom-16" "w-[1px]"
                              "bg-[linear-gradient(to_bottom,_rgba(114,235,222,0.15),_rgba(159,141,226,0.2)_50%,_rgba(114,235,222,0.15))]"]}]]
 
-            ;; Layer 3 — AI agents
+            ;; Layer 3 - AI agents
             [:div {:class ["group" "relative" "z-10" "rounded-2xl" "overflow-hidden"
                            "bg-[#1A1F32]"
                            "border" "border-white/[0.06]"
@@ -420,7 +418,7 @@
             [:div {:class ["flex" "justify-center" "my-3" "relative" "z-20"]}
              [:span {:class ["text-center" "text-cyan-200" "text-xs"]} "consumes \u2193"]]
 
-            ;; Layer 2 — BatchIQ (highlighted)
+            ;; Layer 2 - BatchIQ (highlighted)
             [:div {:class ["group" "relative" "z-10" "rounded-2xl" "p-[2px]" "overflow-hidden"
                            "animate-[pulse-glow_4s_ease-in-out_infinite]"]}
              ;; Animated gradient border
@@ -439,16 +437,16 @@
                [:span {:class ["text-[#72EBDE]" "text-lg" "font-bold" "tracking-wide"
                                "bg-[linear-gradient(135deg,_#9F8DE2,_#72EBDE)]" "bg-clip-text" "text-transparent"]}
                 "BatchIQ"]
-               [:span {:class ["text-white/50" "text-sm" "font-medium" "tracking-wide"]}
+               [:span {:class ["text-white/70" "text-sm" "font-medium" "tracking-wide"]}
                 "Semantic Memory Layer"]
-               [:span {:class ["text-white/30" "text-[11px]" "mt-1" "leading-relaxed" "max-w-xs"]}
+               [:span {:class ["text-white/60" "text-[11px]" "mt-1" "leading-relaxed" "max-w-xs"]}
                 "Transforms scattered SOPs into structured, traceable knowledge for agentic consumption"]]]]
 
             ;; Connector
             [:div {:class ["flex" "justify-center" "relative" "z-20" "my-3"]}
              [:span {:class ["text-cyan-200" "text-xs" "font-mono"]} "\u2191   reads from   \u2193"]]
 
-            ;; Layer 1 — Systems of record
+            ;; Layer 1 - Systems of record
             [:div {:class ["group" "relative" "z-10" "rounded-2xl" "overflow-hidden"
                            "bg-[#1A1F32]"
                            "border" "border-white/[0.06]"
@@ -475,18 +473,18 @@
                (for [label ["LIMS" "MES" "ELN" "QMS"]]
                  [:span {:key label
                          :class ["px-2" "py-0.5" "rounded-md" "text-[11px]"
-                                 "bg-white/[0.05]" "text-white/30" "font-mono"]}
+                                 "bg-white/[0.05]" "text-white/45" "font-mono"]}
                   label])]]]]]
-          [:div {:class ["text-4xl" "md:text-5xl" "text-white" "font-light" "py-12" "mt-24" "px-12" "text-center"]}
-           "Ready to integrate" [:br]
+          [:div {:class ["text-3xl" "md:text-4xl" "text-white" "font-light" "py-12" "mt-24" "px-12" "text-center"]}
+           "Ready to integrate "
            [:span {:class ["font-bold"
                            "bg-[linear-gradient(135deg,_#9F8DE2,_#72EBDE)]" "bg-clip-text" "text-transparent"]}
-            "the intelligence layer "]
+            "the intelligence layer "] [:br ]
            "your stack is missing?"]
           ;; CTA buttons (matching site button patterns)
           [:div {:class ["flex" "flex-col" "sm:flex-row" "gap-6" "justify-center" "items-center"]}
 
-           ;; Let's Talk — neumorphic inset container + glowing inner button
+           ;; Let's Talk - neumorphic inset container + glowing inner button
            [:div {:class ["relative" "rounded-full" "p-[5px]"
                           "bg-[#1A1838]"
                           "shadow-[inset_3px_3px_8px_rgba(0,0,0,0.7),_inset_-3px_-3px_8px_rgba(60,55,110,0.15)]"]}
@@ -503,10 +501,10 @@
                          "hover:shadow-[0_0_30px_rgba(82,83,209,0.6),_0_0_80px_rgba(82,83,209,0.25)]"
                          "transition-all" "duration-500"]}
              ;; Plus icon (Lucide style)
-             [:> MessageCircleMore {:size 20 :stroke-width 1.5 :class "opacity-70"}]
+             [:> MessageCircleMore {:size 20 :stroke-width 2 :class "opacity-100 subpixel-antialiased"}]
              "Let's Talk"]]
 
-           ;; Back to Homepage — outlined neumorphic
+           ;; Back to Homepage - outlined neumorphic
            [:div {:class ["relative" "rounded-full" "p-[5px]"
                           "bg-[#161B2A]"
                           "shadow-[inset_3px_3px_8px_rgba(0,0,0,0.7),_inset_-3px_-3px_8px_rgba(40,45,80,0.15)]"]}
