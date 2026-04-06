@@ -28,12 +28,24 @@
        (fn []
          (when @show-video?
            [:div {:class    ["fixed" "inset-0" "z-[999]" "flex" "flex-col" "items-center" "justify-center"
-                             "bg-black/30" "backdrop-blur-xs"
+                             "bg-black/30" "backdrop-blur-xs" "px-6"
                              "w-screen" "h-screen" "overflow-hidden"
                              "animate-[fadeIn_0.4s_ease-in-out]" "transition-all duration-500 ease-in"]
                   :on-click #(reset! show-video? false)}
-            [:span {:class ["text-cyan-200/80" "text-sm" "tracking-wider" "animate-pulse" "mb-6"]}
+            [:span {:class ["text-cyan-200/80" "text-sm" "tracking-wider" "animate-pulse" "mb-6" "text-center"]}
              "Hover over the speaker icon and unmute the video player to enjoy the full experience."]
+            [:button {:class    ["absolute" "top-3" "right-3" "z-[1000]"
+                                 "flex" "items-center" "gap-2"
+                                 "px-3" "py-1.5" "rounded-full"
+                                 "bg-black/60" "backdrop-blur-sm"
+                                 "text-cyan-200/70" "hover:text-cyan-200" "hover:bg-black/80"
+                                 "transition-all" "duration-300" "cursor-pointer"]
+                      :on-click #(reset! show-video? false)}
+             [:span {:class ["text-sm" "tracking-wider" "uppercase" "font-light"]} "Close"]
+             [:svg {:xmlns "http://www.w3.org/2000/svg" :viewBox "0 0 24 24"
+                    :fill  "none" :stroke "currentColor" :stroke-width "2"
+                    :class ["w-5" "h-5"]}
+              [:path {:d "M6 18L18 6M6 6l12 12"}]]]
             ;; Skip text
             [:div {:class ["absolute" "bottom-8" "text-white/30" "text-sm" "tracking-wider"]}
              "Press ESC or click anywhere to skip"]
@@ -45,18 +57,6 @@
                               "ring-1" "ring-white/10"]
                    :on-click (fn [e] (.stopPropagation e))}
 
-             [:button {:class    ["absolute" "top-3" "right-3" "z-[1000]"
-                                  "flex" "items-center" "gap-2"
-                                  "px-3" "py-1.5" "rounded-full"
-                                  "bg-black/60" "backdrop-blur-sm"
-                                  "text-cyan-200/70" "hover:text-cyan-200" "hover:bg-black/80"
-                                  "transition-all" "duration-300" "cursor-pointer"]
-                       :on-click #(reset! show-video? false)}
-              [:span {:class ["text-sm" "tracking-wider" "uppercase" "font-light"]} "Close"]
-              [:svg {:xmlns "http://www.w3.org/2000/svg" :viewBox "0 0 24 24"
-                     :fill  "none" :stroke "currentColor" :stroke-width "2"
-                     :class ["w-5" "h-5"]}
-               [:path {:d "M6 18L18 6M6 6l12 12"}]]]
              [:iframe {:src             "https://www.youtube.com/embed/4QZvxypw038?autoplay=1&mute=1&rel=0&modestbranding=1&controls=1"
                        :class           ["w-full" "h-full"]
                        :frameBorder     "0"
@@ -78,7 +78,7 @@
                 "hover:shadow-[0_0_30px_rgba(82,83,209,0.6),_0_0_80px_rgba(82,83,209,0.25)]"
                 "transition-all" "duration-500"]}
     [:> MessageCircleMore {:size 20 :stroke-width 2 :class "opacity-100 subpixel-antialiased"}]
-    "Let's' Talk"]])
+    "Let's Talk"]])
 
 (defn play-button []
   [:div {:class ["group" "relative" "inline-flex" "rounded-full" "p-[2px]" "overflow-hidden"]}
@@ -253,7 +253,7 @@
                            "pointer-events-none"]}]]
 
            ;; Text
-           [:div {:class ["relative" "-mt-16" "sm:-mt-24" "md:-mt-40" "z-30" "max-w-2xl" "mx-auto" "text-center" "px-6"]}
+           [:div {:class ["relative" "-mt-16" "sm:-mt-24" "md:-mt-40" "z-30" "max-w-2xl" "mx-auto" "text-center"]}
 
             [:p {:class ["text-xl" "md:text-2xl" "text-white/80" "font-light"
                          "leading-relaxed" "mb-8"]}
@@ -282,7 +282,7 @@
 
           ;; Widgets showcase section
           [:div {:class ["relative" "w-full" "py-20"]}
-           [:div {:class ["max-w-screen-md" "lg:max-w-screen-lg" "mx-auto" "px-6"
+           [:div {:class ["max-w-screen-md" "lg:max-w-screen-lg" "mx-auto"
                           "flex" "flex-col" "items-center" "gap-12"]}
 
             ;; Text - top
@@ -317,7 +317,7 @@
           ;; Graph layer chnage
 
           ;; Knowledge graph showcase section
-          [:div {:class ["relative" "w-full" "py-20" "overflow-hidden"]}
+          [:div {:class ["relative" "w-full" "py-20"  "sm:py-4" "overflow-hidden"]}
 
            ;; Section text
            [:div {:class ["text-center" "mb-16" "max-w-2xl" "mx-auto" "relative"]}
@@ -335,7 +335,7 @@
                            "pointer-events-none"]}]]
            ;; Image composition - cinematic floating screenshots
 
-           [:div {:class ["relative" "md:w-full" "mx-auto" "h-[320px]" "sm:h-[380px]" "md:h-[420px]"]}
+           [:div {:class ["relative" "md:w-full" "mx-auto" "xs:min-h-[200px]" "sm:min-h-[320px]" "md:min-h-[420px]" "lg:-min-h-[420px]" "xl:min-h-[480px]"]}
 
             ;; Left image
             [:div {:class ["absolute" "left-0" "sm:left-0" "md:left-0"
@@ -344,7 +344,7 @@
                            "z-10"]}
              [:img {:src (str constants/assets-url "img/kg_view_1.webp")
                     :class ["w-full" "h-auto" "rounded-xl"
-                            "shadow-[0_20px_60px_rgba(0,0,0,0.4),_0_0_30px_rgba(159,141,226,0.08)]"
+                            "shadow-[0_20px_50px_-8px_rgba(0,0,0,0.5),_0_0_30px_15px_rgba(159,141,226,0.06)]"
                             "ring-1" "ring-white/[0.06]"]}]]
 
             ;; Center image
@@ -354,7 +354,7 @@
                            "z-30"]}
              [:img {:src (str constants/assets-url "img/kg_view_2.webp")
                     :class ["w-full" "h-auto" "rounded-xl"
-                            "shadow-[0_30px_80px_rgba(0,0,0,0.4),_0_0_40px_rgba(114,235,222,0.08)]"
+                            "shadow-[0_20px_50px_-8px_rgba(0,0,0,0.5),_0_0_30px_15px_rgba(159,141,226,0.06)]"
                             "ring-1" "ring-white/[0.08]"]}]]
 
             ;; Right image
@@ -364,7 +364,7 @@
                            "z-20"]}
              [:img {:src (str constants/assets-url "img/kg_view_3.webp")
                     :class ["w-full" "h-auto" "rounded-xl"
-                            "shadow-[0_20px_60px_rgba(0,0,0,0.4),_0_0_30px_rgba(114,235,222,0.06)]"
+                            "shadow-[0_20px_50px_-8px_rgba(0,0,0,0.5),_0_0_30px_15px_rgba(159,141,226,0.06)]"
                             "ring-1" "ring-white/[0.06]"]}]]]]
 
 
@@ -475,7 +475,7 @@
                          :class ["px-2" "py-0.5" "rounded-md" "text-[11px]"
                                  "bg-white/[0.05]" "text-white/45" "font-mono"]}
                   label])]]]]]
-          [:div {:class ["text-3xl" "md:text-4xl" "text-white" "font-light" "py-12" "mt-24" "px-12" "text-center"]}
+          [:div {:class ["text-3xl" "md:text-4xl" "text-white" "font-light" "py-12" "mt-24" "px-1" "text-center"]}
            "Ready to integrate "
            [:span {:class ["font-bold"
                            "bg-[linear-gradient(135deg,_#9F8DE2,_#72EBDE)]" "bg-clip-text" "text-transparent"]}

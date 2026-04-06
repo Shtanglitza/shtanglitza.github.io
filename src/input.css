@@ -6,6 +6,13 @@
   --color-indigo-50: #F4F7FF;
   --color-dark-base: #030308;
   --breakpoint-lg2: 1000px;
+
+  /* Add your custom breakpoints here */
+    --breakpoint-xs: 325px;
+    --breakpoint-sm: 600px;    /* overrides default 640px */
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 1024px;
+    --breakpoint-xl: 1280px;
 }
 
 /* Source scanning (replaces content array) */
