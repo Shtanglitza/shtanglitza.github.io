@@ -176,12 +176,11 @@
 
            [:section {:class ["mb-16" "mt-12" "relative" "overflow-hidden" "bg-center" "bg-cover" "bg-no-repeat" "min-h-[420px]" "rounded-3xl" "shadow-sm" "px-8" "pt-16" "pb-8" "animate-subtle-move"]
                       :style {:backgroundImage (str "url('" bg-url "')")} }
-            [:div {:class ["absolute inset-0" "bg-[linear-gradient(to_bottom_right,_#1D1B48_0%,_#726AF0_60%,_#726AF000_100%)]" "backdrop-blur-[2px]" "mix-blend-multiply" "opacity-[90%]" "z-1"]}]
+            [:div {:class ["absolute inset-0" "bg-[linear-gradient(to_bottom_right,_#1D1B48_0%,_#726AF0_60%,_#726AF000_100%)]" "backdrop-blur-[2px]" "mix-blend-multiply" "opacity-[90%]"]}]
             [:div {:class ["absolute inset-0"
                            "bg-[linear-gradient(to_bottom_right,_#1A1944_0%,_#1A1944E6_40%,_#1A194400_100%)]"
                            "backdrop-blur-[0px]"
-                           "opacity-100"
-                           "z-2"]}]
+                           "opacity-100"]}]
             [:div {:class ["flex" "flex-col" "items-start" "w-fit"]}
              [:h6 {:class ["relative" "text-[#A9F5C8E6]" "text-xl"]} "Security"]
              [:h1 {:class ["relative" "text-4xl" "md:text-6xl" "font-bold" "text-white" "mb-6" "drop-shadow-sm"]}
