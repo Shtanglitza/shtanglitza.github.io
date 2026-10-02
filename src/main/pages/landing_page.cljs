@@ -500,7 +500,7 @@
                  "md:text-2xl"
                  "md:text-center"]}
         "If you would like to know more about Shtanglitza’s Information Security program, please read the"
-        [:button {::on-click #(goto-security)
+        [:button {:on-click #(goto-security)
                   :class ["text-[#77F7E8]" "hover:text-[#4ED9CB]" "whitespace-nowrap" "hover:no-underline" "tracking-wider"]}
          " \"How We Do It" \"]
 

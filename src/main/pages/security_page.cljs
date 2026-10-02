@@ -44,7 +44,7 @@
     [:li {:key section-id}
      [:button
       {:on-click #(handle-nav-click section-id)
-       :class ["w-full" "text-left" "text-sm"  "px-3" "py-0.5" "rounded" "text-[#6366F1]" "hover:text-indigo-900" "transition-colors"
+       :class ["w-full" "text-left" "text-sm" "cursor-pointer" "px-3" "py-0.5" "rounded" "text-[#6366F1]" "hover:text-indigo-900" "transition-colors"
                (when @is-open? "text-indigo-900 font-bold")]}
       (:title section)]]))
 ;;new sidebar version with fixed position and scroll opacity fade in-out transition
@@ -78,7 +78,7 @@
          [:div {:class ["fixed" "top-0" "w-fit" "max-w-[255px]" "bg-transparent" "hidden" "xl:block" "overflow-y-auto" "ms-12" "h-full" "mt-20" "me-8" "self-start" "z-10" ]
                 :style {:opacity @scroll-position
                         :transition "opacity 0.3s ease-in-out"}}
-          [:h3 {:class ["text-lg" "font-bold" "text-gray-900" "mb-4" "mt-12" "ms-3" "border-b" "pb-2"]} "Section Overview"]
+          [:h3 {:class ["text-lg" "font-bold" "text-gray-900" "mb-4" "mt-12" "ms-3" "pb-2"]} "Section Overview"]
           [:ul {:class ["space-y-1"]}
            (for [section constants/security-sections]
              ^{:key (:id section)} [sidebar-item section])]])})))
@@ -94,8 +94,9 @@
         "rounded-lg"
         "overflow-hidden"
                     "transition-all" "duration-700" "ease-in-out"]
-        base-btn   ["w-full" "text-left" "p-6" "bg-transparent" "hover:bg-indigo-50"
-                    "transition-colors" "duration-300" "ease-in-out" "border-b-2"
+        base-btn   ["w-full" "text-left" "p-6" "cursor-pointer" "bg-transparent" "hover:bg-indigo-50"
+                    "transition-colors" "duration-300" "ease-in-out" "border-b"
+                    (if is-open? "border-[#6366F1]" "border-gray-300")
                     "flex" "justify-between" "items-center"]]
     [:section {:id section-id
                :class (into base-sec
@@ -174,7 +175,7 @@
          [:div {:class ["xl:ml-[25%]"]}
           [:div {:class [ "mx-auto" "lg:px-6" "py-16"]}
 
-           [:section {:class ["mb-16" "mt-12" "relative" "overflow-hidden" "bg-center" "bg-cover" "bg-no-repeat" "min-h-[420px]" "rounded-3xl" "shadow-sm" "px-8" "pt-16" "pb-8" "animate-subtle-move"]
+           [:section {:class ["mb-8" "mt-6" "relative" "overflow-hidden" "bg-center" "bg-cover" "bg-no-repeat" "min-h-[210px]" "rounded-2xl" "shadow-sm" "px-6" "pt-8" "pb-6" "animate-subtle-move"]
                       :style {:backgroundImage (str "url('" bg-url "')")} }
             [:div {:class ["absolute inset-0" "bg-[linear-gradient(to_bottom_right,_#1D1B48_0%,_#726AF0_60%,_#726AF000_100%)]" "backdrop-blur-[2px]" "mix-blend-multiply" "opacity-[90%]"]}]
             [:div {:class ["absolute inset-0"
@@ -182,17 +183,17 @@
                            "backdrop-blur-[0px]"
                            "opacity-100"]}]
             [:div {:class ["flex" "flex-col" "items-start" "w-fit"]}
-             [:h6 {:class ["relative" "text-[#A9F5C8E6]" "text-xl"]} "Security"]
-             [:h1 {:class ["relative" "text-4xl" "md:text-6xl" "font-bold" "text-white" "mb-6" "drop-shadow-sm"]}
+             [:h6 {:class ["relative" "text-[#A9F5C8E6]" "text-sm"]} "Security"]
+             [:h1 {:class ["relative" "text-2xl" "md:text-3xl" "font-bold" "text-white" "mb-3" "drop-shadow-sm"]}
               "How We Do It?"]
              ]
 
 
-            [:p {:class ["relative" "text-xl" "md:text-2xl" "text-white" "leading-relaxed" "max-w-3xl" "ps-0" "drop-shadow-sm" "font-light"]}
+            [:p {:class ["relative" "text-base" "md:text-lg" "text-white" "leading-relaxed" "max-w-2xl" "ps-0" "drop-shadow-sm" "font-light"]}
              "Comprehensive security controls and policies based on ISO 27001:2022 standards to ensure the highest level of data protection and compliance."]
 
-            [:div {:class ["mt-8" "flex" "sm:flex-row" "flex-col" "gap-4" "justify-center" "align-center" "text-center"]}
-             [:div {:class ["p-4"
+            [:div {:class ["mt-4" "flex" "sm:flex-row" "flex-col" "gap-3" "justify-center" "align-center" "text-center"]}
+             [:div {:class ["p-2"
                             "relative"
                             "flex-1"
                             ;"lg:w-[40%]"
@@ -205,10 +206,10 @@
                             "border"
                             "border-white/30"
                             "shadow-sm"]}
-              [:div {:class ["text-2xl" "font-bold" "text-[#1E1F63]"]} (count constants/security-sections)]
-              [:div {:class ["text-sm" "text-[#1E1F63]/80"]} "Security Items"]]
+              [:div {:class ["text-lg" "font-bold" "text-[#1E1F63]"]} (count constants/security-sections)]
+              [:div {:class ["text-xs" "text-[#1E1F63]/80"]} "Security Items"]]
 
-             [:div {:class ["p-4"
+             [:div {:class ["p-2"
                             "relative"
                             "flex-1"
                             "h-full"
@@ -221,8 +222,8 @@
                             "shadow-sm"
                             "backdrop-blur-md"
                             "bg-[linear-gradient(to_bottom_right,_#A9F5C8E6_25%,_#A9F5C899_60%,_rgba(255,255,255,0.5)_100%)]"]}
-              [:div {:class ["text-2xl" "font-bold" "text-[#166534]"]} "ISO 27001"]
-              [:div {:class ["text-sm" "text-[#166534]"]} "Certified"]]
+              [:div {:class ["text-lg" "font-bold" "text-[#166534]"]} "ISO 27001"]
+              [:div {:class ["text-xs" "text-[#166534]"]} "Certified"]]
 
              ]]
 
