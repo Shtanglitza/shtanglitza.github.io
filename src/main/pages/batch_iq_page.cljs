@@ -231,7 +231,7 @@
            ;; Bottom pinned
            [:p {:class ["text-sm" "md:text-base" "text-white/70" "font-medium"
                         "tracking-wide" "text-center" "pb-16"]}
-            "Your" [:strong " QMS, "], [:strong " LIMS "] [:strong ",  ELN "] "hold the data" [:span {:class ["text-[#7AF3EB]"]} " · BatchIQ makes it intelligible to AI agents"]]]
+            "Your" [:strong " QMS, "] [:strong "LIMS"] [:strong ", ELN "] "hold the data" [:span {:class ["text-[#7AF3EB]"]} " · BatchIQ makes it intelligible to AI agents"]]]
 
           ;; Section 2 ------S2
 
@@ -257,7 +257,7 @@
 
             [:p {:class ["text-xl" "md:text-2xl" "text-white/80" "font-light"
                          "leading-relaxed" "mb-8"]}
-             "Life science organizations have invested millions in systems of record LIMS, MES and ELN "
+             "Life science organizations have invested millions in systems of record LIMS, MES and ELN, "
              "but none of them semantically connect procedural knowledge across silos."]
             [:img {:src (str constants/assets-url "img/Logo.svg")
                    :class ["h-13" "md:h-18" "w-auto" "inline-block" "align-baseline" "mr-1 pb-2"]}]
@@ -377,7 +377,7 @@
             [:span {:class ["text-white" "font-extralight" "tracking-wide"]} "Where"]
             [:img {:src   (str constants/assets-url "img/Logo.svg")
                    :class ["h-10" "md:h-12" "w-auto" "inline-block"]}]
-            [:span {:class ["text-white" "font-extralight" "tracking-wide"]} "sits in your stack ?"]]
+            [:span {:class ["text-white" "font-extralight" "tracking-wide"]} "sits in your stack?"]]
 
            [:div {:class ["relative" "flex" "flex-col" "gap-3"]}
 

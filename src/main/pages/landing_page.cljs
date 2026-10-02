@@ -486,8 +486,8 @@
                  "md:text-2xl"
                  "md:text-center"
                  "text-shadow-md"]}
-        "\u2003 At Shtanglitza " [:span {:class ["font-bold"]} "we treat the security of our client's information as our top priority"] ".
-                      We maintain a robust " [:span {:class ["font-bold"]} "ISO 27001:2022"] " compliant, control framework that protects our people, technology,
+        "\u2003 At Shtanglitza " [:span {:class ["font-bold"]} "we treat the security of our clients' information as our top priority"] ".
+                      We maintain a robust " [:span {:class ["font-bold"]} "ISO 27001:2022"] " compliant control framework that protects our people, technology,
                       and physical assets. By consistently applying these controls, we provide a foundation of trust that enables
                       our client relationships to thrive.\n
                       "]
@@ -502,13 +502,13 @@
         "If you would like to know more about Shtanglitza’s Information Security program, please read the"
         [:button {::on-click #(goto-security)
                   :class ["text-[#77F7E8]" "hover:text-[#4ED9CB]" "whitespace-nowrap" "hover:no-underline" "tracking-wider"]}
-         " \"How we do it" \"]
+         " \"How We Do It" \"]
 
         " section "
         [:span
          {:class ["italic" "font-light"]}
          "(click here or Read more button below)"]
-        " or contact us at  "
+        " or contact us at "
         [:a
          {:href (str "mailto:" constants/email-address)
           :class ["text-[#77F7E8]" "hover:text-[#4ED9CB]" "whitespace-nowrap" "hover:no-underline" "tracking-wider"]

@@ -29,7 +29,7 @@
       :icons (str constants/assets-url "img/data_int.svg")
       :content "We offer bespoke data integration and harmonization solutions, 
                 combining and refining disparate biomedical data sources into a unified, 
-                consistent, and easily-accessible format. Our skilled team ensures improved 
+                consistent, and easily accessible format. Our skilled team ensures improved 
                 data quality and seamless information exchange."
       :bg-colors ["bg-gradient-to-br"
                   "from-blue-50/80"
@@ -94,7 +94,7 @@
      :card-id (str (constants/transform-string title))
      :icons (str constants/assets-url "img/data_sec.svg")
      :content "Our team prioritizes data security and adheres to industry best practices and regulatory requirements,
-     ensuring the protection of sensitive biomedical data while maintaining compliance international standards,
+     ensuring the protection of sensitive biomedical data while maintaining compliance with international standards,
      such as ISO 27001."
      :bg-colors ["bg-gradient-to-br"
                  "from-slate-100/80" 
