@@ -18,6 +18,10 @@
 
 (def router (rf/router routes))
 
+(defn set-body-bg! [match]
+  (set! (.. js/document -body -style -backgroundColor)
+        (if (= :batch-iq (-> match :data :name)) "#0D0F17" "#FEFEFF")))
+
 (defn on-navigate [new-match]
   (if new-match
     ;; Valid route - your existing logic
@@ -37,14 +41,16 @@
           (js/console.log "🚀 ROUTER: scrolling to top")
           (js/window.scrollTo 0 0)))
 
-      (reset! current-route new-match))
+      (reset! current-route new-match)
+      (set-body-bg! new-match))
 
     (let [invalid-path (-> js/window .-location .-pathname)]
       (js/console.log "🚀 ROUTER:404:" invalid-path)
       (reset! current-route
               {:data {:view not-found/Page}
                :path invalid-path
-               :path-params {:path invalid-path}}))))
+               :path-params {:path invalid-path}})
+      (set-body-bg! nil))))
 
 (defn start! []
   (js/console.log "🔧 Starting router...")
