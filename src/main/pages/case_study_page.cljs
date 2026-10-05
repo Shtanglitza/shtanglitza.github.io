@@ -21,7 +21,7 @@
 (defn lets-talk-button []
   [:a {:href  constants/email-address
        :class ["relative" "inline-flex" "items-center" "justify-center" "gap-2"
-               "px-10" "py-3.5" "rounded-full"
+               "px-10" "py-3.5" "rounded-lg"
                "bg-[linear-gradient(135deg,_#5253D1,_#6C5CE7)]"
                "hover:bg-[linear-gradient(135deg,_#6361E0,_#7B6CF0)]"
                "text-white" "font-semibold" "text-lg" "tracking-wide"
@@ -62,7 +62,7 @@
       (let [{:keys [challenge solution-intro solution-points outcome]} study
             [prev-study next-study] (case-studies/neighbours slug)]
         [:main {:class ["w-full" "max-w-[1536px]" "mx-auto" "min-h-screen" "bg-[#FEFEFF]" "pb-24" "px-6"]}
-         [:div {:class ["max-w-4xl" "mx-auto" "lg:px-6" "py-16"]}
+         [:div {:class ["max-w-4xl" "mx-auto" "lg:px-6" "pt-32" "pb-16"]}
 
           [hero study]
 

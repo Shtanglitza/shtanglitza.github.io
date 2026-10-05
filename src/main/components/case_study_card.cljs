@@ -15,20 +15,24 @@
    [:> Zap {:size (if small? 12 16) :fill "currentColor"}]
    text])
 
+;; Soft neumorphic card surface: corner glow + white fill (padding-box) over a white -> light primary
+;; gradient that only shows through the transparent 1px border (border-box).
+;; Shared by case study cards and partner cards.
+(def card-surface
+  ["rounded-2xl" "border" "border-transparent"
+   "[background:radial-gradient(circle_at_bottom_right,rgba(99,102,241,0.14),transparent_45%)_padding-box,radial-gradient(circle_at_top_left,#F1F2F8,transparent_45%)_padding-box,linear-gradient(#ffffff,#ffffff)_padding-box,linear-gradient(135deg,#ffffff_0%,#D9DBFB_100%)_border-box]"
+   "shadow-[6px_6px_16px_rgba(99,102,241,0.08),_-6px_-6px_16px_rgba(255,255,255,0.9)]"])
+
 ;; Case study card - used on the /case-studies index page and the landing section
 ;; Key points are the first solution labels, so every card has the same structure.
 (defn case-study-card [{:keys [slug number title challenge highlight solution-points]}]
   [:a {:href  (rfe/href :case-study {:slug slug})
-       ;; Soft neumorphic card: corner glow + white fill (padding-box) over a white -> light primary
-       ;; gradient that only shows through the transparent 1px border (border-box).
        ;; On hover the border-box layer becomes solid primary.
-       :class ["group" "flex" "flex-col" "h-full" "p-6" "rounded-2xl"
-               "border" "border-transparent"
-               "[background:radial-gradient(circle_at_bottom_right,rgba(99,102,241,0.14),transparent_45%)_padding-box,radial-gradient(circle_at_top_left,#F1F2F8,transparent_45%)_padding-box,linear-gradient(#ffffff,#ffffff)_padding-box,linear-gradient(135deg,#ffffff_0%,#D9DBFB_100%)_border-box]"
-               "hover:[background:radial-gradient(circle_at_bottom_right,rgba(99,102,241,0.14),transparent_45%)_padding-box,radial-gradient(circle_at_top_left,#F1F2F8,transparent_45%)_padding-box,linear-gradient(#ffffff,#ffffff)_padding-box,linear-gradient(#8284F4,#8284F4)_border-box]"
-               "shadow-[6px_6px_16px_rgba(99,102,241,0.08),_-6px_-6px_16px_rgba(255,255,255,0.9)]"
-               "hover:shadow-[8px_8px_22px_rgba(99,102,241,0.16),_-6px_-6px_16px_rgba(255,255,255,0.9)]"
-               "transition-all" "duration-300"]}
+       :class (into card-surface
+                    ["group" "flex" "flex-col" "h-full" "p-6"
+                     "hover:[background:radial-gradient(circle_at_bottom_right,rgba(99,102,241,0.14),transparent_45%)_padding-box,radial-gradient(circle_at_top_left,#F1F2F8,transparent_45%)_padding-box,linear-gradient(#ffffff,#ffffff)_padding-box,linear-gradient(#8284F4,#8284F4)_border-box]"
+                     "hover:shadow-[8px_8px_22px_rgba(99,102,241,0.16),_-6px_-6px_16px_rgba(255,255,255,0.9)]"
+                     "transition-all" "duration-300"])}
    [:div {:class ["flex" "items-center" "justify-between" "gap-3" "min-h-[26px]"]}
     [:span {:class ["text-xs" "uppercase" "tracking-wider" "text-[#6366F1]" "font-medium"]}
      (str "Case Study " number)]

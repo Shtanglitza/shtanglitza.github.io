@@ -3,11 +3,12 @@
    [reagent.core :as r]
    [main.constants :as constants]
    [main.components.ui-cards :as ui-cards]
-   [main.components.case-study-card :refer [case-study-card]]
+   [main.components.case-study-card :refer [case-study-card card-surface]]
    [main.case-studies :as case-studies]
+   [main.partners :as partners]
    [main.pages.security-page :refer [handle-nav-click]]
    [reitit.frontend.easy :as rfe]
-   ["lucide-react" :refer [ChevronRight]]))
+   ["lucide-react" :refer [ChevronRight ExternalLink]]))
 
 (defn goto-security []
   (rfe/push-state :security)
@@ -440,6 +441,41 @@
          :class ["inline-flex" "items-center" "gap-1" "px-5" "py-2.5" "rounded-lg" "text-indigo-500" "font-medium" "text-lg" "hover:text-indigo-700" "transition-colors" "duration-150"]}
      "View all case studies" [:> ChevronRight {:size 20}]]]])
 
+(defn partner-card [{:keys [name badge badge-alt description certificate]}]
+  [:div {:class (into card-surface ["flex" "flex-col" "sm:flex-row" "items-center" "gap-8" "p-8"])}
+   [:img {:src   (str constants/assets-url "img/" badge)
+          :alt   badge-alt
+          :class ["h-40" "w-auto" "shrink-0"]}]
+   [:div {:class ["flex" "flex-col" "text-center" "sm:text-left"]}
+    [:h3 {:class ["text-2xl" "font-bold" "text-gray-900"]} name]
+    [:p {:class ["mt-3" "text-gray-600" "leading-relaxed"]} description]
+    (when certificate
+      [:a {:href   (str constants/assets-url "files/certificates/" certificate)
+           :target "_blank"
+           :rel    "noopener noreferrer"
+           :class  ["mt-5" "self-center" "sm:self-start" "inline-flex" "items-center" "gap-1.5"
+                    "text-sm" "font-medium" "text-indigo-500" "hover:text-indigo-700" "transition-colors"]}
+       "View certificate" [:> ExternalLink {:size 15}]])]])
+
+(defn partners-sec []
+  [:div {:id "partners"
+         :class ["flex" "h-auto" "items-center" "justify-center" "pt-8" "pb-16" "md:pb-36" "bg-white"]}
+   [:div {:class ["flex" "flex-col" "w-full" "h-fit" "items-center" "gap-4"
+                  "max-w-screen-md" "px-4" "md:max-w-screen-lg" "md:px-16" "lg:max-w-screen-2xl" "lg:px-20"]}
+    [:div {:class ["flex" "flex-col" "items-center" "justify-start" "lg:flex-row"]}
+     [:img {:class ["mx-6" "h-14" "w-auto" "lg:-translate-y-[3px]"]
+            :src   (str constants/assets-url "img/partners_icon.svg")}]
+     [:h1 {:class ["text-center" "my-6" "text-gray-950" "text-3xl" "font-black" "md:text-6xl"]}
+      "Partners & Certifications"]]
+
+    [:p {:class ["text-xl" "text-black/80" "mt-4" "mb-6" "px-4" "hyphens-auto" "md:text-2xl" "md:text-center" "lg:w-2/3"]}
+     "\u2003 We partner with leading technology providers and hold their certifications,
+      so our solutions are built and supported to the vendor's own standards."]
+
+    [:div {:class ["flex" "flex-col" "gap-6" "py-4" "md:py-12" "w-full" "max-w-3xl"]}
+     (for [partner partners/partners]
+       ^{:key (:id partner)} [partner-card partner])]]])
+
 (defn security-sec []
   (let [bg-url (str constants/assets-url "img/sec_wall_new.webp")]
     [:div
@@ -609,6 +645,7 @@
     [capabilities-sec]
     [expertise-sec]
     [case-studies-sec]
+    [partners-sec]
     [security-sec]]])
 
 
