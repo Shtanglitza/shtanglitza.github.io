@@ -59,6 +59,12 @@ All case study content lives in **one file**: `src/main/case_studies.cljs`.
 | `/case-studies/<slug>` | Detail page is created from the data |
 | Detail page bottom | Previous / Next links follow the order in the file |
 
+### How visitors reach case studies
+
+- **Navbar / footer "Case Studies"** – scrolls to the Case Studies section on the home page (`id="case-studies"`), like the other menu items.
+- **"View all case studies"** link under the cards – opens the `/case-studies` page with every study.
+- **A card** – opens that study's page, `/case-studies/<slug>`.
+
 ### What appears on the card (automatic)
 
 - **Gray tags** = the first 3 `:label`s from `:solution-points`. To change which tags show, reorder the points.
