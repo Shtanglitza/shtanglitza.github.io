@@ -416,7 +416,7 @@
 
 (defn case-studies-sec []
   [:div {:id "case-studies"
-         :class ["flex" "h-auto" "items-center" "justify-center" "py-36"
+         :class ["flex" "h-auto" "items-center" "justify-center" "pt-8" "pb-36"
                  "bg-gradient-to-b" "from-slate-100" "to-white"]}
    [:div {:class ["flex" "flex-col" "w-full" "h-fit" "items-center" "gap-4"
                   "max-w-screen-md" "px-4" "md:max-w-screen-lg" "md:px-16" "lg:max-w-screen-2xl" "lg:px-20"]}

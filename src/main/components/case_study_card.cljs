@@ -1,22 +1,37 @@
 (ns main.components.case-study-card
   (:require
     [reitit.frontend.easy :as rfe]
-    ["lucide-react" :refer [ChevronRight]]))
+    ["lucide-react" :refer [ChevronRight Zap]]))
+
+;; Highlight chip ("10–50× faster") - used on cards (small) and in the case study hero
+(defn highlight-chip [text extra-classes & [{:keys [small?]}]]
+  [:span {:class (into ["inline-flex" "items-center" "rounded-full" "whitespace-nowrap"
+                        "border" "border-emerald-200/40" "bg-emerald-50/90"
+                        "text-green-800" "font-medium" "backdrop-blur-[1px]"]
+                       (concat (if small?
+                                 ["gap-1" "px-2.5" "py-1" "text-xs"]
+                                 ["gap-2" "px-4" "py-2" "text-base"])
+                               extra-classes))}
+   [:> Zap {:size (if small? 12 16) :fill "currentColor"}]
+   text])
 
 ;; Case study card - used on the /case-studies index page and the landing section
-
-(defn case-study-card [{:keys [slug number title challenge highlight]}]
+;; Key points are the first solution labels, so every card has the same structure.
+(defn case-study-card [{:keys [slug number title challenge highlight solution-points]}]
   [:a {:href  (rfe/href :case-study {:slug slug})
        :class ["group" "flex" "flex-col" "h-full" "p-6" "rounded-2xl" "bg-white"
                "border" "border-gray-200" "shadow-sm"
                "hover:shadow-md" "hover:border-[#8284F4]" "transition-all" "duration-300"]}
-   [:span {:class ["text-xs" "uppercase" "tracking-wider" "text-[#6366F1]" "font-medium"]}
-    (str "Case Study " number)]
+   [:div {:class ["flex" "items-center" "justify-between" "gap-3" "min-h-[26px]"]}
+    [:span {:class ["text-xs" "uppercase" "tracking-wider" "text-[#6366F1]" "font-medium"]}
+     (str "Case Study " number)]
+    (when highlight
+      [highlight-chip highlight [] {:small? true}])]
    [:h3 {:class ["mt-2" "text-lg" "font-bold" "text-gray-900" "leading-snug"]} title]
-   [:p {:class ["mt-3" "text-sm" "text-gray-600" "leading-relaxed" "line-clamp-3"]} challenge]
-   (when highlight
-     [:span {:class ["mt-4" "self-start" "px-3" "py-1" "rounded-lg" "text-sm" "font-bold" "text-[#166534]"
-                     "bg-[linear-gradient(to_bottom_right,_#A9F5C8E6_25%,_#A9F5C899_60%,_rgba(255,255,255,0.5)_100%)]"]}
-      highlight])
+   [:p {:class ["mt-3" "text-sm" "text-gray-600" "leading-relaxed" "line-clamp-2"]} challenge]
+   [:ul {:class ["mt-5" "flex" "flex-wrap" "gap-2"]}
+    (for [{:keys [label]} (take 3 solution-points)]
+      ^{:key label}
+      [:li {:class ["px-2.5" "py-1" "rounded-md" "bg-gray-100" "text-xs" "text-gray-700"]} label])]
    [:span {:class ["mt-auto" "pt-6" "inline-flex" "items-center" "gap-1" "text-sm" "font-medium" "text-indigo-500" "group-hover:text-indigo-700" "transition-colors"]}
     "Read case study" [:> ChevronRight {:size 16}]]])

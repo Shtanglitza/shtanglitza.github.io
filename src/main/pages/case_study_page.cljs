@@ -2,10 +2,10 @@
   (:require
     [main.constants :as constants]
     [main.case-studies :as case-studies]
-    [main.pages.batch-iq-page :as batch-iq]
     [main.pages.not-found-page :as not-found]
     [reitit.frontend.easy :as rfe]
-    ["lucide-react" :refer [ChevronLeft ChevronRight]]))
+    [main.components.case-study-card :refer [highlight-chip]]
+    ["lucide-react" :refer [ChevronLeft ChevronRight MessageCircleMore]]))
 
 ;; Single case study page - /case-studies/:slug
 ;; Layout follows the Security page: hero banner, then content blocks.
@@ -22,9 +22,21 @@
      [:h1 {:class ["relative" "text-2xl" "md:text-3xl" "font-bold" "text-white" "mb-3" "drop-shadow-sm" "max-w-3xl"]}
       title]
      (when highlight
-       [:div {:class ["relative" "mt-4" "inline-block" "p-2" "px-4" "rounded-lg" "border" "border-white/30" "shadow-sm" "backdrop-blur-md"
-                      "bg-[linear-gradient(to_bottom_right,_#A9F5C8E6_25%,_#A9F5C899_60%,_rgba(255,255,255,0.5)_100%)]"]}
-        [:div {:class ["text-lg" "font-bold" "text-[#166534]"]} highlight]])]))
+       [highlight-chip highlight ["relative" "mt-4"]])]))
+
+;; Same style as the BatchIQ "Let's Talk" button, without the dark outer ring
+(defn lets-talk-button []
+  [:a {:href  constants/email-address
+       :class ["relative" "inline-flex" "items-center" "justify-center" "gap-2"
+               "px-10" "py-3.5" "rounded-full"
+               "bg-[linear-gradient(135deg,_#5253D1,_#6C5CE7)]"
+               "hover:bg-[linear-gradient(135deg,_#6361E0,_#7B6CF0)]"
+               "text-white" "font-semibold" "text-lg" "tracking-wide"
+               "shadow-[0_0_20px_rgba(82,83,209,0.4),_0_0_60px_rgba(82,83,209,0.15)]"
+               "hover:shadow-[0_0_30px_rgba(82,83,209,0.6),_0_0_80px_rgba(82,83,209,0.25)]"
+               "transition-all" "duration-500"]}
+   [:> MessageCircleMore {:size 20 :stroke-width 2 :class "opacity-100 subpixel-antialiased"}]
+   "Let's Talk"])
 
 (defn content-block [heading & body]
   (into [:section {:class ["py-6" "border-b" "border-gray-300"]}
@@ -74,7 +86,7 @@
             [:p {:class ["text-gray-900"]} outcome]]]
 
           [:div {:class ["mt-16" "flex" "justify-center"]}
-           [batch-iq/lets-talk-button]]
+           [lets-talk-button]]
 
           [:div {:class ["mt-16" "pt-8" "border-t" "border-gray-200" "grid" "grid-cols-1" "sm:grid-cols-2" "gap-4"]}
            [neighbour-link prev-study :prev]
