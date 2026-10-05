@@ -201,12 +201,12 @@
       [:div
        {:id    "small-menu-list"
         :class ["fixed" "top-0" "right-0" "left-0" "flex" "flex-col"
-                "justify-start" "items-start" "w-screen" "h-screen"
+                "justify-start" "items-start" "w-screen" "h-screen" "overflow-y-auto"
                 "small-menu" "close" "backdrop-blur-xl" (if (on-batch-iq?) "bg-[#0E1320]/95" "bg-white/75")]}
        [:ul
         {:id    "small-navbar"
          :class [(if (on-batch-iq?) "text-white/80" "text-custom-darkest-violet") "space-y-5" "text-2xl"
-                 "pt-32" "pl-12" "tracking-widest" "w-fit" "h-fit"]}
+                 "pt-20" "pb-12" "pl-12" "tracking-widest" "w-fit" "h-fit"]}
         [:div
          {:class "mb-10"}
          [:a
