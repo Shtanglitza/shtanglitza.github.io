@@ -3,6 +3,8 @@
    [reagent.core :as r]
    [main.constants :as constants]
    [main.components.ui-cards :as ui-cards]
+   [main.components.case-study-card :refer [case-study-card]]
+   [main.case-studies :as case-studies]
    [main.pages.security-page :refer [handle-nav-click]]
    [reitit.frontend.easy :as rfe]))
 
@@ -411,6 +413,23 @@
                                     "2xl:grid-cols-2"]}
                       ui-cards/expertise-ui-cards]]])
 
+(defn case-studies-sec []
+  [:div {:id "case-studies"
+         :class ["flex" "h-auto" "items-center" "justify-center" "py-36"
+                 "bg-gradient-to-b" "from-slate-100" "to-white"]}
+   [:div {:class ["flex" "flex-col" "w-full" "h-fit" "items-center" "gap-4"
+                  "max-w-screen-md" "px-4" "md:max-w-screen-lg" "md:px-16" "lg:max-w-screen-2xl" "lg:px-20"]}
+    [:h1 {:class ["text-center" "my-6" "text-gray-950" "text-3xl" "font-black" "md:text-6xl"]}
+     "Case Studies"]
+
+    [:div {:class ["grid" "grid-cols-1" "md:grid-cols-2" "lg:grid-cols-3" "gap-6" "py-12" "w-full"]}
+     (for [study (case-studies/featured)]
+       ^{:key (:slug study)} [case-study-card study])]
+
+    [:a {:href  (rfe/href :case-studies)
+         :class ["px-5" "py-2.5" "rounded-lg" "text-indigo-500" "font-medium" "text-lg" "hover:text-indigo-700" "transition-colors" "duration-150"]}
+     "View all case studies →"]]])
+
 (defn security-sec []
   (let [bg-url (str constants/assets-url "img/security_bck.webp")]
     [:div
@@ -579,6 +598,7 @@
     [about-sec]
     [capabilities-sec]
     [expertise-sec]
+    [case-studies-sec]
     [security-sec]]])
 
 
