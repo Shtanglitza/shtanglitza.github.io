@@ -27,7 +27,7 @@
      (str "Case Study " number)]
     (when highlight
       [highlight-chip highlight [] {:small? true}])]
-   [:h3 {:class ["mt-2" "text-lg" "font-bold" "text-gray-900" "leading-snug"]} title]
+   [:h3 {:class ["mt-4" "text-lg" "font-bold" "text-gray-900" "leading-snug"]} title]
    [:p {:class ["mt-3" "text-sm" "text-gray-600" "leading-relaxed" "line-clamp-2"]} challenge]
    [:ul {:class ["mt-5" "flex" "flex-wrap" "gap-2"]}
     (for [{:keys [label]} (take 3 solution-points)]
