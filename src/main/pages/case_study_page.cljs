@@ -77,8 +77,11 @@
            [callout "Outcome"
             [:p {:class ["text-gray-900"]} outcome]]]
 
-          [:div {:class ["mt-16" "flex" "justify-center"]}
-           [lets-talk-button]]
+          [:div {:class ["mt-16" "grid" "grid-cols-1" "md:grid-cols-2" "gap-8" "items-center"]}
+           [:p {:class ["text-3xl" "md:text-4xl" "font-extralight" "text-gray-900" "leading-tight" "text-center" "md:text-left"]}
+            "Facing a similar challenge? Let's solve it together."]
+           [:div {:class ["flex" "justify-center" "md:justify-end"]}
+            [lets-talk-button]]]
 
           [:div {:class ["mt-16" "pt-8" "border-t" "border-gray-200" "grid" "grid-cols-1" "sm:grid-cols-2" "gap-4"]}
            [neighbour-link prev-study :prev]

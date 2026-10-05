@@ -428,6 +428,10 @@
      [:h1 {:class ["text-center" "my-6" "text-gray-950" "text-3xl" "font-black" "md:text-6xl"]}
       "Case Studies"]]
 
+    [:p {:class ["text-xl" "text-black/80" "mt-4" "mb-6" "px-4" "hyphens-auto" "md:text-2xl" "md:text-center" "lg:w-2/3"]}
+     "\u2003 From ontology-guided data platforms to LLM-driven document generation and reproducible bioinformatics pipelines,
+      these projects show how we turn fragmented life science data into reliable, traceable results."]
+
     [:div {:class ["grid" "grid-cols-1" "md:grid-cols-2" "lg:grid-cols-3" "gap-6" "py-4" "md:py-12" "w-full"]}
      (for [study (case-studies/latest)]
        ^{:key (:slug study)} [case-study-card study])]
