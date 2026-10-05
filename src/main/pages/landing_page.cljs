@@ -484,7 +484,7 @@
 
 (defn partners-sec []
   [:div {:id "partners"
-         :class ["flex" "h-auto" "items-center" "justify-center" "pt-24" "pb-16" "md:pb-36"
+         :class ["flex" "h-auto" "items-center" "justify-center" "pt-36" "pb-16" "md:pb-36"
                  "bg-[#15163A]"]}
    [:div {:class ["flex" "flex-col" "w-full" "h-fit" "items-center" "gap-4"
                   "max-w-screen-md" "px-4" "md:max-w-screen-lg" "md:px-16" "lg:max-w-screen-2xl" "lg:px-20"]}
