@@ -45,8 +45,8 @@
     [:li {:key section-id}
      [:button
       {:on-click #(handle-nav-click section-id)
-       :class ["w-full" "text-left" "text-sm" "cursor-pointer" "px-3" "py-0.5" "rounded" "text-[#6366F1]" "hover:text-indigo-900" "transition-colors"
-               (when @is-open? "text-indigo-900 font-bold")]}
+       :class ["w-full" "text-left" "text-sm" "cursor-pointer" "px-3" "py-0.5" "rounded" "hover:text-indigo-900" "transition-colors"
+               (if @is-open? "text-indigo-900 font-bold" "text-gray-700")]}
       (:title section)]]))
 ;;new sidebar version with fixed position and scroll opacity fade in-out transition
 (defn sidebar []
