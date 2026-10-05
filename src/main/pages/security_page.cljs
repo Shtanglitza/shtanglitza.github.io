@@ -2,7 +2,8 @@
   (:require
     [reagent.core :as r]
     [main.constants :as constants]
-    [reitit.frontend.easy :as rfe]))
+    [reitit.frontend.easy :as rfe]
+    [main.components.page-hero :refer [page-hero]]))
 
 (def open-section (r/atom nil))
 
@@ -158,7 +159,7 @@
 
      :reagent-render
      (fn []
-       (let [bg-url (str constants/assets-url "img/security_bck.webp")]
+       (let []
        [:main {:class [
        ;"scroll-mt-[280px]"
        "w-full"
@@ -175,19 +176,7 @@
          [:div {:class ["xl:ml-[25%]"]}
           [:div {:class [ "mx-auto" "lg:px-6" "py-16"]}
 
-           [:section {:class ["mb-8" "mt-6" "relative" "overflow-hidden" "bg-center" "bg-cover" "bg-no-repeat" "min-h-[210px]" "rounded-2xl" "shadow-sm" "px-6" "pt-8" "pb-6" "animate-subtle-move"]
-                      :style {:backgroundImage (str "url('" bg-url "')")} }
-            [:div {:class ["absolute inset-0" "bg-[linear-gradient(to_bottom_right,_#1D1B48_0%,_#726AF0_60%,_#726AF000_100%)]" "backdrop-blur-[2px]" "mix-blend-multiply" "opacity-[90%]"]}]
-            [:div {:class ["absolute inset-0"
-                           "bg-[linear-gradient(to_bottom_right,_#1A1944_0%,_#1A1944E6_40%,_#1A194400_100%)]"
-                           "backdrop-blur-[0px]"
-                           "opacity-100"]}]
-            [:div {:class ["flex" "flex-col" "items-start" "w-fit"]}
-             [:h6 {:class ["relative" "text-[#A9F5C8E6]" "text-sm"]} "Security"]
-             [:h1 {:class ["relative" "text-2xl" "md:text-3xl" "font-bold" "text-white" "mb-3" "drop-shadow-sm"]}
-              "How We Do It?"]
-             ]
-
+           [page-hero {:label "Security" :title "How We Do It?"}
 
             [:p {:class ["relative" "text-base" "md:text-lg" "text-white" "leading-relaxed" "max-w-2xl" "ps-0" "drop-shadow-sm" "font-light"]}
              "Comprehensive security controls and policies based on ISO 27001:2022 standards to ensure the highest level of data protection and compliance."]

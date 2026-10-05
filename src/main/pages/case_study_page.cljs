@@ -6,24 +6,16 @@
     [reitit.frontend.easy :as rfe]
     [main.components.case-study-card :refer [highlight-chip]]
     [main.components.callout :refer [callout]]
+    [main.components.page-hero :refer [page-hero]]
     ["lucide-react" :refer [ChevronLeft ChevronRight MessageCircleMore]]))
 
 ;; Single case study page - /case-studies/:slug
 ;; Layout follows the Security page: hero banner, then content blocks.
 
 (defn hero [{:keys [number title highlight]}]
-  (let [bg-url (str constants/assets-url "img/security_bck.webp")]
-    [:section {:class ["mb-8" "mt-6" "relative" "overflow-hidden" "bg-center" "bg-cover" "bg-no-repeat" "min-h-[210px]" "rounded-2xl" "shadow-sm" "px-6" "pt-8" "pb-6" "animate-subtle-move"]
-               :style {:backgroundImage (str "url('" bg-url "')")}}
-     [:div {:class ["absolute inset-0" "bg-[linear-gradient(to_bottom_right,_#1D1B48_0%,_#726AF0_60%,_#726AF000_100%)]" "backdrop-blur-[2px]" "mix-blend-multiply" "opacity-[90%]"]}]
-     [:div {:class ["absolute inset-0"
-                    "bg-[linear-gradient(to_bottom_right,_#1A1944_0%,_#1A1944E6_40%,_#1A194400_100%)]"
-                    "opacity-100"]}]
-     [:h6 {:class ["relative" "text-[#A9F5C8E6]" "text-sm"]} (str "Case Study " number)]
-     [:h1 {:class ["relative" "text-2xl" "md:text-3xl" "font-bold" "text-white" "mb-3" "drop-shadow-sm" "max-w-3xl"]}
-      title]
-     (when highlight
-       [highlight-chip highlight ["relative" "mt-4"]])]))
+  [page-hero {:label (str "Case Study " number) :title title}
+   (when highlight
+     [highlight-chip highlight ["relative" "mt-4"]])])
 
 ;; Same style as the BatchIQ "Let's Talk" button, without the dark outer ring
 (defn lets-talk-button []
