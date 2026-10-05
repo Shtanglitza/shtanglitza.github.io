@@ -5,6 +5,7 @@
     [main.pages.not-found-page :as not-found]
     [reitit.frontend.easy :as rfe]
     [main.components.case-study-card :refer [highlight-chip]]
+    [main.components.callout :refer [callout]]
     ["lucide-react" :refer [ChevronLeft ChevronRight MessageCircleMore]]))
 
 ;; Single case study page - /case-studies/:slug
@@ -81,8 +82,7 @@
             (when solution-intro [:p {:class ["mb-4"]} solution-intro])
             [solution-list solution-points]]
 
-           [:section {:class ["mt-8" "p-6" "rounded-lg" "bg-indigo-50" "border-l-4" "border-[#6366F1]"]}
-            [:h2 {:class ["text-xl" "font-bold" "text-[#6366F1]" "mb-3"]} "Outcome"]
+           [callout "Outcome"
             [:p {:class ["text-gray-900"]} outcome]]]
 
           [:div {:class ["mt-16" "flex" "justify-center"]}
