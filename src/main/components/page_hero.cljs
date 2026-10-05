@@ -7,7 +7,7 @@
 
 ;; With extra content it keeps a min height; title-only heroes shrink to fit.
 (defn page-hero [{:keys [label title]} & children]
-  (let [bg-url (str constants/assets-url "img/security_bck.webp")
+  (let [bg-url (str constants/assets-url "img/sec_wall_new.webp")
         title-only? (not-any? some? children)]
     (into
       [:section {:class ["mb-8" "mt-6" "relative" "overflow-hidden" "bg-center" "bg-cover" "bg-no-repeat" "rounded-2xl" "shadow-sm" "px-6" "animate-subtle-move"

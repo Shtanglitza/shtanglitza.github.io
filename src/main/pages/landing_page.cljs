@@ -437,7 +437,7 @@
      "View all case studies" [:> ChevronRight {:size 20}]]]])
 
 (defn security-sec []
-  (let [bg-url (str constants/assets-url "img/security_bck.webp")]
+  (let [bg-url (str constants/assets-url "img/sec_wall_new.webp")]
     [:div
      {:id "security"
       :class ["relative"
