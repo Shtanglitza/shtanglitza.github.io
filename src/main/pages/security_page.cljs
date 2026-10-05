@@ -190,8 +190,7 @@
                             "h-full"
                             "items-center"
                             "rounded-lg"
-                            "bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.9),_rgba(255,255,255,0.3))]"
-                            "backdrop-blur-md"
+                            "bg-white"
                             "border"
                             "border-white/30"
                             "shadow-sm"]}
@@ -207,12 +206,12 @@
                             ;"xs:w-[50%]"
                             "rounded-lg"
                             "border"
-                            "border-white/30"
+                            "border-emerald-200/30"
                             "shadow-sm"
-                            "backdrop-blur-md"
-                            "bg-[linear-gradient(to_bottom_right,_#A9F5C8E6_25%,_#A9F5C899_60%,_rgba(255,255,255,0.5)_100%)]"]}
-              [:div {:class ["text-lg" "font-bold" "text-[#166534]"]} "ISO 27001"]
-              [:div {:class ["text-xs" "text-[#166534]"]} "Certified"]]
+                            "backdrop-blur-[1px]"
+                            "bg-emerald-300/80"]}
+              [:div {:class ["text-lg" "font-bold" "text-green-800"]} "ISO 27001"]
+              [:div {:class ["text-xs" "text-green-800"]} "Certified"]]
 
              ]]
 
