@@ -13,7 +13,7 @@
 (def menu-open? (r/atom false))
 (def show-bg? (r/atom false))
 
-(def content-names ["Home" "About" "Capabilities" "Expertise" "Security"])
+(def content-names ["Home" "About" "Capabilities" "Expertise" "Case Studies" "Security"])
 
 ;; Utility Functions ----------
 (defn add-classes [element & class-names]
@@ -68,8 +68,9 @@
         is-small? (< (.-innerWidth js/window) 1000)]
     (doall
       (for [[i link] (map-indexed vector cnt-names)]
-        (let [section-id (-> link string/lower-case)
-              href (str "#" section-id)]
+        (let [section-id (-> link string/lower-case (string/replace " " "-"))
+              href (str "#" section-id)
+              close-mobile? (and is-small? @menu-open?)]
           [:li {:key i}
            [:a
             {:href     href
@@ -78,7 +79,7 @@
                          (str (constants/menu-css-navbar (on-batch-iq?)) " " (when (= i @active-index) (if (on-batch-iq?) "active-dark" "active"))))
              :on-click (fn [e]
                          (.preventDefault e)
-                         (nav-click! section-id {:close-mobile? (and is-small? @menu-open?)}))}
+                         (nav-click! section-id {:close-mobile? close-mobile?}))}
             (when is-footer? constants/listDots)
             link]])))))
 

@@ -4,7 +4,8 @@
     [main.case-studies :as case-studies]
     [main.pages.batch-iq-page :as batch-iq]
     [main.pages.not-found-page :as not-found]
-    [reitit.frontend.easy :as rfe]))
+    [reitit.frontend.easy :as rfe]
+    ["lucide-react" :refer [ChevronLeft ChevronRight]]))
 
 ;; Single case study page - /case-studies/:slug
 ;; Layout follows the Security page: hero banner, then content blocks.
@@ -41,8 +42,10 @@
     [:a {:href  (rfe/href :case-study {:slug (:slug study)})
          :class ["flex" "flex-col" "gap-1" "px-5" "py-2.5" "rounded-lg" "text-indigo-500" "hover:text-indigo-700" "transition-colors" "duration-150"
                  (if (= direction :next) "sm:items-end sm:text-right" "sm:items-start")]}
-     [:span {:class ["text-xs" "uppercase" "tracking-wider" "text-gray-500"]}
-      (if (= direction :next) "Next case study →" "← Previous case study")]
+     [:span {:class ["inline-flex" "items-center" "gap-1" "text-xs" "uppercase" "tracking-wider" "text-gray-500"]}
+      (if (= direction :next)
+        [:<> "Next case study" [:> ChevronRight {:size 14}]]
+        [:<> [:> ChevronLeft {:size 14}] "Previous case study"])]
      [:span {:class ["font-medium"]} (str "Case Study " (:number study) ": " (:title study))]]
     [:div]))
 

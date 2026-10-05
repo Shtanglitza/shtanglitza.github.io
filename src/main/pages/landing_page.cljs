@@ -6,7 +6,8 @@
    [main.components.case-study-card :refer [case-study-card]]
    [main.case-studies :as case-studies]
    [main.pages.security-page :refer [handle-nav-click]]
-   [reitit.frontend.easy :as rfe]))
+   [reitit.frontend.easy :as rfe]
+   ["lucide-react" :refer [ChevronRight]]))
 
 (defn goto-security []
   (rfe/push-state :security)
@@ -427,8 +428,8 @@
        ^{:key (:slug study)} [case-study-card study])]
 
     [:a {:href  (rfe/href :case-studies)
-         :class ["px-5" "py-2.5" "rounded-lg" "text-indigo-500" "font-medium" "text-lg" "hover:text-indigo-700" "transition-colors" "duration-150"]}
-     "View all case studies →"]]])
+         :class ["inline-flex" "items-center" "gap-1" "px-5" "py-2.5" "rounded-lg" "text-indigo-500" "font-medium" "text-lg" "hover:text-indigo-700" "transition-colors" "duration-150"]}
+     "View all case studies" [:> ChevronRight {:size 20}]]]])
 
 (defn security-sec []
   (let [bg-url (str constants/assets-url "img/security_bck.webp")]
