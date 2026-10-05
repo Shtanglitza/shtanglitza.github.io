@@ -429,7 +429,7 @@
       "Case Studies"]]
 
     [:div {:class ["grid" "grid-cols-1" "md:grid-cols-2" "lg:grid-cols-3" "gap-6" "py-4" "md:py-12" "w-full"]}
-     (for [study (case-studies/featured)]
+     (for [study (case-studies/latest)]
        ^{:key (:slug study)} [case-study-card study])]
 
     [:a {:href  (rfe/href :case-studies)

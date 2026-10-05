@@ -26,7 +26,7 @@
     [hero]
 
     [:div {:class ["grid" "grid-cols-1" "md:grid-cols-2" "lg:grid-cols-3" "gap-6"]}
-     (for [study case-studies/case-studies]
+     (for [study (case-studies/newest-first)]
        ^{:key (:slug study)} [case-study-card study])]
 
     [:div {:class ["mt-16" "pt-8" "border-t" "border-gray-200" "flex" "justify-center"]}

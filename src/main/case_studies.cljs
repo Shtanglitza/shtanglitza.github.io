@@ -2,11 +2,11 @@
 
 ;; Case studies content - single source of truth for the landing section,
 ;; the /case-studies index page and every /case-studies/:slug detail page.
-;; To add a new case study, append a map to this vector.
+;; To add a new case study, append a map to the END of this vector (newest last).
+;; The landing page always shows the 3 newest; the index page lists all, newest first.
 ;;
 ;; :slug             URL part, /case-studies/<slug>
 ;; :number           roman numeral shown as "Case Study <number>"
-;; :featured?        true -> shown on the landing page (keep it to 3)
 ;; :highlight        optional short result shown on cards
 ;; :solution-intro   optional sentence before the solution bullet points
 ;; :solution-points  {:label "..." :text ...}, :text is a string or a hiccup
@@ -16,7 +16,6 @@
   [{:slug "biotech-data-integration"
     :number "I"
     :title "Enhancing Biotech Data Integration with Ontology-Guided Platform"
-    :featured? true
     :challenge "The client faced significant data fragmentation, with critical information such as in-process KPIs, equipment and materials inventory, and analytical data stored in disparate systems (Excel tables), leading to inefficiencies and hindered decision-making."
     :solution-intro "We developed an ontology-guided process capture platform that:"
     :solution-points
@@ -33,7 +32,6 @@
    {:slug "llm-srd-platform"
     :number "II"
     :title "LLM-Driven Scientific Response Document (SRD) Platform"
-    :featured? true
     :challenge "Literature reviews and SRD drafting are slow, variable, and hard to standardize. Claims are difficult to trace to sources; medical-legal and compliance reviews are lengthy. Inputs are fragmented across PDFs, publications, trial registries, SOPs, FAQs."
     :solution-intro "Produce a high-quality, explainable SRD in minutes (not weeks). Ensure every claim is grounded in sources and aligned to domain ontology. Reduce review cycles with auditability and consistent structure."
     :solution-points
@@ -52,7 +50,6 @@
    {:slug "drug-disease-link-discovery"
     :number "III"
     :title "Reproducing Drug–Disease Link Discovery with Expression Profiles"
-    :featured? true
     :highlight "10–50× faster"
     :challenge "Faithfully reproduce a published method; make it scalable and fully reproducible."
     :solution-points
@@ -73,8 +70,13 @@
 (defn find-by-slug [slug]
   (some #(when (= slug (:slug %)) %) case-studies))
 
-(defn featured []
-  (filter :featured? case-studies))
+(defn newest-first []
+  (reverse case-studies))
+
+(defn latest
+  "The n newest case studies, newest first (landing page shows 3)."
+  ([] (latest 3))
+  ([n] (take n (newest-first))))
 
 (defn neighbours
   "Returns [previous next] case studies around the given slug, nil at the ends."
