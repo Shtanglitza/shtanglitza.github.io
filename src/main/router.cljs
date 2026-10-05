@@ -6,6 +6,7 @@
    [main.pages.landing-page :as landing]
    [main.pages.security-page :as security]
    [main.pages.batch-iq-page :as batch-iq]
+   [main.pages.case-study-page :as case-study]
    [main.pages.not-found-page :as not-found]
    [clojure.string :as str]))
 
@@ -14,7 +15,8 @@
 (def routes
   [["/" {:name :home :view landing/Page}]
    ["/security" {:name :security :view security/Page}]
-   ["/batch-iq" {:name :batch-iq :view batch-iq/Page}]])
+   ["/batch-iq" {:name :batch-iq :view batch-iq/Page}]
+   ["/case-studies/:slug" {:name :case-study :view case-study/Page}]])
 
 (def router (rf/router routes))
 

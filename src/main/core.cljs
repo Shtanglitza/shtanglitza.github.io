@@ -11,7 +11,7 @@
    (let [match @router/current-route
          view  (-> match :data :view)]
      (if view
-       [view]
+       [view match]
        [:div {:class [
                      "flex"
                       "flex-row"
