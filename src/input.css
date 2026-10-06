@@ -21,6 +21,11 @@
 @source "./**/*.js";
 
  @layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
   html,
   body,
   div,
@@ -250,10 +255,10 @@ html body {
     background-position: center center;
   }
   33% {
-    background-position: 2% 2%;
+    background-position: 46% 46%;
   }
   66% {
-    background-position: -2% -2%;
+    background-position: 54% 54%;
   }
 }
 

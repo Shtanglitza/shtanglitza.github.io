@@ -11,7 +11,7 @@
   (clojure.string/join " " definitions))
 
 (defn transform-string 
-  "This functions generates the ID name value form the string"
+  "This function generates the ID name value from the string"
   [s] 
   (let [words (clojure.string/split s #" ")
         first-word (first words)
@@ -21,7 +21,7 @@
 
 
 (defn href-maker 
-  "This functions generates the href anchor point value from the ID value"
+  "This function generates the href anchor point value from the ID value"
   [s]
   (str "#" (transform-string s)))
 
@@ -122,7 +122,7 @@
     :title "Information Classification"
     :content
     [:ul
-     [:li "Information is categorized into Public, External, Internal, and Confidential, each with specific handling, access, labeling, storage, transmission, and retention rules that commensurate with the information sensitivity."]
+     [:li "Information is categorized into Public, External, Internal, and Confidential, each with specific handling, access, labeling, storage, transmission, and retention rules that are commensurate with the information sensitivity."]
      [:li "Confidential information, critical to business operations, is strictly limited to authorized personnel on a need-to-know basis, with MFA and logging for storage access, and secure, encrypted transmission."]]}
 
    {:id "access-control"
@@ -176,7 +176,7 @@
     :content
     [:ul
      [:li "Personnel must work in safe and secure physical locations, prevent screen visibility, and use secure Wi-Fi."]
-     [:li "Endpoint devices are encrypted, regularly patched, protected by host-based firewalls and antivirus software."]]}
+     [:li "Endpoint devices are encrypted, regularly patched, and protected by host-based firewalls and antivirus software."]]}
 
    {:id "vulnerability-management"
     :title "Vulnerability Management"

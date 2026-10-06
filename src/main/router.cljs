@@ -6,6 +6,8 @@
    [main.pages.landing-page :as landing]
    [main.pages.security-page :as security]
    [main.pages.batch-iq-page :as batch-iq]
+   [main.pages.case-study-page :as case-study]
+   [main.pages.case-studies-page :as case-studies]
    [main.pages.not-found-page :as not-found]
    [clojure.string :as str]))
 
@@ -14,9 +16,15 @@
 (def routes
   [["/" {:name :home :view landing/Page}]
    ["/security" {:name :security :view security/Page}]
-   ["/batch-iq" {:name :batch-iq :view batch-iq/Page}]])
+   ["/batch-iq" {:name :batch-iq :view batch-iq/Page}]
+   ["/case-studies" {:name :case-studies :view case-studies/Page}]
+   ["/case-studies/:slug" {:name :case-study :view case-study/Page}]])
 
 (def router (rf/router routes))
+
+(defn set-body-bg! [match]
+  (set! (.. js/document -body -style -backgroundColor)
+        (if (= :batch-iq (-> match :data :name)) "#0D0F17" "#FEFEFF")))
 
 (defn on-navigate [new-match]
   (if new-match
@@ -37,14 +45,16 @@
           (js/console.log "🚀 ROUTER: scrolling to top")
           (js/window.scrollTo 0 0)))
 
-      (reset! current-route new-match))
+      (reset! current-route new-match)
+      (set-body-bg! new-match))
 
     (let [invalid-path (-> js/window .-location .-pathname)]
       (js/console.log "🚀 ROUTER:404:" invalid-path)
       (reset! current-route
               {:data {:view not-found/Page}
                :path invalid-path
-               :path-params {:path invalid-path}}))))
+               :path-params {:path invalid-path}})
+      (set-body-bg! nil))))
 
 (defn start! []
   (js/console.log "🔧 Starting router...")

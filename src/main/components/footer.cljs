@@ -59,7 +59,7 @@
             :class  ["text-teal-500" "hover:text-teal-600" "whitespace-nowrap" "hover:no-underline" "tracking-wider"]
             :target "_blank"}
         "Click here"]
-       " or scan the QR code above to download PDF certificate."]]]
+       " or scan the QR code above to download the PDF certificate."]]]
 
     [:div
      {:class ["flex"
@@ -171,4 +171,4 @@
               "text-sm"
               "font-light"
               "tracking-widest"]}
-     "All rights reserved (c) " (.getFullYear (js/Date.)) " Shtangltza.ai"]]])
+     "All rights reserved (c) " (.getFullYear (js/Date.)) " Shtanglitza.ai"]]])

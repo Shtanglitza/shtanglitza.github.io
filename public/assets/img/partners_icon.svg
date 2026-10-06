@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="3.6 1.6 16.8 25.2">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #7e72d3;
+        stroke-width: 1.1px;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+    </style>
+  </defs>
+  <g id="Layer_2-2" data-name="Layer 2">
+    <!-- rosette -->
+    <circle class="cls-1" cx="12" cy="10" r="7.6"/>
+    <circle class="cls-1" cx="12" cy="10" r="5.2"/>
+    <!-- check mark -->
+    <path class="cls-1" d="M9.6,10.1l1.7,1.7,3.2-3.4"/>
+    <!-- ribbon tails -->
+    <path class="cls-1" d="M8.2,16.6l-1.5,8.6,2.8-1.5,1.6,2.4,1-7.9"/>
+    <path class="cls-1" d="M15.8,16.6l1.5,8.6-2.8-1.5-1.6,2.4-1-7.9"/>  </g>
+</svg>

@@ -3,8 +3,12 @@
    [reagent.core :as r]
    [main.constants :as constants]
    [main.components.ui-cards :as ui-cards]
+   [main.components.case-study-card :refer [case-study-card]]
+   [main.case-studies :as case-studies]
+   [main.partners :as partners]
    [main.pages.security-page :refer [handle-nav-click]]
-   [reitit.frontend.easy :as rfe]))
+   [reitit.frontend.easy :as rfe]
+   ["lucide-react" :refer [ChevronRight ExternalLink]]))
 
 (defn goto-security []
   (rfe/push-state :security)
@@ -343,7 +347,9 @@
                              "h-auto"
                              "items-center"
                              "justify-center"
-                             "py-36"
+                             "pt-36"
+                             "pb-12"
+                             "md:pb-36"
                              "bg-gradient-to-b"
                              "from-white from-50%"
                              "to-slate-100"]}
@@ -411,8 +417,93 @@
                                     "2xl:grid-cols-2"]}
                       ui-cards/expertise-ui-cards]]])
 
+(defn case-studies-sec []
+  [:div {:id "case-studies"
+         :class ["flex" "h-auto" "items-center" "justify-center" "pt-8" "pb-16" "md:pb-36"
+                 "bg-gradient-to-b" "from-slate-100" "to-white"]}
+   [:div {:class ["flex" "flex-col" "w-full" "h-fit" "items-center" "gap-4"
+                  "max-w-screen-md" "px-4" "md:max-w-screen-lg" "md:px-16" "lg:max-w-screen-2xl" "lg:px-20"]}
+    [:div {:class ["flex" "flex-col" "items-center" "justify-start" "lg:flex-row"]}
+     [:img {:class ["mx-6" "h-14" "w-auto" "lg:-translate-y-[3px]"]
+            :src   (str constants/assets-url "img/case_studies_icon.svg")}]
+     [:h1 {:class ["text-center" "my-6" "text-gray-950" "text-3xl" "font-black" "md:text-6xl"]}
+      "Case Studies"]]
+
+    [:p {:class ["text-xl" "text-black/80" "mt-4" "mb-6" "px-4" "hyphens-auto" "md:text-2xl" "md:text-center" "lg:w-2/3"]}
+     "\u2003 From AI agents for SCADA and process data to LLM-driven document generation and reproducible bioinformatics pipelines,
+      these projects show how we turn fragmented life science data into reliable, traceable results."]
+
+    [:div {:class ["grid" "grid-cols-1" "md:grid-cols-2" "lg:grid-cols-3" "gap-6" "py-4" "md:py-12" "w-full"]}
+     (for [study (case-studies/latest)]
+       ^{:key (:slug study)} [case-study-card study])]
+
+    [:a {:href  (rfe/href :case-studies)
+         :class ["inline-flex" "items-center" "gap-1" "px-5" "py-2.5" "rounded-lg" "text-indigo-500" "font-medium" "text-lg" "hover:text-indigo-700" "transition-colors" "duration-150"]}
+     "View all case studies" [:> ChevronRight {:size 20}]]]])
+
+;; One partner row on the dark section: big partner logo left,
+;; badge + text right on a soft radial glow panel.
+(defn partner-card [{:keys [name logo logo-alt website badge badge-alt description certificate]}]
+  (let [logo-img [:img {:src   (str constants/assets-url "img/" logo)
+                        :alt   logo-alt
+                        :class ["w-64" "md:w-96" "h-auto"]}]]
+  [:div {:class ["grid" "grid-cols-1" "lg:grid-cols-2" "items-center" "w-full"]}
+   ;; On desktop the logo hugs the middle line with the same gap (pr-12) as the badge on the
+   ;; other side (pl-12), so the divider sits at an equal distance from both.
+   [:div {:class ["flex" "justify-center" "lg:justify-end" "lg:pr-12" "py-10"]}
+    (if website
+      [:a {:href   website
+           :target "_blank"
+           :rel    "noopener noreferrer"
+           :title  (str "Visit " website)
+           :class  ["transition-opacity" "duration-300" "hover:opacity-80"]}
+       logo-img]
+      logo-img)]
+   [:div {:class ["flex" "flex-col" "sm:flex-row" "items-center" "gap-10" "px-8" "lg:pl-12" "py-16" "lg:py-24" "relative"
+                  "bg-[radial-gradient(ellipse_at_top,rgba(56,52,140,0.45),transparent_70%)]"
+                  "lg:bg-[radial-gradient(ellipse_at_left,rgba(56,52,140,0.45),transparent_70%)]"]}
+    ;; Divider: fading line between logo and badge - horizontal when stacked, vertical on desktop.
+    ;; The glow follows it (from the top when stacked, from the left on desktop).
+    [:span {:class ["absolute" "top-0" "inset-x-0" "h-px"
+                    "bg-gradient-to-r" "from-transparent" "via-white/25" "to-transparent"
+                    "lg:inset-x-auto" "lg:left-0" "lg:inset-y-0" "lg:h-auto" "lg:w-px"
+                    "lg:bg-gradient-to-b"]}]
+    [:img {:src   (str constants/assets-url "img/" badge)
+           :alt   badge-alt
+           :class ["h-56" "w-auto" "shrink-0"]}]
+    [:div {:class ["flex" "flex-col" "text-center" "sm:text-left"]}
+     [:h3 {:class ["text-3xl" "font-bold" "text-white"]} name]
+     [:p {:class ["mt-4" "text-lg" "text-white/90" "leading-snug"]} description]
+     (when certificate
+       [:a {:href   (str constants/assets-url "files/certificates/" certificate)
+            :target "_blank"
+            :rel    "noopener noreferrer"
+            :class  ["mt-5" "self-center" "sm:self-start" "inline-flex" "items-center" "gap-1.5"
+                     "text-lg" "text-[#E0294A]" "hover:text-[#F2506B]" "transition-colors"]}
+        "View Certificate" [:> ExternalLink {:size 18}]])]]]))
+
+(defn partners-sec []
+  [:div {:id "partners"
+         :class ["flex" "h-auto" "items-center" "justify-center" "pt-36" "pb-16" "md:pb-36"
+                 "bg-[#15163A]"]}
+   [:div {:class ["flex" "flex-col" "w-full" "h-fit" "items-center" "gap-4"
+                  "max-w-screen-md" "px-4" "md:max-w-screen-lg" "md:px-16" "lg:max-w-screen-2xl" "lg:px-20"]}
+    [:div {:class ["flex" "flex-col" "items-center" "justify-start" "lg:flex-row"]}
+     [:img {:class ["mx-6" "h-16" "w-auto" "lg:-translate-y-[3px]"]
+            :src   (str constants/assets-url "img/partners_icon_gold.svg")}]
+     [:h1 {:class ["text-center" "my-6" "text-white" "text-3xl" "font-black" "md:text-6xl"]}
+      "Partners & Certifications"]]
+
+    [:p {:class ["text-xl" "text-white/90" "mt-4" "mb-6" "px-4" "hyphens-auto" "md:text-2xl" "md:text-center" "lg:w-2/3"]}
+     "\u2003 We partner with leading technology providers and hold their certifications,
+      so our solutions are built and supported to the vendor's own standards."]
+
+    [:div {:class ["flex" "flex-col" "gap-6" "py-4" "md:py-12" "w-full"]}
+     (for [partner partners/partners]
+       ^{:key (:id partner)} [partner-card partner])]]])
+
 (defn security-sec []
-  (let [bg-url (str constants/assets-url "img/security_bck.webp")]
+  (let [bg-url (str constants/assets-url "img/sec_wall_new.webp")]
     [:div
      {:id "security"
       :class ["relative"
@@ -486,8 +577,8 @@
                  "md:text-2xl"
                  "md:text-center"
                  "text-shadow-md"]}
-        "\u2003 At Shtanglitza " [:span {:class ["font-bold"]} "we treat the security of our client's information as our top priority"] ".
-                      We maintain a robust " [:span {:class ["font-bold"]} "ISO 27001:2022"] " compliant, control framework that protects our people, technology,
+        "\u2003 At Shtanglitza " [:span {:class ["font-bold"]} "we treat the security of our clients' information as our top priority"] ".
+                      We maintain a robust " [:span {:class ["font-bold"]} "ISO 27001:2022"] " compliant control framework that protects our people, technology,
                       and physical assets. By consistently applying these controls, we provide a foundation of trust that enables
                       our client relationships to thrive.\n
                       "]
@@ -500,15 +591,15 @@
                  "md:text-2xl"
                  "md:text-center"]}
         "If you would like to know more about Shtanglitza’s Information Security program, please read the"
-        [:button {::on-click #(goto-security)
+        [:button {:on-click #(goto-security)
                   :class ["text-[#77F7E8]" "hover:text-[#4ED9CB]" "whitespace-nowrap" "hover:no-underline" "tracking-wider"]}
-         " \"How we do it" \"]
+         " \"How We Do It" \"]
 
         " section "
         [:span
          {:class ["italic" "font-light"]}
          "(click here or Read more button below)"]
-        " or contact us at  "
+        " or contact us at "
         [:a
          {:href (str "mailto:" constants/email-address)
           :class ["text-[#77F7E8]" "hover:text-[#4ED9CB]" "whitespace-nowrap" "hover:no-underline" "tracking-wider"]
@@ -579,6 +670,8 @@
     [about-sec]
     [capabilities-sec]
     [expertise-sec]
+    [case-studies-sec]
+    [partners-sec]
     [security-sec]]])
 
 

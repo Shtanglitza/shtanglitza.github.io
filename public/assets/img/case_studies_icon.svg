@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="4.5 1.8 18.5 24.4">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #7e72d3;
+        stroke-width: 1.1px;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+    </style>
+  </defs>
+  <g id="Layer_2-2" data-name="Layer 2">
+    <!-- document with folded corner -->
+    <path class="cls-1" d="M6.2,2.5h11.3l4.8,4.8v17.2c0,.55-.45,1-1,1H6.2c-.55,0-1-.45-1-1V3.5c0-.55.45-1,1-1Z"/>
+    <path class="cls-1" d="M17.5,2.5v3.8c0,.55.45,1,1,1h3.8"/>
+    <!-- result graph: connected nodes trending up, centered in the document -->
+    <g transform="translate(0,-0.2)">
+      <path class="cls-1" d="M9.73,19.47L11.47,17.13"/>
+      <path class="cls-1" d="M13.5,16.72L14.6,17.38"/>
+      <path class="cls-1" d="M16.56,16.92L18.64,13.68"/>
+      <circle class="cls-1" cx="8.9" cy="20.6" r="1.4"/>
+      <circle class="cls-1" cx="12.3" cy="16" r="1.4"/>
+      <circle class="cls-1" cx="15.8" cy="18.1" r="1.4"/>
+      <circle class="cls-1" cx="19.4" cy="12.5" r="1.4"/>
+    </g>
+  </g>
+</svg>
