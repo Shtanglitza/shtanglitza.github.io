@@ -65,7 +65,25 @@
       :text "volcano plots, score distributions, and ranked lists ready for publication."}
      {:label "Audit-Ready Runs"
       :text "run reports, parameter manifests, and full data lineage for every result."}]
-    :outcome "10–50× faster end-to-end; reproducible, reviewable, and easy to extend to new cohorts or parameter sweeps."}])
+    :outcome "10–50× faster end-to-end; reproducible, reviewable, and easy to extend to new cohorts or parameter sweeps."}
+
+   {:slug "pcvue-bioprocess-knowledge"
+    :number "IV"
+    :title "From Process Data to Operational Knowledge: PcVue + Shtanglitza for Bioprocess Development"
+    :challenge "A bioprocess development lab operates bioreactors, utilities, and process equipment through PcVue, generating large volumes of signals, alarms, and historical data. But the scientific context is fragmented across SCADA, ELN/LIMS, SOPs, spreadsheets, materials, and analytical results – making it difficult to understand what happened, why it happened, and how one batch compares with another."
+    :solution-intro "We kept PcVue as the operational monitoring and control layer and added Shtanglitza as a semantic data and knowledge layer. A shared process ontology and knowledge graph connect PcVue data with laboratory and scientific information, preserving context, relationships, and provenance across the complete experiment/batch lifecycle:"
+    :solution-points
+    [{:label "PcVue Integration"
+      :text "Process signals, alarms, trends, mimics, and thresholds are read from PcVue in real time."}
+     {:label "Ontology-Based Harmonization"
+      :text "Data from SCADA, ELN/LIMS, spreadsheets, and analytical systems is integrated and harmonized against a shared process ontology."}
+     {:label "SOP Ingestion"
+      :text "SOPs and procedures are ingested and linked to the equipment, parameters, and thresholds they describe."}
+     {:label "Knowledge Graph"
+      :text "Batches, equipment, materials, samples, SOPs, and results are connected in a knowledge graph with full provenance, so every value has context and every relationship can be followed."}
+     {:label "AI Agent Client"
+      :text "Scientists and engineers ask questions in natural language – current values, trends, mimics, thresholds, alarm causes, batch comparisons – and an LLM-based agent queries live data and reasons over the knowledge graph to give precise, traceable answers."}]
+    :outcome "Faster investigations with less manual data collection during deviations and root-cause analysis; better process understanding by comparing batches and linking process conditions to results; traceability by design from process values to equipment, materials, samples, procedures, and decisions; reusable knowledge that turns individual experiments into organizational process knowledge; and AI-ready operations with governed, contextualized data for analytics, copilots, and future autonomous workflows."}])
 
 (defn find-by-slug [slug]
   (some #(when (= slug (:slug %)) %) case-studies))
